@@ -92,11 +92,15 @@ void Sys_Printf (char *fmt, ...)
 	unsigned char		*p;
 
 	va_start (argptr,fmt);
-	vsprintf (text,fmt,argptr);
+	int len = vsnprintf (text,1000,fmt,argptr);
 	va_end (argptr);
 
-	if (strlen(text) > sizeof(text))
-		Sys_Error("memory overwrite in Sys_Printf");
+    if (len == 1000) {
+        text[1000] = '.';
+        text[1001] = '.';
+        text[1002] = '.';
+        text[1003] = 0;
+    }
 
     if (nostdout)
         return;
@@ -431,6 +435,7 @@ int main (int c, char **v)
     oldtime = Sys_FloatTime () - 0.1;
 
     glutIdleFunc(Sys_Tick);
+    glutDisplayFunc(Sys_Tick);
     glutMainLoop();
 }
 

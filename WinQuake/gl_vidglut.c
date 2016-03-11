@@ -43,8 +43,6 @@ unsigned char d_15to8table[65536];
 
 int num_shades=32;
 
-static unsigned char scantokey[128];
-
 int	d_con_indirect = 0;
 
 int		svgalib_inited=0;
@@ -114,10 +112,43 @@ void D_EndDirectRect (int x, int y, int width, int height)
 }
 
 void key_down_handler(unsigned char sc, int x, int y) {
-    Key_Event(scantokey[sc] & 0x7f, 1);
+    Key_Event(sc, 1);
 }
 void key_up_handler(unsigned char sc, int x, int y) {
-    Key_Event(scantokey[sc] & 0x7f, 0);
+    Key_Event(sc, 0);
+}
+void skey_handler(int key, int s) {
+    switch (key) {
+        case GLUT_KEY_F1:  Key_Event(K_F1,  s); break;
+        case GLUT_KEY_F2:  Key_Event(K_F2,  s); break;
+        case GLUT_KEY_F3:  Key_Event(K_F3,  s); break;
+        case GLUT_KEY_F4:  Key_Event(K_F4,  s); break;
+        case GLUT_KEY_F5:  Key_Event(K_F5,  s); break;
+        case GLUT_KEY_F6:  Key_Event(K_F6,  s); break;
+        case GLUT_KEY_F7:  Key_Event(K_F7,  s); break;
+        case GLUT_KEY_F8:  Key_Event(K_F8,  s); break;
+        case GLUT_KEY_F9:  Key_Event(K_F9,  s); break;
+        case GLUT_KEY_F10: Key_Event(K_F10, s); break;
+        case GLUT_KEY_F11: Key_Event(K_F11, s); break;
+        case GLUT_KEY_F12: Key_Event(K_F12, s); break;
+
+        case GLUT_KEY_LEFT:  Key_Event(K_LEFTARROW,  s); break;
+        case GLUT_KEY_RIGHT: Key_Event(K_RIGHTARROW, s); break;
+        case GLUT_KEY_UP:    Key_Event(K_UPARROW,    s); break;
+        case GLUT_KEY_DOWN:  Key_Event(K_DOWNARROW,  s); break;
+
+        case GLUT_KEY_PAGE_UP:   Key_Event(K_PGUP, s); break;
+        case GLUT_KEY_PAGE_DOWN: Key_Event(K_PGDN, s); break;
+        case GLUT_KEY_HOME:      Key_Event(K_HOME, s); break;
+        case GLUT_KEY_END:       Key_Event(K_END,  s); break;
+        case GLUT_KEY_INSERT:    Key_Event(K_INS,  s); break;
+    }
+}
+void skey_down_handler(int key, int x, int y) {
+    skey_handler(key, 1);
+}
+void skey_up_handler(int key, int x, int y) {
+    skey_handler(key, 0);
 }
 
 void VID_Shutdown(void)
@@ -313,112 +344,11 @@ void Init_KBD(void)
 
 	if (UseKeyboard)
 	{
-		for (i=0 ; i<128 ; i++)
-			scantokey[i] = ' ';
-
-		scantokey[42] = K_SHIFT;
-		scantokey[54] = K_SHIFT;
-		scantokey[72] = K_UPARROW;
-		scantokey[103] = K_UPARROW;
-		scantokey[80] = K_DOWNARROW;
-		scantokey[108] = K_DOWNARROW;
-		scantokey[75] = K_LEFTARROW;
-		scantokey[105] = K_LEFTARROW;
-		scantokey[77] = K_RIGHTARROW;
-		scantokey[106] = K_RIGHTARROW;
-		scantokey[29] = K_CTRL;
-		scantokey[97] = K_CTRL;
-		scantokey[56] = K_ALT;
-		scantokey[100] = K_ALT;
-//		scantokey[58] = JK_CAPS;
-//		scantokey[69] = JK_NUM_LOCK;
-		scantokey[71] = K_HOME;
-		scantokey[73] = K_PGUP;
-		scantokey[79] = K_END;
-		scantokey[81] = K_PGDN;
-		scantokey[82] = K_INS;
-		scantokey[83] = K_DEL;
-		scantokey[1 ] = K_ESCAPE;
-		scantokey[28] = K_ENTER;
-		scantokey[15] = K_TAB;
-		scantokey[14] = K_BACKSPACE;
-		scantokey[119] = K_PAUSE;
-		scantokey[57] = ' ';
-
-		scantokey[102] = K_HOME;
-		scantokey[104] = K_PGUP;
-		scantokey[107] = K_END;
-		scantokey[109] = K_PGDN;
-		scantokey[110] = K_INS;
-		scantokey[111] = K_DEL;
-
-		scantokey[2] = '1';
-		scantokey[3] = '2';
-		scantokey[4] = '3';
-		scantokey[5] = '4';
-		scantokey[6] = '5';
-		scantokey[7] = '6';
-		scantokey[8] = '7';
-		scantokey[9] = '8';
-		scantokey[10] = '9';
-		scantokey[11] = '0';
-		scantokey[12] = '-';
-		scantokey[13] = '=';
-		scantokey[41] = '`';
-		scantokey[26] = '[';
-		scantokey[27] = ']';
-		scantokey[39] = ';';
-		scantokey[40] = '\'';
-		scantokey[51] = ',';
-		scantokey[52] = '.';
-		scantokey[53] = '/';
-		scantokey[43] = '\\';
-
-		scantokey[59] = K_F1;
-		scantokey[60] = K_F2;
-		scantokey[61] = K_F3;
-		scantokey[62] = K_F4;
-		scantokey[63] = K_F5;
-		scantokey[64] = K_F6;
-		scantokey[65] = K_F7;
-		scantokey[66] = K_F8;
-		scantokey[67] = K_F9;
-		scantokey[68] = K_F10;
-		scantokey[87] = K_F11;
-		scantokey[88] = K_F12;
-		scantokey[30] = 'a';
-		scantokey[48] = 'b';
-		scantokey[46] = 'c';
-		scantokey[32] = 'd';       
-		scantokey[18] = 'e';       
-		scantokey[33] = 'f';       
-		scantokey[34] = 'g';       
-		scantokey[35] = 'h';       
-		scantokey[23] = 'i';       
-		scantokey[36] = 'j';       
-		scantokey[37] = 'k';       
-		scantokey[38] = 'l';       
-		scantokey[50] = 'm';       
-		scantokey[49] = 'n';       
-		scantokey[24] = 'o';       
-		scantokey[25] = 'p';       
-		scantokey[16] = 'q';       
-		scantokey[19] = 'r';       
-		scantokey[31] = 's';       
-		scantokey[20] = 't';       
-		scantokey[22] = 'u';       
-		scantokey[47] = 'v';       
-		scantokey[17] = 'w';       
-		scantokey[45] = 'x';       
-		scantokey[21] = 'y';       
-		scantokey[44] = 'z';       
-
-		scantokey[78] = '+';
-		scantokey[74] = '-';
-
         glutIgnoreKeyRepeat(1);
         glutKeyboardFunc(key_down_handler);
         glutKeyboardUpFunc(key_up_handler);
+        glutSpecialFunc(skey_down_handler);
+        glutSpecialUpFunc(skey_up_handler);
 	}
 }
 
@@ -517,8 +447,6 @@ void VID_Init(unsigned char *palette)
 	char	gldir[MAX_OSPATH];
 	int width = 640, height = 480;
 
-	Init_KBD();
-
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&vid_redrawfull);
 	Cvar_RegisterVariable (&vid_waitforrefresh);
@@ -554,10 +482,12 @@ void VID_Init(unsigned char *palette)
 	if (vid.conheight < 200)
 		vid.conheight = 200;
 
-    glutInit(0, 0);
+    glutInit(&com_argc, com_argv);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(width, height);
     glut_window = glutCreateWindow("Quake");
+
+	Init_KBD();
 
 	InitSig(); // trap evil signals
 
