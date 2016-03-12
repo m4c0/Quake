@@ -697,8 +697,6 @@ void _Host_Frame (float time)
 	if (host_speeds.value)
 		time1 = Sys_FloatTime ();
 		
-	SCR_UpdateScreen ();
-
 	if (host_speeds.value)
 		time2 = Sys_FloatTime ();
 		

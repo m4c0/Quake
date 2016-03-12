@@ -385,6 +385,8 @@ void Sys_Tick() {
 // graphic debugging aids
     if (sys_linerefresh.value)
         Sys_LineRefresh ();
+
+    glutPostRedisplay();
 }
 
 int main (int c, char **v)
@@ -435,7 +437,7 @@ int main (int c, char **v)
     oldtime = Sys_FloatTime () - 0.1;
 
     glutIdleFunc(Sys_Tick);
-    glutDisplayFunc(Sys_Tick);
+    glutDisplayFunc(SCR_UpdateScreen);
     glutMainLoop();
 }
 
