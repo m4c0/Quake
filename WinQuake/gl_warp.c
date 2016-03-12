@@ -23,8 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern	model_t	*loadmodel;
 
-int		skytexturenum;
-
 int		solidskytexture;
 int		alphaskytexture;
 float	speedscale;		// for top sky and bottom sky
@@ -1039,7 +1037,6 @@ void R_InitSky (texture_t *mt)
 	unsigned	transpix;
 	int			r, g, b;
 	unsigned	*rgba;
-	extern	int			skytexturenum;
 
 	src = (byte *)mt + mt->offsets[0];
 
