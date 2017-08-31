@@ -1,4 +1,4 @@
-add_executable(quake
+add_library(WinQuake STATIC
     cl_demo.c cl_input.c cl_main.c cl_parse.c cl_tent.c chase.c cmd.c common.c console.c crc.c cvar.c
 
     gl_draw.c gl_mesh.c gl_model.c gl_refrag.c gl_rlight.c gl_rmain.c gl_rmisc.c gl_rsurf.c gl_screen.c gl_test.c gl_warp.c
@@ -7,8 +7,8 @@ add_executable(quake
 
     snd_osx.c sys_glut.c gl_vidglut.c
     )
-target_compile_definitions(quake PUBLIC GLQUAKE)
-target_link_libraries(quake PUBLIC "-framework AudioUnit")
-target_link_libraries(quake PUBLIC "-framework GLUT")
-target_link_libraries(quake PUBLIC "-framework OpenGL")
+target_compile_definitions(WinQuake PUBLIC GLQUAKE)
+target_link_libraries(WinQuake PUBLIC "-framework AudioUnit")
+target_link_libraries(WinQuake PUBLIC "-framework GLUT")
+target_link_libraries(WinQuake PUBLIC "-framework OpenGL")
 

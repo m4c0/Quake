@@ -6,3 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_subdirectory(original)
 
+add_executable(quake dummy.cpp)
+target_link_libraries(quake PUBLIC WinQuake)
+
