@@ -27,7 +27,7 @@ typedef unsigned char 		byte;
 #undef true
 #undef false
 
-typedef enum {false, true}	qboolean;
+typedef bool qboolean;
 
 //============================================================================
 
@@ -44,7 +44,7 @@ void SZ_Alloc (sizebuf_t *buf, int startsize);
 void SZ_Free (sizebuf_t *buf);
 void SZ_Clear (sizebuf_t *buf);
 void *SZ_GetSpace (sizebuf_t *buf, int length);
-void SZ_Write (sizebuf_t *buf, void *data, int length);
+void SZ_Write (sizebuf_t *buf, const void *data, int length);
 void SZ_Print (sizebuf_t *buf, char *data);	// strcats onto the sizebuf
 
 //============================================================================
@@ -63,7 +63,7 @@ void InsertLinkAfter (link_t *l, link_t *after);
 // (type *)STRUCT_FROM_LINK(link_t *link, type, member)
 // ent = STRUCT_FROM_LINK(link,entity_t,order)
 // FIXME: remove this mess!
-#define	STRUCT_FROM_LINK(l,t,m) ((t *)((byte *)l - (int)&(((t *)0)->m)))
+#define	STRUCT_FROM_LINK(l,t,m) ((t *)((byte *)l - (long)&(((t *)0)->m)))
 
 //============================================================================
 
@@ -122,7 +122,7 @@ float MSG_ReadAngle (void);
 //============================================================================
 
 void Q_memset (void *dest, int fill, int count);
-void Q_memcpy (void *dest, void *src, int count);
+void Q_memcpy (void *dest, const void *src, int count);
 int Q_memcmp (void *m1, void *m2, int count);
 void Q_strcpy (char *dest, char *src);
 void Q_strncpy (char *dest, char *src, int count);
