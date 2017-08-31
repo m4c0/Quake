@@ -1,3 +1,17 @@
+# m4c0's tweaks on Quake source
+
+This repository contains some tweaks I'm doing on Quake code as a hobby. This
+code have zero intention of achieving some epic ultimate goal or making real
+improvements to the game.
+
+Until I have a better idea, this branch will eventually be a rewrite of the
+original code in C++17 and OpenGL 3.3.
+
+If you are asking "why", the short version is: "because I can". I'm not
+advocating for specific technologies - I just love C++17, CMake and OpenGL
+3.3, and I want some silly project to kill time.
+
+# Original README
 
 This is the complete source code for winquake, glquake, quakeworld, and 
 glquakeworld.
