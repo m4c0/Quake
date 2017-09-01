@@ -11,6 +11,12 @@ If you are asking "why", the short version is: "because I can". I'm not
 advocating for specific technologies - I just love C++17, CMake and OpenGL
 3.3, and I want some silly project to kill time.
 
+There's also a great deal of code tagged as "Quake 2". Those will be deleted
+because I'm focusing on Quake 1.
+
+Currently, I'll try to keep multiplatform by usign C++'s STL API. Eventually
+I may think about doing proper multiplatform as interest grows.
+
 # Original README
 
 This is the complete source code for winquake, glquake, quakeworld, and 
