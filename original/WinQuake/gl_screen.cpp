@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/screen.hpp"
+
 /*
 
 background clear
@@ -384,7 +386,7 @@ void SCR_Init (void)
 //
 // register our commands
 //
-	Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
+	Cmd_AddCommand ("screenshot", quake::screen::screenshot);
 	Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
 	Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
 
@@ -566,80 +568,6 @@ void SCR_DrawConsole (void)
 			Con_DrawNotify ();	// only draw notify in game
 	}
 }
-
-
-/* 
-============================================================================== 
- 
-						SCREEN SHOTS 
- 
-============================================================================== 
-*/ 
-
-typedef struct _TargaHeader {
-	unsigned char 	id_length, colormap_type, image_type;
-	unsigned short	colormap_index, colormap_length;
-	unsigned char	colormap_size;
-	unsigned short	x_origin, y_origin, width, height;
-	unsigned char	pixel_size, attributes;
-} TargaHeader;
-
-
-/* 
-================== 
-SCR_ScreenShot_f
-================== 
-*/  
-void SCR_ScreenShot_f (void) 
-{
-	byte		*buffer;
-	char		pcxname[80]; 
-	char		checkname[MAX_OSPATH];
-	int			i, c, temp;
-// 
-// find a file name to save it to 
-// 
-	strcpy(pcxname,"quake00.tga");
-		
-	for (i=0 ; i<=99 ; i++) 
-	{ 
-		pcxname[5] = i/10 + '0'; 
-		pcxname[6] = i%10 + '0'; 
-		sprintf (checkname, "%s/%s", com_gamedir, pcxname);
-		if (Sys_FileTime(checkname) == -1)
-			break;	// file doesn't exist
-	} 
-	if (i==100) 
-	{
-		Con_Printf ("SCR_ScreenShot_f: Couldn't create a PCX file\n"); 
-		return;
- 	}
-
-
-	buffer = (byte *)malloc(glwidth*glheight*3 + 18);
-	memset (buffer, 0, 18);
-	buffer[2] = 2;		// uncompressed type
-	buffer[12] = glwidth&255;
-	buffer[13] = glwidth>>8;
-	buffer[14] = glheight&255;
-	buffer[15] = glheight>>8;
-	buffer[16] = 24;	// pixel size
-
-	glReadPixels (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18 ); 
-
-	// swap rgb to bgr
-	c = 18+glwidth*glheight*3;
-	for (i=18 ; i<c ; i+=3)
-	{
-		temp = buffer[i];
-		buffer[i] = buffer[i+2];
-		buffer[i+2] = temp;
-	}
-	COM_WriteFile (pcxname, buffer, glwidth*glheight*3 + 18 );
-
-	free (buffer);
-	Con_Printf ("Wrote %s\n", pcxname);
-} 
 
 
 //=============================================================================
