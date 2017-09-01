@@ -194,7 +194,7 @@ void Sys_mkdir (char *path)
     mkdir (path, 0777);
 }
 
-int Sys_FileOpenRead (char *path, int *handle)
+int Sys_FileOpenRead (const char *path, int *handle)
 {
 	int	h;
 	struct stat	fileinfo;

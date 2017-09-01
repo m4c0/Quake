@@ -21,6 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/common.hpp"
+
+static auto & argv = quake::common::argv::current;
+
 #define NUM_SAFE_ARGVS  7
 
 static char     *largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
@@ -832,20 +836,11 @@ void COM_StripExtension (char *in, char *out)
 COM_FileExtension
 ============
 */
-char *COM_FileExtension (char *in)
-{
-	static char exten[8];
-	int             i;
+std::string COM_FileExtension(const std::string & in) {
+    auto dot = std::find(in.begin(), in.end(), '.');
+    if (dot == in.end()) return "";
 
-	while (*in && *in != '.')
-		in++;
-	if (!*in)
-		return "";
-	in++;
-	for (i=0 ; i<7 && *in ; i++,in++)
-		exten[i] = *in;
-	exten[i] = 0;
-	return exten;
+    return { dot + 1, in.end() };
 }
 
 /*
@@ -987,19 +982,9 @@ Returns the position (1 to argc-1) in the program's argument list
 where the given parameter apears, or 0 if not present
 ================
 */
-int COM_CheckParm (char *parm)
-{
-	int             i;
-	
-	for (i=1 ; i<com_argc ; i++)
-	{
-		if (!com_argv[i])
-			continue;               // NEXTSTEP sometimes clears appkit vars.
-		if (!Q_strcmp (parm,com_argv[i]))
-			return i;
-	}
-		
-	return 0;
+int COM_CheckParm (char *parm) {
+    auto pos = argv->find_parameter(parm);
+    return (pos == argv->end()) ? 0 : (1 + pos - argv->begin());
 }
 
 /*
@@ -1056,7 +1041,6 @@ COM_InitArgv
 */
 void COM_InitArgv (int argc, char **argv)
 {
-	qboolean        safe;
 	int             i, j, n;
 
 // reconstitute the command line for the cmdline externally visible cvar
@@ -1079,18 +1063,15 @@ void COM_InitArgv (int argc, char **argv)
 
 	com_cmdline[n] = 0;
 
-	safe = false;
-
 	for (com_argc=0 ; (com_argc<MAX_NUM_ARGVS) && (com_argc < argc) ;
 		 com_argc++)
 	{
 		largv[com_argc] = argv[com_argc];
-		if (!Q_strcmp ("-safe", argv[com_argc]))
-			safe = true;
 	}
 
-	if (safe)
-	{
+    quake::common::argv::current = std::make_unique<quake::common::argv>(com_argc, largv);
+
+	if (quake::common::argv::current->contains("-safe")) {
 	// force all the safe-mode switches. Note that we reserved extra space in
 	// case we need to add these, so we don't need an overflow check
 		for (i=0 ; i<NUM_SAFE_ARGVS ; i++)
@@ -1103,17 +1084,7 @@ void COM_InitArgv (int argc, char **argv)
 	largv[com_argc] = argvdummy;
 	com_argv = largv;
 
-	if (COM_CheckParm ("-rogue"))
-	{
-		rogue = true;
-		standard_quake = false;
-	}
-
-	if (COM_CheckParm ("-hipnotic"))
-	{
-		hipnotic = true;
-		standard_quake = false;
-	}
+    quake::common::argv::current = std::make_unique<quake::common::argv>(com_argc, com_argv);
 }
 
 
@@ -1237,7 +1208,7 @@ typedef struct
 
 #define MAX_FILES_IN_PACK       2048
 
-char    com_cachedir[MAX_OSPATH];
+static std::string com_cachedir;
 char    com_gamedir[MAX_OSPATH];
 
 typedef struct searchpath_s
@@ -1428,17 +1399,16 @@ int COM_FindFile (char *filename, int *handle, FILE **file)
 				continue;
 				
 		// see if the file needs to be updated in the cache
-			if (!com_cachedir[0])
+			if (com_cachedir == "") {
 				strcpy (cachepath, netpath);
-			else
-			{	
+            } else {	
 #if defined(_WIN32)
 				if ((strlen(netpath) < 2) || (netpath[1] != ':'))
-					sprintf (cachepath,"%s%s", com_cachedir, netpath);
+					sprintf (cachepath,"%s%s", com_cachedir.c_str(), netpath);
 				else
-					sprintf (cachepath,"%s%s", com_cachedir, netpath+2);
+					sprintf (cachepath,"%s%s", com_cachedir.c_str(), netpath+2);
 #else
-				sprintf (cachepath,"%s%s", com_cachedir, netpath);
+				sprintf (cachepath,"%s%s", com_cachedir.c_str(), netpath);
 #endif
 
 				cachetime = Sys_FileTime (cachepath);
@@ -1616,7 +1586,7 @@ Loads the header and directory, adding the files at the beginning
 of the list so they override previous pack files.
 =================
 */
-pack_t *COM_LoadPackFile (char *packfile)
+pack_t *COM_LoadPackFile (const std::string & packfile)
 {
 	dpackheader_t   header;
 	int                             i;
@@ -1627,7 +1597,7 @@ pack_t *COM_LoadPackFile (char *packfile)
 	dpackfile_t             info[MAX_FILES_IN_PACK];
 	unsigned short          crc;
 
-	if (Sys_FileOpenRead (packfile, &packhandle) == -1)
+	if (Sys_FileOpenRead (packfile.c_str(), &packhandle) == -1)
 	{
 //              Con_Printf ("Couldn't open %s\n", packfile);
 		return NULL;
@@ -1635,14 +1605,14 @@ pack_t *COM_LoadPackFile (char *packfile)
 	Sys_FileRead (packhandle, (void *)&header, sizeof(header));
 	if (header.id[0] != 'P' || header.id[1] != 'A'
 	|| header.id[2] != 'C' || header.id[3] != 'K')
-		Sys_Error ("%s is not a packfile", packfile);
+		Sys_Error ("%s is not a packfile", packfile.c_str());
 	header.dirofs = LittleLong (header.dirofs);
 	header.dirlen = LittleLong (header.dirlen);
 
 	numpackfiles = header.dirlen / sizeof(dpackfile_t);
 
 	if (numpackfiles > MAX_FILES_IN_PACK)
-		Sys_Error ("%s has %i files", packfile, numpackfiles);
+		Sys_Error ("%s has %i files", packfile.c_str(), numpackfiles);
 
 	if (numpackfiles != PAK0_COUNT)
 		com_modified = true;    // not the original file
@@ -1668,12 +1638,12 @@ pack_t *COM_LoadPackFile (char *packfile)
 	}
 
 	pack = (pack_t *)Hunk_Alloc (sizeof (pack_t));
-	strcpy (pack->filename, packfile);
+	strcpy (pack->filename, packfile.c_str());
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
 	pack->files = newfiles;
 	
-	Con_Printf ("Added packfile %s (%i files)\n", packfile, numpackfiles);
+	Con_Printf ("Added packfile %s (%i files)\n", packfile.c_str(), numpackfiles);
 	return pack;
 }
 
@@ -1731,26 +1701,22 @@ COM_InitFilesystem
 */
 void COM_InitFilesystem (void)
 {
+    std::string basedir;
 	int             i, j;
-	char    basedir[MAX_OSPATH];
 	searchpath_t    *search;
 
 //
 // -basedir <path>
 // Overrides the system supplied base directory (under GAMENAME)
 //
-	i = COM_CheckParm ("-basedir");
-	if (i && i < com_argc-1)
-		strcpy (basedir, com_argv[i+1]);
-	else
-		strcpy (basedir, host_parms.basedir);
+	auto val = argv->find_value_for("-basedir");
+    basedir = (val != argv->end()) ? *val : host_parms.basedir;
 
-	j = strlen (basedir);
-
-	if (j > 0)
-	{
-		if ((basedir[j-1] == '\\') || (basedir[j-1] == '/'))
-			basedir[j-1] = 0;
+	if (basedir != "") {
+        char last = basedir.back();
+        if ((last == '\\') || (last == '/')) {
+			basedir.pop_back();
+        }
 	}
 
 //
@@ -1758,70 +1724,68 @@ void COM_InitFilesystem (void)
 // Overrides the system supplied cache directory (NULL or /qcache)
 // -cachedir - will disable caching.
 //
-	i = COM_CheckParm ("-cachedir");
-	if (i && i < com_argc-1)
-	{
-		if (com_argv[i+1][0] == '-')
-			com_cachedir[0] = 0;
-		else
-			strcpy (com_cachedir, com_argv[i+1]);
-	}
-	else if (host_parms.cachedir)
-		strcpy (com_cachedir, host_parms.cachedir);
-	else
-		com_cachedir[0] = 0;
+	val = argv->find_value_for("-cachedir");
+	if (val != argv->end()) {
+        com_cachedir = (val->front() == '+') ? "" : *val;
+	} else if (host_parms.cachedir) {
+        com_cachedir = host_parms.cachedir;
+    } else {
+		com_cachedir = "";
+    }
 
 //
 // start up with GAMENAME by default (id1)
 //
-	COM_AddGameDirectory (va("%s/" GAMENAME, basedir) );
+	COM_AddGameDirectory (va("%s/" GAMENAME, basedir.c_str()) );
 
-	if (COM_CheckParm ("-rogue"))
-		COM_AddGameDirectory (va("%s/rogue", basedir) );
-	if (COM_CheckParm ("-hipnotic"))
-		COM_AddGameDirectory (va("%s/hipnotic", basedir) );
+	if (argv->contains("-rogue")) {
+		rogue = true;
+		standard_quake = false;
+		COM_AddGameDirectory (va("%s/rogue", basedir.c_str()) );
+	}
+	if (argv->contains("-hipnotic")) {
+		hipnotic = true;
+		standard_quake = false;
+		COM_AddGameDirectory (va("%s/hipnotic", basedir.c_str()) );
+    }
 
 //
 // -game <gamedir>
 // Adds basedir/gamedir as an override game
 //
-	i = COM_CheckParm ("-game");
-	if (i && i < com_argc-1)
-	{
+	val = argv->find_value_for("-game");
+	if (val != argv->end()) {
 		com_modified = true;
-		COM_AddGameDirectory (va("%s/%s", basedir, com_argv[i+1]));
+		COM_AddGameDirectory (va("%s/%s", basedir.c_str(), com_argv[i+1]));
 	}
 
 //
 // -path <dir or packfile> [<dir or packfile>] ...
 // Fully specifies the exact serach path, overriding the generated one
 //
-	i = COM_CheckParm ("-path");
-	if (i)
-	{
+	val = argv->find_value_for("-path");
+	if (val != argv->end()) {
 		com_modified = true;
 		com_searchpaths = NULL;
-		while (++i < com_argc)
-		{
-			if (!com_argv[i] || com_argv[i][0] == '+' || com_argv[i][0] == '-')
-				break;
+		while (val != argv->end()) {
+            char first = val->front();
+			if (first == '+' || first == '-') break;
 			
 			search = (searchpath_t *)Hunk_Alloc (sizeof(searchpath_t));
-			if ( !strcmp(COM_FileExtension(com_argv[i]), "pak") )
-			{
-				search->pack = COM_LoadPackFile (com_argv[i]);
-				if (!search->pack)
-					Sys_Error ("Couldn't load packfile: %s", com_argv[i]);
-			}
-			else
-				strcpy (search->filename, com_argv[i]);
+			if (COM_FileExtension(*val) == "pak") {
+				search->pack = COM_LoadPackFile(*val);
+				if (!search->pack) Sys_Error ("Couldn't load packfile: %s", val->c_str());
+			} else {
+				strcpy(search->filename, val->c_str());
+            }
 			search->next = com_searchpaths;
 			com_searchpaths = search;
 		}
 	}
 
-	if (COM_CheckParm ("-proghack"))
+	if (argv->contains("-proghack")) {
 		proghack = true;
+    }
 }
 
 
