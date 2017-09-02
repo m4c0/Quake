@@ -28,7 +28,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define DMABUFSIZE (1 << 16)
 
 AudioComponentInstance aci;
-unsigned char * dmabuf;
+unsigned char dmabuf[DMABUFSIZE];
 volatile int dmabufpos = 0;
 
 OSStatus RenderTone(void * ptr, AudioUnitRenderActionFlags * flags, const AudioTimeStamp * ts, UInt32 bus, UInt32 frames, AudioBufferList * data) {
@@ -102,7 +102,7 @@ qboolean SNDDMA_Init(void) {
     shm->samplepos = 0;
     shm->submission_chunk = 1;
     shm->samples = DMABUFSIZE;
-    shm->buffer = dmabuf = (unsigned char *)malloc(DMABUFSIZE);
+    shm->buffer = dmabuf;
 
 	return 1;
 }
