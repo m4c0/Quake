@@ -28,9 +28,9 @@ static auto & argv = quake::common::argv::current;
 #define NUM_SAFE_ARGVS  7
 
 static char     *largv[MAX_NUM_ARGVS + NUM_SAFE_ARGVS + 1];
-static char     *argvdummy = " ";
+static const char     *argvdummy = " ";
 
-static char     *safeargvs[NUM_SAFE_ARGVS] =
+static const char     *safeargvs[NUM_SAFE_ARGVS] =
 	{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse", "-dibonly"};
 
 cvar_t  registered = {"registered","0"};
@@ -181,7 +181,7 @@ int Q_memcmp (void *m1, void *m2, int count)
 	return 0;
 }
 
-void Q_strcpy (char *dest, char *src)
+void Q_strcpy (char *dest,const char *src)
 {
 	while (*src)
 	{
@@ -190,7 +190,7 @@ void Q_strcpy (char *dest, char *src)
 	*dest++ = 0;
 }
 
-void Q_strncpy (char *dest, char *src, int count)
+void Q_strncpy (char *dest, const char *src, int count)
 {
 	while (*src && count--)
 	{
@@ -200,7 +200,7 @@ void Q_strncpy (char *dest, char *src, int count)
 		*dest++ = 0;
 }
 
-int Q_strlen (char *str)
+int Q_strlen (const char *str)
 {
 	int             count;
 	
@@ -211,7 +211,7 @@ int Q_strlen (char *str)
 	return count;
 }
 
-char *Q_strrchr(char *s, char c)
+const char *Q_strrchr(const char *s, char c)
 {
     int len = Q_strlen(s);
     s += len;
@@ -220,13 +220,13 @@ char *Q_strrchr(char *s, char c)
     return 0;
 }
 
-void Q_strcat (char *dest, char *src)
+void Q_strcat (char *dest, const char *src)
 {
 	dest += Q_strlen(dest);
 	Q_strcpy (dest, src);
 }
 
-int Q_strcmp (char *s1, char *s2)
+int Q_strcmp (const char *s1, const char *s2)
 {
 	while (1)
 	{
@@ -241,7 +241,7 @@ int Q_strcmp (char *s1, char *s2)
 	return -1;
 }
 
-int Q_strncmp (char *s1, char *s2, int count)
+int Q_strncmp (const char *s1, const char *s2, int count)
 {
 	while (1)
 	{
@@ -258,7 +258,7 @@ int Q_strncmp (char *s1, char *s2, int count)
 	return -1;
 }
 
-int Q_strncasecmp (char *s1, char *s2, int n)
+int Q_strncasecmp (const char *s1, const char *s2, int n)
 {
 	int             c1, c2;
 	
@@ -288,12 +288,12 @@ int Q_strncasecmp (char *s1, char *s2, int n)
 	return -1;
 }
 
-int Q_strcasecmp (char *s1, char *s2)
+int Q_strcasecmp (const char *s1, const char *s2)
 {
 	return Q_strncasecmp (s1, s2, 99999);
 }
 
-int Q_atoi (char *str)
+int Q_atoi (const char *str)
 {
 	int             val;
 	int             sign;
@@ -352,7 +352,7 @@ int Q_atoi (char *str)
 }
 
 
-float Q_atof (char *str)
+float Q_atof (const char *str)
 {
 	double			val;
 	int             sign;
@@ -577,7 +577,7 @@ void MSG_WriteFloat (sizebuf_t *sb, float f)
 	SZ_Write (sb, &dat.l, 4);
 }
 
-void MSG_WriteString (sizebuf_t *sb, char *s)
+void MSG_WriteString (sizebuf_t *sb, const char *s)
 {
 	if (!s)
 		SZ_Write (sb, "", 1);
@@ -783,7 +783,7 @@ void SZ_Write (sizebuf_t *buf, const void *data, int length)
 	Q_memcpy (SZ_GetSpace(buf,length),data,length);         
 }
 
-void SZ_Print (sizebuf_t *buf, char *data)
+void SZ_Print (sizebuf_t *buf, const char *data)
 {
 	int             len;
 	
@@ -848,9 +848,9 @@ std::string COM_FileExtension(const std::string & in) {
 COM_FileBase
 ============
 */
-void COM_FileBase (char *in, char *out)
+void COM_FileBase (const char *in, char *out)
 {
-	char *s, *s2;
+	const char *s, *s2;
 	
 	s = in + strlen(in) - 1;
 	
@@ -876,7 +876,7 @@ void COM_FileBase (char *in, char *out)
 COM_DefaultExtension
 ==================
 */
-void COM_DefaultExtension (char *path, char *extension)
+void COM_DefaultExtension (char *path, const char *extension)
 {
 	char    *src;
 //
@@ -903,7 +903,7 @@ COM_Parse
 Parse a token out of a string
 ==============
 */
-char *COM_Parse (char *data)
+const char *COM_Parse (const char *data)
 {
 	int             c;
 	int             len;
@@ -982,7 +982,7 @@ Returns the position (1 to argc-1) in the program's argument list
 where the given parameter apears, or 0 if not present
 ================
 */
-int COM_CheckParm (char *parm) {
+int COM_CheckParm (const char *parm) {
     auto pos = argv->find_parameter(parm);
     return (pos == argv->end()) ? 0 : (1 + pos - argv->begin());
 }
@@ -1076,12 +1076,12 @@ void COM_InitArgv (int argc, char **argv)
 	// case we need to add these, so we don't need an overflow check
 		for (i=0 ; i<NUM_SAFE_ARGVS ; i++)
 		{
-			largv[com_argc] = safeargvs[i];
+			largv[com_argc] = (char *)safeargvs[i]; // FIXME: remove yuck hax
 			com_argc++;
 		}
 	}
 
-	largv[com_argc] = argvdummy;
+	largv[com_argc] = (char *)argvdummy; // FIXME: remove yuck hax
 	com_argv = largv;
 
     quake::common::argv::current = std::make_unique<quake::common::argv>(com_argc, com_argv);
@@ -1093,7 +1093,7 @@ void COM_InitArgv (int argc, char **argv)
 COM_Init
 ================
 */
-void COM_Init (char *basedir)
+void COM_Init (const char *basedir)
 {
 	byte    swaptest[2] = {1,0};
 
@@ -1137,7 +1137,7 @@ varargs versions of all text functions.
 FIXME: make this buffer size safe someday
 ============
 */
-char    *va(char *format, ...)
+char    *va(const char *format, ...)
 {
 	va_list         argptr;
 	static char             string[1024];
@@ -1249,7 +1249,7 @@ COM_WriteFile
 The filename will be prefixed by the current game directory
 ============
 */
-void COM_WriteFile (char *filename, void *data, int len)
+void COM_WriteFile (const char *filename, void *data, int len)
 {
 	int             handle;
 	char    name[MAX_OSPATH];
@@ -1300,7 +1300,7 @@ Copies a file over from the net to the local cache, creating any directories
 needed.  This is for the convenience of developers using ISDN from home.
 ===========
 */
-void COM_CopyFile (char *netpath, char *cachepath)
+void COM_CopyFile (const char *netpath, char *cachepath)
 {
 	int             in, out;
 	int             remaining, count;
@@ -1333,7 +1333,7 @@ Finds the file in the search path.
 Sets com_filesize and one of handle or file
 ===========
 */
-int COM_FindFile (char *filename, int *handle, FILE **file)
+int COM_FindFile (const char *filename, int *handle, FILE **file)
 {
 	searchpath_t    *search;
 	char            netpath[MAX_OSPATH];
@@ -1452,7 +1452,7 @@ returns a handle and a length
 it may actually be inside a pak file
 ===========
 */
-int COM_OpenFile (char *filename, int *handle)
+int COM_OpenFile (const char *filename, int *handle)
 {
 	return COM_FindFile (filename, handle, NULL);
 }
@@ -1465,7 +1465,7 @@ If the requested file is inside a packfile, a new FILE * will be opened
 into the file.
 ===========
 */
-int COM_FOpenFile (char *filename, FILE **file)
+int COM_FOpenFile (const char *filename, FILE **file)
 {
 	return COM_FindFile (filename, NULL, file);
 }
@@ -1500,7 +1500,7 @@ Allways appends a 0 byte.
 cache_user_t *loadcache;
 byte    *loadbuf;
 int             loadsize;
-byte *COM_LoadFile (char *path, int usehunk)
+byte *COM_LoadFile (const char *path, int usehunk)
 {
 	int             h;
 	byte    *buf;
@@ -1548,24 +1548,24 @@ byte *COM_LoadFile (char *path, int usehunk)
 	return buf;
 }
 
-byte *COM_LoadHunkFile (char *path)
+byte *COM_LoadHunkFile (const char *path)
 {
 	return COM_LoadFile (path, 1);
 }
 
-byte *COM_LoadTempFile (char *path)
+byte *COM_LoadTempFile (const char *path)
 {
 	return COM_LoadFile (path, 2);
 }
 
-void COM_LoadCacheFile (char *path, struct cache_user_s *cu)
+void COM_LoadCacheFile (const char *path, struct cache_user_s *cu)
 {
 	loadcache = cu;
 	COM_LoadFile (path, 3);
 }
 
 // uses temp hunk if larger than bufsize
-byte *COM_LoadStackFile (char *path, void *buffer, int bufsize)
+byte *COM_LoadStackFile (const char *path, void *buffer, int bufsize)
 {
 	byte    *buf;
 	

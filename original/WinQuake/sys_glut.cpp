@@ -25,8 +25,8 @@ qboolean			isDedicated;
 
 int nostdout = 0;
 
-char *basedir = ".";
-char *cachedir = "/tmp";
+const char *basedir = ".";
+const char *cachedir = "/tmp";
 
 cvar_t  sys_linerefresh = {"sys_linerefresh","0"};// set for entity display
 
@@ -85,7 +85,7 @@ void Sys_Printf (char *fmt, ...)
 }
 */
 
-void Sys_Printf (char *fmt, ...)
+void Sys_Printf (const char *fmt, ...)
 {
 	va_list		argptr;
 	char		text[1024];
@@ -142,7 +142,7 @@ void Sys_Init(void)
 #endif
 }
 
-void Sys_Error (char *error, ...)
+void Sys_Error (const char *error, ...)
 { 
     va_list     argptr;
     char        string[1024];
@@ -189,7 +189,7 @@ int	Sys_FileTime (const char *path)
 }
 
 
-void Sys_mkdir (char *path)
+void Sys_mkdir (const char *path)
 {
     mkdir (path, 0777);
 }
@@ -211,7 +211,7 @@ int Sys_FileOpenRead (const char *path, int *handle)
 	return fileinfo.st_size;
 }
 
-int Sys_FileOpenWrite (char *path)
+int Sys_FileOpenWrite (const char *path)
 {
 	int     handle;
 
@@ -265,8 +265,8 @@ void Sys_EditFile(char *filename)
 {
 
 	char cmd[256];
-	char *term;
-	char *editor;
+	const char *term;
+	const char *editor;
 
 	term = getenv("TERM");
 	if (term && !strcmp(term, "xterm"))

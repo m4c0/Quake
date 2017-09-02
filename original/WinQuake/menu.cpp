@@ -115,7 +115,7 @@ void M_DrawCharacter (int cx, int line, int num)
 	Draw_Character ( cx + ((vid.width - 320)>>1), line, num);
 }
 
-void M_Print (int cx, int cy, char *str)
+void M_Print (int cx, int cy, const char *str)
 {
 	while (*str)
 	{
@@ -125,7 +125,7 @@ void M_Print (int cx, int cy, char *str)
 	}
 }
 
-void M_PrintWhite (int cx, int cy, char *str)
+void M_PrintWhite (int cx, int cy, const char *str)
 {
 	while (*str)
 	{
@@ -859,7 +859,7 @@ int	m_net_cursor;
 int m_net_items;
 int m_net_saveHeight;
 
-char *net_helpMessage [] =
+const char *net_helpMessage [] =
 {
 /* .........1.........2.... */
   "                        ",
@@ -1313,7 +1313,7 @@ void M_Options_Key (int k)
 //=============================================================================
 /* KEYS MENU */
 
-char *bindnames[][2] =
+const char *bindnames[][2] =
 {
 {"+attack", 		"attack"},
 {"impulse 10", 		"change weapon"},
@@ -1348,7 +1348,7 @@ void M_Menu_Keys_f (void)
 }
 
 
-void M_FindKeysForCommand (char *command, int *twokeys)
+void M_FindKeysForCommand (const char *command, int *twokeys)
 {
 	int		count;
 	int		j;
@@ -1374,7 +1374,7 @@ void M_FindKeysForCommand (char *command, int *twokeys)
 	}
 }
 
-void M_UnbindCommand (char *command)
+void M_UnbindCommand (const char *command)
 {
 	int		j;
 	int		l;
@@ -1397,7 +1397,7 @@ void M_Keys_Draw (void)
 {
 	int		i, l;
 	int		keys[2];
-	char	*name;
+	const char	*name;
 	int		x, y;
 	qpic_t	*p;
 
@@ -1582,7 +1582,7 @@ int		m_quit_prevstate;
 qboolean	wasInMenus;
 
 #ifndef	_WIN32
-char *quitMessage [] = 
+const char *quitMessage [] = 
 {
 /* .........1.........2.... */
   "  Are you gonna quit    ",
@@ -1776,8 +1776,8 @@ void M_SerialConfig_Draw (void)
 {
 	qpic_t	*p;
 	int		basex;
-	char	*startJoin;
-	char	*directModem;
+	const char	*startJoin;
+	const char	*directModem;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
@@ -1990,17 +1990,21 @@ forward:
 		}
 	}
 
-	if (DirectConfig && (serialConfig_cursor == 3 || serialConfig_cursor == 4))
-		if (key == K_UPARROW)
+	if (DirectConfig && (serialConfig_cursor == 3 || serialConfig_cursor == 4)) {
+		if (key == K_UPARROW) {
 			serialConfig_cursor = 2;
-		else
+        } else {
 			serialConfig_cursor = 5;
+        }
+    }
 
-	if (SerialConfig && StartingGame && serialConfig_cursor == 4)
-		if (key == K_UPARROW)
+	if (SerialConfig && StartingGame && serialConfig_cursor == 4) {
+		if (key == K_UPARROW) {
 			serialConfig_cursor = 3;
-		else
+        } else {
 			serialConfig_cursor = 5;
+        }
+    }
 }
 
 //=============================================================================
@@ -2212,8 +2216,8 @@ void M_LanConfig_Draw (void)
 {
 	qpic_t	*p;
 	int		basex;
-	char	*startJoin;
-	char	*protocol;
+	const char	*startJoin;
+	const char	*protocol;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
@@ -2363,11 +2367,13 @@ void M_LanConfig_Key (int key)
 		}
 	}
 
-	if (StartingGame && lanConfig_cursor == 2)
-		if (key == K_UPARROW)
+	if (StartingGame && lanConfig_cursor == 2) {
+		if (key == K_UPARROW) {
 			lanConfig_cursor = 1;
-		else
+        } else {
 			lanConfig_cursor = 0;
+        }
+    }
 
 	l =  Q_atoi(lanConfig_portname);
 	if (l > 65535)
@@ -2382,8 +2388,8 @@ void M_LanConfig_Key (int key)
 
 typedef struct
 {
-	char	*name;
-	char	*description;
+	const char	*name;
+	const char	*description;
 } level_t;
 
 level_t		levels[] =
@@ -2487,7 +2493,7 @@ level_t		roguelevels[] =
 
 typedef struct
 {
-	char	*description;
+	const char	*description;
 	int		firstLevel;
 	int		levels;
 } episode_t;
@@ -2570,7 +2576,7 @@ void M_GameOptions_Draw (void)
 	M_Print (0, 72, "        Teamplay");
 	if (rogue)
 	{
-		char *msg;
+		const char *msg;
 
 		switch((int)teamplay.value)
 		{
@@ -2586,7 +2592,7 @@ void M_GameOptions_Draw (void)
 	}
 	else
 	{
-		char *msg;
+		const char *msg;
 
 		switch((int)teamplay.value)
 		{

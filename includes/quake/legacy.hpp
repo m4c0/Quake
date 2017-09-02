@@ -7,7 +7,7 @@
 extern char com_gamedir[128];
 extern int glwidth, glheight, glx, gly;
 
-void Con_Printf (char *fmt, ...);
+void Con_Printf (const char *fmt, ...);
 int	Sys_FileTime (const char *path);
 
 #endif

@@ -20,6 +20,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include <string>
+
 extern cvar_t	pausable;
 
 int	current_skill;
@@ -60,7 +62,7 @@ void Host_Status_f (void)
 	int			minutes;
 	int			hours = 0;
 	int			j;
-	void		(*print) (char *fmt, ...);
+	void		(*print) (const char *fmt, ...);
 	
 	if (cmd_source == src_command)
 	{
@@ -564,7 +566,8 @@ void Host_Loadgame_f (void)
 	FILE	*f;
 	char	mapname[MAX_QPATH];
 	float	time, tfloat;
-	char	str[32768], *start;
+	char	str[32768];
+    const char *start;
 	int		i, r;
 	edict_t	*ent;
 	int		entnum;
@@ -909,7 +912,7 @@ Host_Name_f
 */
 void Host_Name_f (void)
 {
-	char	*newName;
+	char newName[16];
 
 	if (Cmd_Argc () == 1)
 	{
@@ -917,9 +920,9 @@ void Host_Name_f (void)
 		return;
 	}
 	if (Cmd_Argc () == 2)
-		newName = Cmd_Argv(1);	
+		strncpy(newName, Cmd_Argv(1), 15);	
 	else
-		newName = Cmd_Args();
+		strncpy(newName, Cmd_Args(), 15);
 	newName[15] = 0;
 
 	if (cmd_source == src_command)
@@ -1004,14 +1007,30 @@ void Host_Please_f (void)
 }
 #endif
 
+static void _concat_args(char * text, int maxlen) {
+    std::string p = Cmd_Args();
+
+    // remove quotes if present
+	if (p.front() == '"') {
+		p = p.substr(1, p.size() - 2);
+	}
+
+	int j = sizeof(text) - 2 - Q_strlen((char *)text);  // -2 for /n and null terminator
+	if (p.size() > j) {
+		p = p.substr(0, j);
+    }
+
+	strcat(text, p.c_str());
+	strcat(text, "\n");
+}
+
 
 void Host_Say(qboolean teamonly)
 {
 	client_t *client;
 	client_t *save;
 	int		j;
-	char	*p;
-	unsigned char	text[64];
+	char text[64];
 	qboolean	fromServer = false;
 
 	if (cmd_source == src_command)
@@ -1033,26 +1052,13 @@ void Host_Say(qboolean teamonly)
 
 	save = host_client;
 
-	p = Cmd_Args();
-// remove quotes if present
-	if (*p == '"')
-	{
-		p++;
-		p[Q_strlen(p)-1] = 0;
-	}
-
 // turn on color set 1
 	if (!fromServer)
 		sprintf ((char *)text, "%c%s: ", 1, save->name);
 	else
 		sprintf ((char *)text, "%c<%s> ", 1, hostname.string);
 
-	j = sizeof(text) - 2 - Q_strlen((char *)text);  // -2 for /n and null terminator
-	if (Q_strlen(p) > j)
-		p[j] = 0;
-
-	strcat ((char *)text, p);
-	strcat ((char *)text, "\n");
+    _concat_args(text, 64);
 
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
@@ -1080,7 +1086,6 @@ void Host_Say_Team_f(void)
 	Host_Say(true);
 }
 
-
 void Host_Tell_f(void)
 {
 	client_t *client;
@@ -1101,22 +1106,7 @@ void Host_Tell_f(void)
 	Q_strcpy(text, host_client->name);
 	Q_strcat(text, ": ");
 
-	p = Cmd_Args();
-
-// remove quotes if present
-	if (*p == '"')
-	{
-		p++;
-		p[Q_strlen(p)-1] = 0;
-	}
-
-// check length & truncate if necessary
-	j = sizeof(text) - 2 - Q_strlen(text);  // -2 for /n and null terminator
-	if (Q_strlen(p) > j)
-		p[j] = 0;
-
-	strcat (text, p);
-	strcat (text, "\n");
+    _concat_args(text, 64);
 
 	save = host_client;
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
@@ -1423,8 +1413,8 @@ Kicks a user off of the server
 */
 void Host_Kick_f (void)
 {
-	char		*who;
-	char		*message = NULL;
+	const char		*who;
+	const char		*message = NULL;
 	client_t	*save;
 	int			i;
 	qboolean	byNumber = false;
@@ -1515,7 +1505,7 @@ Host_Give_f
 */
 void Host_Give_f (void)
 {
-	char	*t;
+	const char	*t;
 	int		v, w;
 	eval_t	*val;
 

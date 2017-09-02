@@ -22,14 +22,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 
 cvar_t	*cvar_vars;
-char	*cvar_null_string = "";
+const char	*cvar_null_string = "";
 
 /*
 ============
 Cvar_FindVar
 ============
 */
-cvar_t *Cvar_FindVar (char *var_name)
+cvar_t *Cvar_FindVar (const char *var_name)
 {
 	cvar_t	*var;
 	
@@ -45,7 +45,7 @@ cvar_t *Cvar_FindVar (char *var_name)
 Cvar_VariableValue
 ============
 */
-float	Cvar_VariableValue (char *var_name)
+float	Cvar_VariableValue (const char *var_name)
 {
 	cvar_t	*var;
 	
@@ -61,7 +61,7 @@ float	Cvar_VariableValue (char *var_name)
 Cvar_VariableString
 ============
 */
-char *Cvar_VariableString (char *var_name)
+const char *Cvar_VariableString (const char *var_name)
 {
 	cvar_t *var;
 	
@@ -77,7 +77,7 @@ char *Cvar_VariableString (char *var_name)
 Cvar_CompleteVariable
 ============
 */
-char *Cvar_CompleteVariable (char *partial)
+const char *Cvar_CompleteVariable (const char *partial)
 {
 	cvar_t		*cvar;
 	int			len;
@@ -101,7 +101,7 @@ char *Cvar_CompleteVariable (char *partial)
 Cvar_Set
 ============
 */
-void Cvar_Set (char *var_name, char *value)
+void Cvar_Set (const char *var_name, const char *value)
 {
 	cvar_t	*var;
 	qboolean changed;
@@ -115,10 +115,12 @@ void Cvar_Set (char *var_name, char *value)
 
 	changed = Q_strcmp(var->string, value);
 	
-	Z_Free (var->string);	// free the old value string
+    // FIXME: This is really wrong. We should not mix heap pointers and constant pointers...
+	Z_Free ((char *)var->string);	// free the old value string
 	
-	var->string = (char *)Z_Malloc (Q_strlen(value)+1);
-	Q_strcpy (var->string, value);
+	char * dup = (char *)Z_Malloc (Q_strlen(value)+1);
+	Q_strcpy (dup, value);
+    var->string = dup;
 	var->value = Q_atof (var->string);
 	if (var->server && changed)
 	{
@@ -132,7 +134,7 @@ void Cvar_Set (char *var_name, char *value)
 Cvar_SetValue
 ============
 */
-void Cvar_SetValue (char *var_name, float value)
+void Cvar_SetValue (const char *var_name, float value)
 {
 	char	val[32];
 	
@@ -150,8 +152,6 @@ Adds a freestanding variable to the variable list.
 */
 void Cvar_RegisterVariable (cvar_t *variable)
 {
-	char	*oldstr;
-	
 // first check to see if it has allready been defined
 	if (Cvar_FindVar (variable->name))
 	{
@@ -167,9 +167,9 @@ void Cvar_RegisterVariable (cvar_t *variable)
 	}
 		
 // copy the value off, because future sets will Z_Free it
-	oldstr = variable->string;
-	variable->string = (char *)Z_Malloc (Q_strlen(variable->string)+1);	
-	Q_strcpy (variable->string, oldstr);
+    char * newstr = (char *)Z_Malloc (Q_strlen(variable->string)+1);	
+	Q_strcpy (newstr, variable->string);
+    variable->string = newstr;
 	variable->value = Q_atof (variable->string);
 	
 // link the variable in

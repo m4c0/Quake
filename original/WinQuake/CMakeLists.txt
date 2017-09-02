@@ -8,8 +8,9 @@ add_library(WinQuake STATIC
     snd_osx.cpp sys_glut.cpp gl_vidglut.cpp
     )
 target_compile_definitions(WinQuake PUBLIC GLQUAKE)
-target_compile_options(WinQuake PRIVATE "-Wno-writable-strings")
+target_compile_options(WinQuake PRIVATE "-Werror")
 target_link_libraries(WinQuake PUBLIC "-framework AudioUnit")
 target_link_libraries(WinQuake PUBLIC "-framework GLUT")
 target_link_libraries(WinQuake PUBLIC "-framework OpenGL")
 
+set_source_files_properties(gl_vidglut.cpp sys_glut.cpp PROPERTIES COMPILE_FLAGS "-Wno-deprecated-declarations")
