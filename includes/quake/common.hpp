@@ -11,7 +11,7 @@ namespace quake {
             std::vector<std::string> contents;
 
         public:
-            static std::unique_ptr<argv> current;
+            static std::unique_ptr<const argv> current;
 
             argv(const std::vector<std::string> & args) : contents(args) {
             }
