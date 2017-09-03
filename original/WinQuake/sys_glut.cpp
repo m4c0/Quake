@@ -394,7 +394,7 @@ void Sys_Tick() {
 int main (int c, char **v)
 {
 
-	quakeparms_t parms;
+	quakeparms_t parms {};
 	int j;
 
 //	static char cwd[1024];
@@ -402,11 +402,10 @@ int main (int c, char **v)
 //	signal(SIGFPE, floating_point_exception_handler);
 	signal(SIGFPE, SIG_IGN);
 
-	memset(&parms, 0, sizeof(parms));
+    auto & argv = quake::common::argv::current;
 
 	COM_InitArgv(c, v);
-	parms.argc = com_argc;
-	parms.argv = com_argv;
+    std::copy(argv->begin(), argv->end(), std::back_inserter(parms.args));
 
     parms.memsize = 1024 * 1024 * std::stoi(quake::common::argv::current->get_or_default("-mem", "16"));
 	parms.membase = malloc (parms.memsize);

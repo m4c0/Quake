@@ -262,6 +262,8 @@ typedef struct
 #include "glquake.h"
 #endif
 
+#include <vector>
+
 //=============================================================================
 
 // the host system specifies the base of the directory tree, the
@@ -272,8 +274,7 @@ typedef struct
 {
 	const char	*basedir;
 	const char	*cachedir;		// for development over ISDN lines
-	int		argc;
-	char	**argv;
+    std::vector<std::string> args;
 	void	*membase;
 	int		memsize;
 } quakeparms_t;

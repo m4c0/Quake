@@ -776,19 +776,20 @@ void Host_InitVCR (quakeparms_t *parms)
 		if (i != VCR_SIGNATURE)
 			Sys_Error("Invalid signature in vcr file\n");
 
-		Sys_FileRead (vcrFile, &com_argc, sizeof(int));
-		com_argv = (char **)malloc(com_argc * sizeof(char *));
-		com_argv[0] = parms->argv[0];
-		for (i = 0; i < com_argc; i++)
-		{
+        int count;
+		Sys_FileRead (vcrFile, &count, sizeof(int));
+
+		parms->args.clear();
+        for (int i = 0; i < count; i++) {
 			Sys_FileRead (vcrFile, &len, sizeof(int));
-			p = (char *)malloc(len);
-			Sys_FileRead (vcrFile, p, len);
-			com_argv[i+1] = p;
+
+            std::string buf(len, '\0');
+			Sys_FileRead (vcrFile, &buf[0], len);
+
+            parms->args.push_back(buf);
 		}
-		com_argc++; /* add one for arg[0] */
-		parms->argc = com_argc;
-		parms->argv = com_argv;
+
+        quake::common::argv::current.reset(new quake::common::argv(parms->args));
 	}
 
 	if (argv->contains("-record")) {
@@ -834,8 +835,7 @@ void Host_Init (quakeparms_t *parms)
 	if (parms->memsize < minimum_memory)
 		Sys_Error ("Only %4.1f megs of memory available, can't execute game", parms->memsize / (float)0x100000);
 
-	com_argc = parms->argc;
-	com_argv = parms->argv;
+    quake::common::argv::current.reset(new quake::common::argv(parms->args));
 
 	Memory_Init (parms->membase, parms->memsize);
 	Cbuf_Init ();

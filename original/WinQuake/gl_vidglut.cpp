@@ -469,7 +469,8 @@ void VID_Init(unsigned char *palette)
 	if (vid.conheight < 200)
 		vid.conheight = 200;
 
-    glutInit(&com_argc, com_argv);
+    int dummy_argc = 0;
+    glutInit(&dummy_argc, nullptr);
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(width, height);
     glut_window = glutCreateWindow("Quake");

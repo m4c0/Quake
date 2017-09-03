@@ -21,6 +21,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/common.hpp"
+
+#include <numeric>
+
 void Cmd_ForwardToServer (void);
 
 #define	MAX_ALIAS_NAME	32
@@ -213,8 +217,9 @@ quake -nosound +cmd amlev1
 void Cmd_StuffCmds_f (void)
 {
 	int		i, j;
-	int		s;
-	char	*text, *build, c;
+	char	*build, c;
+
+    auto & argv = quake::common::argv::current;
 		
 	if (Cmd_Argc () != 1)
 	{
@@ -223,26 +228,14 @@ void Cmd_StuffCmds_f (void)
 	}
 
 // build the combined string to parse from
-	s = 0;
-	for (i=1 ; i<com_argc ; i++)
-	{
-		if (!com_argv[i])
-			continue;		// NEXTSTEP nulls out -NXHost
-		s += Q_strlen (com_argv[i]) + 1;
-	}
-	if (!s)
-		return;
-		
-	text = (char *)Z_Malloc (s+1);
-	text[0] = 0;
-	for (i=1 ; i<com_argc ; i++)
-	{
-		if (!com_argv[i])
-			continue;		// NEXTSTEP nulls out -NXHost
-		Q_strcat (text,com_argv[i]);
-		if (i != com_argc-1)
-			Q_strcat (text, " ");
-	}
+    std::string text = std::accumulate(
+            std::next(argv->begin()),
+            argv->end(),
+            *argv->begin(),
+            [](auto & a, auto & b) { return a + ' ' + b; });
+    if (text == "") return;
+
+    int s = text.size();
 	
 // pull out the commands
 	build = (char *)Z_Malloc (s+1);
@@ -260,7 +253,7 @@ void Cmd_StuffCmds_f (void)
 			c = text[j];
 			text[j] = 0;
 			
-			Q_strcat (build, text+i);
+			Q_strcat (build, text.c_str()+i);
 			Q_strcat (build, "\n");
 			text[j] = c;
 			i = j-1;
@@ -270,7 +263,6 @@ void Cmd_StuffCmds_f (void)
 	if (build[0])
 		Cbuf_InsertText (build);
 	
-	Z_Free (text);
 	Z_Free (build);
 }
 

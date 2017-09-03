@@ -13,7 +13,9 @@ namespace quake {
         public:
             static std::unique_ptr<argv> current;
 
-            argv(int argc, char ** argv) {
+            argv(const std::vector<std::string> & args) : contents(args) {
+            }
+            argv(int argc, char ** argv) : contents() {
                 for (int i = 1; i < argc; i++) {
                     contents.push_back(argv[i]);
                 }

@@ -144,9 +144,6 @@ extern	qboolean	com_eof;
 const char *COM_Parse (const char *data);
 
 
-extern	int		com_argc;
-extern	char	**com_argv;
-
 void COM_Init (const char *path);
 void COM_InitArgv (int argc, char **argv);
 
