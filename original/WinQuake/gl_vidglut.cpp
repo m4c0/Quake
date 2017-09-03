@@ -30,10 +30,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/common.hpp"
+
 #define GL_SHARED_TEXTURE_PALETTE_EXT   33275
 
 #define WARP_WIDTH              320
 #define WARP_HEIGHT             200
+
+static auto & argv = quake::common::argv::current;
 
 int glut_window = 0;
 
@@ -246,7 +250,7 @@ void CheckMultiTextureExtensions(void)
 {
 	void *prjobj;
 
-	if (strstr((char *)gl_extensions, "GL_SGIS_multitexture ") && !COM_CheckParm("-nomtex")) {
+	if (strstr((char *)gl_extensions, "GL_SGIS_multitexture ") && !argv->contains("-nomtex")) {
 		Con_Printf("Found GL_SGIS_multitexture...\n");
 
 		if ((prjobj = dlopen(NULL, RTLD_LAZY)) == NULL) {
@@ -340,7 +344,7 @@ void Init_KBD(void)
 {
 	int i;
 
-	if (COM_CheckParm("-nokbd")) UseKeyboard = 0;
+	if (argv->contains("-nokbd")) UseKeyboard = 0;
 
 	if (UseKeyboard)
 	{
@@ -363,7 +367,7 @@ void VID_Init8bitPalette(void)
 	int i;
 	void *prjobj;
 
-	if (COM_CheckParm("-no8bit"))
+	if (argv->contains("-no8bit"))
 		return;
 
 	if ((prjobj = dlopen(NULL, RTLD_LAZY)) == NULL) {
@@ -418,14 +422,7 @@ static void Check_Gamma (unsigned char *pal)
 	unsigned char	palette[768];
 	int		i;
 
-	if ((i = COM_CheckParm("-gamma")) == 0) {
-		if ((gl_renderer && strstr((char *)gl_renderer, "Voodoo")) ||
-			(gl_vendor && strstr((char *)gl_vendor, "3Dfx")))
-			vid_gamma = 1;
-		else
-			vid_gamma = 0.7; // default to 0.7 on non-3dfx hardware
-	} else
-		vid_gamma = Q_atof(com_argv[i+1]);
+    vid_gamma = std::stof(argv->get_or_default("-gamma", "0.7"));
 
 	for (i=0 ; i<768 ; i++)
 	{
@@ -445,7 +442,6 @@ void VID_Init(unsigned char *palette)
 {
 	int i;
 	char	gldir[MAX_OSPATH];
-	int width = 640, height = 480;
 
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&vid_redrawfull);
@@ -459,26 +455,17 @@ void VID_Init(unsigned char *palette)
 
 // interpret command-line params
 
-	if ((i = COM_CheckParm("-width")) != 0)
-		width = atoi(com_argv[i+1]);
-	if ((i = COM_CheckParm("-height")) != 0)
-		height = atoi(com_argv[i+1]);
+    int width  = std::stoi(argv->get_or_default("-width",  "640"));
+    int height = std::stoi(argv->get_or_default("-height", "480"));
 
-	if ((i = COM_CheckParm("-conwidth")) != 0)
-		vid.conwidth = Q_atoi(com_argv[i+1]);
-	else
-		vid.conwidth = 640;
-
+    vid.conwidth = std::stoi(argv->get_or_default("-conwidth", "640"));
 	vid.conwidth &= 0xfff8; // make it a multiple of eight
 
 	if (vid.conwidth < 320)
 		vid.conwidth = 320;
 
 	// pick a conheight that matches with correct aspect
-	vid.conheight = vid.conwidth*3 / 4;
-
-	if ((i = COM_CheckParm("-conheight")) != 0)
-		vid.conheight = Q_atoi(com_argv[i+1]);
+    vid.conheight = std::stoi(argv->get_or_default("-conheight", std::to_string(vid.conwidth * 3 / 4)));
 	if (vid.conheight < 200)
 		vid.conheight = 200;
 

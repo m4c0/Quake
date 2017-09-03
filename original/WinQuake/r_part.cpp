@@ -21,8 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 
-#define MAX_PARTICLES			2048	// default max # of particles at one
-										//  time
+#include "quake/common.hpp"
+
 #define ABSOLUTE_MIN_PARTICLES	512		// no fewer than this no matter what's
 										//  on the command line
 
@@ -45,20 +45,10 @@ R_InitParticles
 */
 void R_InitParticles (void)
 {
-	int		i;
+    r_numparticles = std::stoi(quake::common::argv::current->get_or_default("-particles", "2048"));
 
-	i = COM_CheckParm ("-particles");
-
-	if (i)
-	{
-		r_numparticles = (int)(Q_atoi(com_argv[i+1]));
-		if (r_numparticles < ABSOLUTE_MIN_PARTICLES)
-			r_numparticles = ABSOLUTE_MIN_PARTICLES;
-	}
-	else
-	{
-		r_numparticles = MAX_PARTICLES;
-	}
+    if (r_numparticles < ABSOLUTE_MIN_PARTICLES)
+        r_numparticles = ABSOLUTE_MIN_PARTICLES;
 
 	particles = (particle_t *)
 			Hunk_AllocName (r_numparticles * sizeof(particle_t), "particles");

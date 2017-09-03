@@ -976,19 +976,6 @@ skipwhite:
 
 /*
 ================
-COM_CheckParm
-
-Returns the position (1 to argc-1) in the program's argument list
-where the given parameter apears, or 0 if not present
-================
-*/
-int COM_CheckParm (const char *parm) {
-    auto pos = argv->find_parameter(parm);
-    return (pos == argv->end()) ? 0 : (1 + pos - argv->begin());
-}
-
-/*
-================
 COM_CheckRegistered
 
 Looks for the pop.txt file and verifies it.
@@ -1709,8 +1696,7 @@ void COM_InitFilesystem (void)
 // -basedir <path>
 // Overrides the system supplied base directory (under GAMENAME)
 //
-	auto val = argv->find_value_for("-basedir");
-    basedir = (val != argv->end()) ? *val : host_parms.basedir;
+    basedir = argv->get_or_default("-basedir", host_parms.basedir);
 
 	if (basedir != "") {
         char last = basedir.back();
@@ -1724,14 +1710,8 @@ void COM_InitFilesystem (void)
 // Overrides the system supplied cache directory (NULL or /qcache)
 // -cachedir - will disable caching.
 //
-	val = argv->find_value_for("-cachedir");
-	if (val != argv->end()) {
-        com_cachedir = (val->front() == '+') ? "" : *val;
-	} else if (host_parms.cachedir) {
-        com_cachedir = host_parms.cachedir;
-    } else {
-		com_cachedir = "";
-    }
+    com_cachedir = argv->get_or_default("-cachedir", host_parms.cachedir ?: "");
+    if (com_cachedir != "" && (com_cachedir.front() == '-')) com_cachedir = "";
 
 //
 // start up with GAMENAME by default (id1)
@@ -1753,21 +1733,21 @@ void COM_InitFilesystem (void)
 // -game <gamedir>
 // Adds basedir/gamedir as an override game
 //
-	val = argv->find_value_for("-game");
-	if (val != argv->end()) {
+	auto gamedir = argv->get_or_default("-game", "");
+	if (gamedir != "") {
 		com_modified = true;
-		COM_AddGameDirectory (va("%s/%s", basedir.c_str(), com_argv[i+1]));
+		COM_AddGameDirectory (va("%s/%s", basedir.c_str(), gamedir.c_str()));
 	}
 
 //
 // -path <dir or packfile> [<dir or packfile>] ...
 // Fully specifies the exact serach path, overriding the generated one
 //
-	val = argv->find_value_for("-path");
+	auto val = argv->find_parameter("-path");
 	if (val != argv->end()) {
 		com_modified = true;
 		com_searchpaths = NULL;
-		while (val != argv->end()) {
+		while (++val != argv->end()) {
             char first = val->front();
 			if (first == '+' || first == '-') break;
 			

@@ -21,9 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
-#ifdef _WIN32
-#include "winquake.h"
-#endif
+#include "quake/common.hpp"
 
 void S_Play(void);
 void S_PlayVol(void);
@@ -169,10 +167,12 @@ void S_Init (void)
 
 	Con_Printf("\nSound Initialization\n");
 
-	if (COM_CheckParm("-nosound"))
+    auto & argv = quake::common::argv::current;
+
+	if (argv->contains("-nosound"))
 		return;
 
-	if (COM_CheckParm("-simsound"))
+	if (argv->contains("-simsound"))
 		fakedma = true;
 
 	Cmd_AddCommand("play", S_Play);

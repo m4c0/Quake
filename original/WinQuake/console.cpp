@@ -28,6 +28,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <fcntl.h>
 #include "quakedef.h"
 
+#include "quake/common.hpp"
+
 int 		con_linewidth;
 
 float		con_cursorspeed = 4;
@@ -215,7 +217,7 @@ void Con_Init (void)
 	char	temp[MAXGAMEDIRLEN+1];
 	const char	*t2 = "/qconsole.log";
 
-	con_debuglog = COM_CheckParm("-condebug");
+	con_debuglog = quake::common::argv::current->contains("-condebug");
 
 	if (con_debuglog)
 	{

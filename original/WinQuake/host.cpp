@@ -22,6 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "r_local.h"
 
+#include "quake/common.hpp"
+
+static auto & argv = quake::common::argv::current;
+
 /*
 
 A server can allways be started, even if the system started out as a client
@@ -160,29 +164,18 @@ void	Host_FindMaxClients (void)
 
 	svs.maxclients = 1;
 		
-	i = COM_CheckParm ("-dedicated");
-	if (i)
-	{
+	if (argv->contains("-dedicated")) {
 		cls.state = ca_dedicated;
-		if (i != (com_argc - 1))
-		{
-			svs.maxclients = Q_atoi (com_argv[i+1]);
-		}
-		else
-			svs.maxclients = 8;
-	}
-	else
+        svs.maxclients = std::stoi(argv->get_or_default("-dedicated", "8"));
+	} else {
 		cls.state = ca_disconnected;
+    }
 
-	i = COM_CheckParm ("-listen");
-	if (i)
-	{
-		if (cls.state == ca_dedicated)
+	if (argv->contains("-listen")) {
+		if (cls.state == ca_dedicated) {
 			Sys_Error ("Only one of -dedicated or -listen can be specified");
-		if (i != (com_argc - 1))
-			svs.maxclients = Q_atoi (com_argv[i+1]);
-		else
-			svs.maxclients = 8;
+        }
+        svs.maxclients = std::stoi(argv->get_or_default("-listen", "8"));
 	}
 	if (svs.maxclients < 1)
 		svs.maxclients = 8;
@@ -772,10 +765,8 @@ void Host_InitVCR (quakeparms_t *parms)
 	int		i, len, n;
 	char	*p;
 	
-	if (COM_CheckParm("-playback"))
-	{
-		if (com_argc != 2)
-			Sys_Error("No other parameters allowed with -playback\n");
+	if (argv->contains("-playback")) {
+		if (argv->size() != 1) Sys_Error("No other parameters allowed with -playback\n");
 
 		Sys_FileOpenRead("quake.vcr", &vcrFile);
 		if (vcrFile == -1)
@@ -800,26 +791,23 @@ void Host_InitVCR (quakeparms_t *parms)
 		parms->argv = com_argv;
 	}
 
-	if ( (n = COM_CheckParm("-record")) != 0)
-	{
+	if (argv->contains("-record")) {
 		vcrFile = Sys_FileOpenWrite("quake.vcr");
 
 		i = VCR_SIGNATURE;
 		Sys_FileWrite(vcrFile, &i, sizeof(int));
-		i = com_argc - 1;
+		i = argv->size();
 		Sys_FileWrite(vcrFile, &i, sizeof(int));
-		for (i = 1; i < com_argc; i++)
-		{
-			if (i == n)
-			{
+        for (auto & arg : *argv) {
+			if (arg == "-record") {
 				len = 10;
 				Sys_FileWrite(vcrFile, &len, sizeof(int));
 				Sys_FileWrite(vcrFile, "-playback", len);
 				continue;
 			}
-			len = Q_strlen(com_argv[i]) + 1;
+			len = arg.size();
 			Sys_FileWrite(vcrFile, &len, sizeof(int));
-			Sys_FileWrite(vcrFile, com_argv[i], len);
+			Sys_FileWrite(vcrFile, arg.c_str(), len);
 		}
 	}
 	
@@ -838,7 +826,7 @@ void Host_Init (quakeparms_t *parms)
 	else
 		minimum_memory = MINIMUM_MEMORY_LEVELPAK;
 
-	if (COM_CheckParm ("-minmemory"))
+	if (argv->contains("-minmemory"))
 		parms->memsize = minimum_memory;
 
 	host_parms = *parms;

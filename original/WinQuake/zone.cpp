@@ -21,7 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
-#define	DYNAMIC_SIZE	0xc000
+#include "quake/common.hpp"
 
 #define	ZONEID	0x1d4a11
 #define MINFRAGMENT	64
@@ -913,7 +913,6 @@ Memory_Init
 void Memory_Init (void *buf, int size)
 {
 	int p;
-	int zonesize = DYNAMIC_SIZE;
 
 	hunk_base = (byte *)buf;
 	hunk_size = size;
@@ -921,14 +920,9 @@ void Memory_Init (void *buf, int size)
 	hunk_high_used = 0;
 	
 	Cache_Init ();
-	p = COM_CheckParm ("-zone");
-	if (p)
-	{
-		if (p < com_argc-1)
-			zonesize = Q_atoi (com_argv[p+1]) * 1024;
-		else
-			Sys_Error ("Memory_Init: you must specify a size in KB after -zone");
-	}
+
+    int zonesize = 1024 * std::stoi(quake::common::argv::current->get_or_default("-zone", "48"));
+
 	mainzone = (memzone_t *)Hunk_AllocName (zonesize, "zone" );
 	Z_ClearZone (mainzone, zonesize);
 }

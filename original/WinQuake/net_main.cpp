@@ -22,6 +22,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "net_vcr.h"
 
+#include "quake/common.hpp"
+
+static auto & argv = quake::common::argv::current;
+
 qsocket_t	*net_activeSockets = NULL;
 qsocket_t	*net_freeSockets = NULL;
 int			net_numsockets = 0;
@@ -807,31 +811,22 @@ void NET_Init (void)
 	int			controlSocket;
 	qsocket_t	*s;
 
-	if (COM_CheckParm("-playback"))
+	if (argv->contains("-playback"))
 	{
 		net_numdrivers = 1;
 		net_drivers[0].Init = VCR_Init;
 	}
 
-	if (COM_CheckParm("-record"))
+	if (argv->contains("-record"))
 		recording = true;
 
-	i = COM_CheckParm ("-port");
-	if (!i)
-		i = COM_CheckParm ("-udpport");
-	if (!i)
-		i = COM_CheckParm ("-ipxport");
 
-	if (i)
-	{
-		if (i < com_argc-1)
-			DEFAULTnet_hostport = Q_atoi (com_argv[i+1]);
-		else
-			Sys_Error ("NET_Init: you must specify a number after -port");
-	}
-	net_hostport = DEFAULTnet_hostport;
+    auto port = argv->get_or_default("-ipxport", "26000");
+    port = argv->get_or_default("-udpport", port);
+    port = argv->get_or_default("-port", port);
+    net_hostport = DEFAULTnet_hostport = std::stoi(port);
 
-	if (COM_CheckParm("-listen") || cls.state == ca_dedicated)
+	if (argv->contains("-listen") || cls.state == ca_dedicated)
 		listening = true;
 	net_numsockets = svs.maxclientslimit;
 	if (cls.state != ca_dedicated)

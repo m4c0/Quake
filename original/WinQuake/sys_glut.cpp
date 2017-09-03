@@ -21,6 +21,8 @@
 
 #include "quakedef.h"
 
+#include "quake/common.hpp"
+
 qboolean			isDedicated;
 
 int nostdout = 0;
@@ -406,11 +408,7 @@ int main (int c, char **v)
 	parms.argc = com_argc;
 	parms.argv = com_argv;
 
-	parms.memsize = 16*1024*1024;
-
-	j = COM_CheckParm("-mem");
-	if (j)
-		parms.memsize = (int) (Q_atof(com_argv[j+1]) * 1024 * 1024);
+    parms.memsize = 1024 * 1024 * std::stoi(quake::common::argv::current->get_or_default("-mem", "16"));
 	parms.membase = malloc (parms.memsize);
 
 	parms.basedir = basedir;
@@ -423,7 +421,7 @@ int main (int c, char **v)
 
 	Sys_Init();
 
-	if (COM_CheckParm("-nostdout"))
+	if (quake::common::argv::current->contains("-nostdout"))
 		nostdout = 1;
 	else {
 		fcntl(0, F_SETFL, fcntl (0, F_GETFL, 0) | FNDELAY);

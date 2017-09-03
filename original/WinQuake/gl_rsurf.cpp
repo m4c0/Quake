@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/common.hpp"
+
 void EmitBothSkyLayers (msurface_t *fa);
 void EmitSkyPolys (msurface_t *fa);
 void EmitWaterPolys (msurface_t *fa);
@@ -1626,15 +1628,17 @@ void GL_BuildLightmaps (void)
 	if (isPermedia)
 		gl_lightmap_format = GL_RGBA;
 
-	if (COM_CheckParm ("-lm_1"))
+    auto & argv = quake::common::argv::current;
+
+	if (argv->contains ("-lm_1"))
 		gl_lightmap_format = GL_LUMINANCE;
-	if (COM_CheckParm ("-lm_a"))
+	if (argv->contains ("-lm_a"))
 		gl_lightmap_format = GL_ALPHA;
-	if (COM_CheckParm ("-lm_i"))
+	if (argv->contains ("-lm_i"))
 		gl_lightmap_format = GL_INTENSITY;
-	if (COM_CheckParm ("-lm_2"))
+	if (argv->contains ("-lm_2"))
 		gl_lightmap_format = GL_RGBA4;
-	if (COM_CheckParm ("-lm_4"))
+	if (argv->contains ("-lm_4"))
 		gl_lightmap_format = GL_RGBA;
 
 	switch (gl_lightmap_format)

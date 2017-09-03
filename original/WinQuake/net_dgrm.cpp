@@ -36,9 +36,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 #include "net_dgrm.h"
 
+#include "quake/common.hpp"
+
 // these two macros are to make the code more readable
 #define sfunc	net_landrivers[sock->landriver]
 #define dfunc	net_landrivers[net_landriverlevel]
+
+static auto & argv = quake::common::argv::current;
 
 static int net_landriverlevel;
 
@@ -752,7 +756,7 @@ int Datagram_Init (void)
 	myDriverLevel = net_driverlevel;
 	Cmd_AddCommand ("net_stats", NET_Stats_f);
 
-	if (COM_CheckParm("-nolan"))
+	if (argv->contains("-nolan"))
 		return -1;
 
 	for (i = 0; i < net_numlandrivers; i++)

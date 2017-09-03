@@ -39,6 +39,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <libc.h>
 #endif
 
+#include "quake/common.hpp"
+
+static auto & argv = quake::common::argv::current;
+
 extern cvar_t hostname;
 
 static int net_acceptsocket = -1;		// socket for fielding new connections
@@ -59,7 +63,7 @@ int UDP_Init (void)
 	struct qsockaddr addr;
 	char *colon;
 	
-	if (COM_CheckParm ("-noudp"))
+	if (argv->contains("-noudp"))
 		return -1;
 
 	// determine my name & address
