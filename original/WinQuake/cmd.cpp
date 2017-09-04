@@ -23,20 +23,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quake/common.hpp"
 
+#include <map>
 #include <numeric>
 
 void Cmd_ForwardToServer (void);
 
-#define	MAX_ALIAS_NAME	32
-
-typedef struct cmdalias_s
-{
-	struct cmdalias_s	*next;
-	char	name[MAX_ALIAS_NAME];
-	char	*value;
-} cmdalias_t;
-
-cmdalias_t	*cmd_alias;
+static std::map<std::string, std::string> _aliases;
 
 int trashtest;
 int *trashspot;
@@ -269,67 +261,28 @@ Creates a new command that executes a command string (possibly ; seperated)
 ===============
 */
 
-char *CopyString (char *in)
-{
-	char	*out;
-	
-	out = (char *)Z_Malloc (strlen(in)+1);
-	strcpy (out, in);
-	return out;
-}
-
 void Cmd_Alias_f (void)
 {
-	cmdalias_t	*a;
 	char		cmd[1024];
 	int			i, c;
-	const char		*s;
 
 	if (Cmd_Argc() == 1)
 	{
 		Con_Printf ("Current alias commands:\n");
-		for (a = cmd_alias ; a ; a=a->next)
-			Con_Printf ("%s : %s\n", a->name, a->value);
+        for (auto & kv : _aliases) {
+			Con_Printf("%s : %s\n", kv.first.c_str(), kv.second.c_str());
+        }
 		return;
 	}
 
-	s = Cmd_Argv(1);
-	if (strlen(s) >= MAX_ALIAS_NAME)
-	{
-		Con_Printf ("Alias name is too long\n");
-		return;
-	}
+    std::string name = Cmd_Argv(1);
 
-	// if the alias allready exists, reuse it
-	for (a = cmd_alias ; a ; a=a->next)
-	{
-		if (!strcmp(s, a->name))
-		{
-			Z_Free (a->value);
-			break;
-		}
-	}
-
-	if (!a)
-	{
-		a = (cmdalias_t *)Z_Malloc (sizeof(cmdalias_t));
-		a->next = cmd_alias;
-		cmd_alias = a;
-	}
-	strcpy (a->name, s);	
-
-// copy the rest of the command line
-	cmd[0] = 0;		// start out with a null string
-	c = Cmd_Argc();
-	for (i=2 ; i< c ; i++)
-	{
-		strcat (cmd, Cmd_Argv(i));
-		if (i != c)
-			strcat (cmd, " ");
-	}
-	strcat (cmd, "\n");
-	
-	a->value = CopyString (cmd);
+    std::string args;
+    for (int i = 2; i < Cmd_Argc(); i++) {
+        args += Cmd_Argv(i);
+        args += " ";
+    }
+    _aliases[name] = args;
 }
 
 /*
@@ -554,7 +507,6 @@ FIXME: lookupnoadd the token to speed search?
 void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 {	
 	cmd_function_t	*cmd;
-	cmdalias_t		*a;
 
 	cmd_source = src;
 	Cmd_TokenizeString (text);
@@ -574,11 +526,9 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 	}
 
 // check alias
-	for (a=cmd_alias ; a ; a=a->next)
-	{
-		if (!Q_strcasecmp (cmd_argv[0], a->name))
-		{
-			Cbuf_InsertText (a->value);
+    for (auto & kv : _aliases) {
+        if (kv.first == cmd_argv[0]) {
+			Cbuf_InsertText(kv.second);
 			return;
 		}
 	}
