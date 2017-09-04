@@ -177,9 +177,6 @@ quake -nosound +cmd amlev1
 */
 void Cmd_StuffCmds_f (void)
 {
-	int		i, j;
-	char	*build, c;
-
     auto & argv = quake::common::argv::current;
 		
 	if (Cmd_Argc () != 1)
@@ -197,35 +194,24 @@ void Cmd_StuffCmds_f (void)
             [](auto & a, auto & b) { return a + ' ' + b; });
     if (text == "") return;
 
-    int s = text.size();
-	
 // pull out the commands
-	build = (char *)Z_Malloc (s+1);
-	build[0] = 0;
-	
-	for (i=0 ; i<s-1 ; i++)
-	{
-		if (text[i] == '+')
-		{
-			i++;
+    std::string build;
+    for (auto it = text.begin(); it != text.end();) {
+        if (*it != '+') continue;
 
-			for (j=i ; (text[j] != '+') && (text[j] != '-') && (text[j] != 0) ; j++)
-				;
+        auto cmd_s = ++it;
+        for (; it != text.end(); it++) {
+            if (*it == '+') break;
+            if (*it == '-') break;
+        }
 
-			c = text[j];
-			text[j] = 0;
-			
-			Q_strcat (build, text.c_str()+i);
-			Q_strcat (build, "\n");
-			text[j] = c;
-			i = j-1;
-		}
-	}
+        build.append(cmd_s, it);
+        build.append("\n");
+    }
 	
-	if (build[0])
+	if (build.size() > 0) {
 		Cbuf_InsertText (build);
-	
-	Z_Free (build);
+    }
 }
 
 
