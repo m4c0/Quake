@@ -189,7 +189,10 @@ void Cmd_StuffCmds_f (void)
 // pull out the commands
     std::string build;
     for (auto it = text.begin(); it != text.end();) {
-        if (*it != '+') continue;
+        if (*it != '+') {
+            it++;
+            continue;
+        }
 
         auto cmd_s = ++it;
         for (; it != text.end(); it++) {
