@@ -143,7 +143,7 @@ cvar_t	v_centermove = {"v_centermove", "0.15", false};
 cvar_t	v_centerspeed = {"v_centerspeed","500"};
 
 
-void V_StartPitchDrift (void)
+void V_StartPitchDrift (const quake::common::argv & args)
 {
 #if 1
 	if (cl.laststop == cl.time)
@@ -200,7 +200,7 @@ void V_DriftPitch (void)
 	
 		if ( cl.driftmove > v_centermove.value)
 		{
-			V_StartPitchDrift ();
+			V_StartPitchDrift ({});
 		}
 		return;
 	}
@@ -384,7 +384,7 @@ void V_ParseDamage (void)
 V_cshift_f
 ==================
 */
-void V_cshift_f (void)
+void V_cshift_f (const quake::common::argv & args)
 {
 	cshift_empty.destcolor[0] = atoi(Cmd_Argv(1));
 	cshift_empty.destcolor[1] = atoi(Cmd_Argv(2));
@@ -400,7 +400,7 @@ V_BonusFlash_f
 When you run over an item, the server sends this command
 ==================
 */
-void V_BonusFlash_f (void)
+void V_BonusFlash_f (const quake::common::argv & args)
 {
 	cl.cshifts[CSHIFT_BONUS].destcolor[0] = 215;
 	cl.cshifts[CSHIFT_BONUS].destcolor[1] = 186;

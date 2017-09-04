@@ -1018,7 +1018,7 @@ void COM_CheckRegistered (void)
 }
 
 
-void COM_Path_f (void);
+void COM_Path_f (const quake::common::argv & argv);
 
 
 /*
@@ -1213,7 +1213,7 @@ COM_Path_f
 
 ============
 */
-void COM_Path_f (void)
+void COM_Path_f (const quake::common::argv & argv)
 {
 	searchpath_t    *s;
 	

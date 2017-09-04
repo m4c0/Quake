@@ -300,7 +300,7 @@ void CL_Signon3 (void);
 void CL_Signon4 (void);
 
 void CL_Disconnect (void);
-void CL_Disconnect_f (void);
+void CL_Disconnect_f (const quake::common::argv & args);
 void CL_NextDemo (void);
 
 #define			MAX_VISEDICTS	256
@@ -344,10 +344,10 @@ const char *Key_KeynumToString (int keynum);
 void CL_StopPlayback (void);
 int CL_GetMessage (void);
 
-void CL_Stop_f (void);
-void CL_Record_f (void);
-void CL_PlayDemo_f (void);
-void CL_TimeDemo_f (void);
+void CL_Stop_f     (const quake::common::argv & argv);
+void CL_Record_f   (const quake::common::argv & argv);
+void CL_PlayDemo_f (const quake::common::argv & argv);
+void CL_TimeDemo_f (const quake::common::argv & argv);
 
 //
 // cl_parse.c
@@ -358,7 +358,7 @@ void CL_NewTranslation (int slot);
 //
 // view
 //
-void V_StartPitchDrift (void);
+void V_StartPitchDrift (const quake::common::argv & args);
 void V_StopPitchDrift (void);
 
 void V_RenderView (void);

@@ -18,6 +18,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 */
 
+#include "quake/common.hpp"
+
 // cmd.h -- Command buffer and command execution
 
 //===========================================================================
@@ -66,7 +68,7 @@ not apropriate.
 
 */
 
-typedef void (*xcommand_t) (void);
+typedef void (*xcommand_t) (const quake::common::argv &);
 
 typedef enum
 {
@@ -106,7 +108,7 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src);
 // Parses a single line of text into arguments and tries to execute it.
 // The text can come from the command buffer, a remote client, or stdin.
 
-void	Cmd_ForwardToServer (void);
+void	Cmd_ForwardToServer (const quake::common::argv & args);
 // adds the current command line as a clc_stringcmd to the client message.
 // things like godmode, noclip, etc, are commands directed to the server,
 // so when they are typed in at the console, they will need to be forwarded.

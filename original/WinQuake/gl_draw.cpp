@@ -320,7 +320,7 @@ glmode_t modes[] = {
 Draw_TextureMode_f
 ===============
 */
-void Draw_TextureMode_f (void)
+void Draw_TextureMode_f (const quake::common::argv & argv)
 {
 	int		i;
 	gltexture_t	*glt;

@@ -732,7 +732,7 @@ Cache_Flush
 Throw everything out, so new data will be demand cached
 ============
 */
-void Cache_Flush (void)
+void Cache_Flush (const quake::common::argv & argv)
 {
 	while (cache_head.next != &cache_head)
 		Cache_Free ( cache_head.next->user );	// reclaim the space

@@ -110,7 +110,7 @@ void CL_Disconnect (void)
 	else if (cls.state == ca_connected)
 	{
 		if (cls.demorecording)
-			CL_Stop_f ();
+			CL_Stop_f({});
 
 		Con_DPrintf ("Sending clc_disconnect\n");
 		SZ_Clear (&cls.message);
@@ -128,7 +128,7 @@ void CL_Disconnect (void)
 	cls.signon = 0;
 }
 
-void CL_Disconnect_f (void)
+void CL_Disconnect_f (const quake::common::argv & argv)
 {
 	CL_Disconnect ();
 	if (sv.active)
@@ -246,7 +246,7 @@ void CL_NextDemo (void)
 CL_PrintEntities_f
 ==============
 */
-void CL_PrintEntities_f (void)
+void CL_PrintEntities_f (const quake::common::argv & args)
 {
 	entity_t	*ent;
 	int			i;

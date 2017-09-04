@@ -26,7 +26,7 @@ extern cvar_t	pausable;
 
 int	current_skill;
 
-void Mod_Print (void);
+void Mod_Print (const quake::common::argv & argv);
 
 /*
 ==================
@@ -34,13 +34,13 @@ Host_Quit_f
 ==================
 */
 
-extern void M_Menu_Quit_f (void);
+extern void M_Menu_Quit_f (const quake::common::argv & args);
 
-void Host_Quit_f (void)
+void Host_Quit_f (const quake::common::argv & argv)
 {
 	if (key_dest != key_console && cls.state != ca_dedicated)
 	{
-		M_Menu_Quit_f ();
+		M_Menu_Quit_f ({});
 		return;
 	}
 	CL_Disconnect ();
@@ -55,7 +55,7 @@ void Host_Quit_f (void)
 Host_Status_f
 ==================
 */
-void Host_Status_f (void)
+void Host_Status_f (const quake::common::argv & argv)
 {
 	client_t	*client;
 	int			seconds;
@@ -68,7 +68,7 @@ void Host_Status_f (void)
 	{
 		if (!sv.active)
 		{
-			Cmd_ForwardToServer ();
+			Cmd_ForwardToServer (argv);
 			return;
 		}
 		print = Con_Printf;
@@ -112,11 +112,11 @@ Host_God_f
 Sets client to godmode
 ==================
 */
-void Host_God_f (void)
+void Host_God_f (const quake::common::argv & argv)
 {
 	if (cmd_source == src_command)
 	{
-		Cmd_ForwardToServer ();
+		Cmd_ForwardToServer (argv);
 		return;
 	}
 
@@ -130,11 +130,11 @@ void Host_God_f (void)
 		SV_ClientPrintf ("godmode ON\n");
 }
 
-void Host_Notarget_f (void)
+void Host_Notarget_f (const quake::common::argv & argv)
 {
 	if (cmd_source == src_command)
 	{
-		Cmd_ForwardToServer ();
+		Cmd_ForwardToServer (argv);
 		return;
 	}
 
@@ -150,11 +150,11 @@ void Host_Notarget_f (void)
 
 qboolean noclip_anglehack;
 
-void Host_Noclip_f (void)
+void Host_Noclip_f (const quake::common::argv & argv)
 {
 	if (cmd_source == src_command)
 	{
-		Cmd_ForwardToServer ();
+		Cmd_ForwardToServer (argv);
 		return;
 	}
 
@@ -182,11 +182,11 @@ Host_Fly_f
 Sets client to flymode
 ==================
 */
-void Host_Fly_f (void)
+void Host_Fly_f (const quake::common::argv & argv)
 {
 	if (cmd_source == src_command)
 	{
-		Cmd_ForwardToServer ();
+		Cmd_ForwardToServer (argv);
 		return;
 	}
 
@@ -212,7 +212,7 @@ Host_Ping_f
 
 ==================
 */
-void Host_Ping_f (void)
+void Host_Ping_f (const quake::common::argv & argv)
 {
 	int		i, j;
 	float	total;
@@ -220,7 +220,7 @@ void Host_Ping_f (void)
 	
 	if (cmd_source == src_command)
 	{
-		Cmd_ForwardToServer ();
+		Cmd_ForwardToServer (argv);
 		return;
 	}
 
@@ -255,7 +255,7 @@ map <servername>
 command from the console.  Active clients are kicked off.
 ======================
 */
-void Host_Map_f (void)
+void Host_Map_f (const quake::common::argv & argv)
 {
 	int		i;
 	char	name[MAX_QPATH];
@@ -310,7 +310,7 @@ Host_Changelevel_f
 Goes to a new map, taking all clients along
 ==================
 */
-void Host_Changelevel_f (void)
+void Host_Changelevel_f (const quake::common::argv & argv)
 {
 #ifdef QUAKE2
 	char	level[MAX_QPATH];
@@ -365,7 +365,7 @@ Host_Restart_f
 Restarts the current server for a dead player
 ==================
 */
-void Host_Restart_f (void)
+void Host_Restart_f (const quake::common::argv & argv)
 {
 	char	mapname[MAX_QPATH];
 #ifdef QUAKE2
@@ -395,7 +395,7 @@ This command causes the client to wait for the signon messages again.
 This is sent just before a server changes levels
 ==================
 */
-void Host_Reconnect_f (void)
+void Host_Reconnect_f (const quake::common::argv & argv)
 {
 	SCR_BeginLoadingPlaque ();
 	cls.signon = 0;		// need new connection messages
@@ -408,7 +408,7 @@ Host_Connect_f
 User command to connect to server
 =====================
 */
-void Host_Connect_f (void)
+void Host_Connect_f (const quake::common::argv & argv)
 {
 	char	name[MAX_QPATH];
 	
@@ -420,7 +420,7 @@ void Host_Connect_f (void)
 	}
 	strcpy (name, Cmd_Argv(1));
 	CL_EstablishConnection (name);
-	Host_Reconnect_f ();
+	Host_Reconnect_f ({});
 }
 
 
@@ -464,7 +464,7 @@ void Host_SavegameComment (char *text)
 Host_Savegame_f
 ===============
 */
-void Host_Savegame_f (void)
+void Host_Savegame_f (const quake::common::argv & argv)
 {
 	char	name[256];
 	FILE	*f;
@@ -560,7 +560,7 @@ void Host_Savegame_f (void)
 Host_Loadgame_f
 ===============
 */
-void Host_Loadgame_f (void)
+void Host_Loadgame_f (const quake::common::argv & argv)
 {
 	char	name[MAX_OSPATH];
 	FILE	*f;
@@ -624,7 +624,7 @@ void Host_Loadgame_f (void)
 	fscanf (f, "%s\n",mapname);
 	fscanf (f, "%f\n",&time);
 
-	CL_Disconnect_f ();
+	CL_Disconnect_f ({});
 	
 #ifdef QUAKE2
 	SV_SpawnServer (mapname, NULL);
@@ -705,7 +705,7 @@ void Host_Loadgame_f (void)
 	if (cls.state != ca_dedicated)
 	{
 		CL_EstablishConnection ("local");
-		Host_Reconnect_f ();
+		Host_Reconnect_f ({});
 	}
 }
 
@@ -910,7 +910,7 @@ void Host_Changelevel2_f (void)
 Host_Name_f
 ======================
 */
-void Host_Name_f (void)
+void Host_Name_f (const quake::common::argv & argv)
 {
 	char newName[16];
 
@@ -931,7 +931,7 @@ void Host_Name_f (void)
 
 		Cvar_Set ("_cl_name", newName);
 		if (cls.state == ca_connected)
-			Cmd_ForwardToServer ();
+			Cmd_ForwardToServer (argv);
 		return;
 	}
 
@@ -949,14 +949,15 @@ void Host_Name_f (void)
 }
 
 	
-void Host_Version_f (void)
+void Host_Version_f (const quake::common::argv & argv)
 {
 	Con_Printf ("Version %4.2f\n", VERSION);
 	Con_Printf ("Exe: " __TIME__ " " __DATE__ "\n");
 }
 
+// TODO: Check WTF this is... :P
 #ifdef IDGODS
-void Host_Please_f (void)
+void Host_Please_f (const quake::common::argv & argv)
 {
 	client_t *cl;
 	int			j;
@@ -1025,7 +1026,7 @@ static void _concat_args(char * text, int maxlen) {
 }
 
 
-void Host_Say(qboolean teamonly)
+void Host_Say(qboolean teamonly, const quake::common::argv & argv)
 {
 	client_t *client;
 	client_t *save;
@@ -1042,7 +1043,7 @@ void Host_Say(qboolean teamonly)
 		}
 		else
 		{
-			Cmd_ForwardToServer ();
+			Cmd_ForwardToServer (argv);
 			return;
 		}
 	}
@@ -1075,18 +1076,18 @@ void Host_Say(qboolean teamonly)
 }
 
 
-void Host_Say_f(void)
+void Host_Say_f(const quake::common::argv & argv)
 {
-	Host_Say(false);
+	Host_Say(false, argv);
 }
 
 
-void Host_Say_Team_f(void)
+void Host_Say_Team_f(const quake::common::argv & argv)
 {
-	Host_Say(true);
+	Host_Say(true, argv);
 }
 
-void Host_Tell_f(void)
+void Host_Tell_f(const quake::common::argv & argv)
 {
 	client_t *client;
 	client_t *save;
@@ -1096,7 +1097,7 @@ void Host_Tell_f(void)
 
 	if (cmd_source == src_command)
 	{
-		Cmd_ForwardToServer ();
+		Cmd_ForwardToServer (argv);
 		return;
 	}
 
@@ -1128,7 +1129,7 @@ void Host_Tell_f(void)
 Host_Color_f
 ==================
 */
-void Host_Color_f(void)
+void Host_Color_f(const quake::common::argv & argv)
 {
 	int		top, bottom;
 	int		playercolor;
@@ -1161,7 +1162,7 @@ void Host_Color_f(void)
 	{
 		Cvar_SetValue ("_cl_color", playercolor);
 		if (cls.state == ca_connected)
-			Cmd_ForwardToServer ();
+			Cmd_ForwardToServer (argv);
 		return;
 	}
 
@@ -1179,11 +1180,11 @@ void Host_Color_f(void)
 Host_Kill_f
 ==================
 */
-void Host_Kill_f (void)
+void Host_Kill_f (const quake::common::argv & argv)
 {
 	if (cmd_source == src_command)
 	{
-		Cmd_ForwardToServer ();
+		Cmd_ForwardToServer (argv);
 		return;
 	}
 
@@ -1204,12 +1205,12 @@ void Host_Kill_f (void)
 Host_Pause_f
 ==================
 */
-void Host_Pause_f (void)
+void Host_Pause_f (const quake::common::argv & argv)
 {
 	
 	if (cmd_source == src_command)
 	{
-		Cmd_ForwardToServer ();
+		Cmd_ForwardToServer (argv);
 		return;
 	}
 	if (!pausable.value)
@@ -1241,7 +1242,7 @@ void Host_Pause_f (void)
 Host_PreSpawn_f
 ==================
 */
-void Host_PreSpawn_f (void)
+void Host_PreSpawn_f (const quake::common::argv & argv)
 {
 	if (cmd_source == src_command)
 	{
@@ -1266,7 +1267,7 @@ void Host_PreSpawn_f (void)
 Host_Spawn_f
 ==================
 */
-void Host_Spawn_f (void)
+void Host_Spawn_f (const quake::common::argv & argv)
 {
 	int		i;
 	client_t	*client;
@@ -1390,7 +1391,7 @@ void Host_Spawn_f (void)
 Host_Begin_f
 ==================
 */
-void Host_Begin_f (void)
+void Host_Begin_f (const quake::common::argv & argv)
 {
 	if (cmd_source == src_command)
 	{
@@ -1411,7 +1412,7 @@ Host_Kick_f
 Kicks a user off of the server
 ==================
 */
-void Host_Kick_f (void)
+void Host_Kick_f (const quake::common::argv & argv)
 {
 	const char		*who;
 	const char		*message = NULL;
@@ -1423,7 +1424,7 @@ void Host_Kick_f (void)
 	{
 		if (!sv.active)
 		{
-			Cmd_ForwardToServer ();
+			Cmd_ForwardToServer (argv);
 			return;
 		}
 	}
@@ -1503,7 +1504,7 @@ DEBUGGING TOOLS
 Host_Give_f
 ==================
 */
-void Host_Give_f (void)
+void Host_Give_f (const quake::common::argv & argv)
 {
 	const char	*t;
 	int		v, w;
@@ -1511,7 +1512,7 @@ void Host_Give_f (void)
 
 	if (cmd_source == src_command)
 	{
-		Cmd_ForwardToServer ();
+		Cmd_ForwardToServer (argv);
 		return;
 	}
 
@@ -1677,7 +1678,7 @@ edict_t	*FindViewthing (void)
 Host_Viewmodel_f
 ==================
 */
-void Host_Viewmodel_f (void)
+void Host_Viewmodel_f (const quake::common::argv & argv)
 {
 	edict_t	*e;
 	model_t	*m;
@@ -1702,7 +1703,7 @@ void Host_Viewmodel_f (void)
 Host_Viewframe_f
 ==================
 */
-void Host_Viewframe_f (void)
+void Host_Viewframe_f (const quake::common::argv & argv)
 {
 	edict_t	*e;
 	int		f;
@@ -1739,7 +1740,7 @@ void PrintFrameName (model_t *m, int frame)
 Host_Viewnext_f
 ==================
 */
-void Host_Viewnext_f (void)
+void Host_Viewnext_f (const quake::common::argv & argv)
 {
 	edict_t	*e;
 	model_t	*m;
@@ -1761,7 +1762,7 @@ void Host_Viewnext_f (void)
 Host_Viewprev_f
 ==================
 */
-void Host_Viewprev_f (void)
+void Host_Viewprev_f (const quake::common::argv & argv)
 {
 	edict_t	*e;
 	model_t	*m;
@@ -1793,7 +1794,7 @@ DEMO LOOP CONTROL
 Host_Startdemos_f
 ==================
 */
-void Host_Startdemos_f (void)
+void Host_Startdemos_f (const quake::common::argv & argv)
 {
 	int		i, c;
 
@@ -1832,13 +1833,13 @@ Host_Demos_f
 Return to looping demos
 ==================
 */
-void Host_Demos_f (void)
+void Host_Demos_f (const quake::common::argv & argv)
 {
 	if (cls.state == ca_dedicated)
 		return;
 	if (cls.demonum == -1)
 		cls.demonum = 1;
-	CL_Disconnect_f ();
+	CL_Disconnect_f ({});
 	CL_NextDemo ();
 }
 
@@ -1849,7 +1850,7 @@ Host_Stopdemo_f
 Return to looping demos
 ==================
 */
-void Host_Stopdemo_f (void)
+void Host_Stopdemo_f (const quake::common::argv & argv)
 {
 	if (cls.state == ca_dedicated)
 		return;
@@ -1876,9 +1877,6 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("map", Host_Map_f);
 	Cmd_AddCommand ("restart", Host_Restart_f);
 	Cmd_AddCommand ("changelevel", Host_Changelevel_f);
-#ifdef QUAKE2
-	Cmd_AddCommand ("changelevel2", Host_Changelevel2_f);
-#endif
 	Cmd_AddCommand ("connect", Host_Connect_f);
 	Cmd_AddCommand ("reconnect", Host_Reconnect_f);
 	Cmd_AddCommand ("name", Host_Name_f);

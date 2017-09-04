@@ -100,8 +100,8 @@ extern	PROC glVertexPointerEXT;
 #define BACKFACE_EPSILON	0.01
 
 
-void R_TimeRefresh_f (void);
-void R_ReadPointFile_f (void);
+void R_TimeRefresh_f (const quake::common::argv & argv);
+void R_ReadPointFile_f (const quake::common::argv & argv);
 texture_t *R_TextureAnimation (texture_t *base);
 
 typedef struct surfcache_s

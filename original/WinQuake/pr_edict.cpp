@@ -534,7 +534,7 @@ ED_PrintEdicts
 For debugging, prints all the entities in the current server
 =============
 */
-void ED_PrintEdicts (void)
+void ED_PrintEdicts (const quake::common::argv & argv)
 {
 	int		i;
 	
@@ -550,7 +550,7 @@ ED_PrintEdict_f
 For debugging, prints a single edicy
 =============
 */
-void ED_PrintEdict_f (void)
+void ED_PrintEdict_f (const quake::common::argv & argv)
 {
 	int		i;
 	
@@ -570,7 +570,7 @@ ED_Count
 For debugging
 =============
 */
-void ED_Count (void)
+void ED_Count (const quake::common::argv & argv)
 {
 	int		i;
 	edict_t	*ent;

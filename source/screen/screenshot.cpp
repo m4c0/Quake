@@ -1,3 +1,4 @@
+#include "quake/common.hpp"
 #include "quake/gl.hpp"
 #include "quake/legacy.hpp"
 #include "quake/screen.hpp"
@@ -25,7 +26,7 @@ static void _take_shot_named(const std::string & name) {
     Con_Printf ("Wrote %s\n", name.c_str());
 }
 
-void quake::screen::screenshot() {
+void quake::screen::screenshot(const quake::common::argv & argv) {
     std::string name { "/quake00.png" };
     for (int i = 0; i <= 99; i++) {
         name[6] = '0' + (i / 10);

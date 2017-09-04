@@ -64,14 +64,14 @@ qboolean	con_initialized;
 
 int			con_notifylines;		// scan lines to clear for notify lines
 
-extern void M_Menu_Main_f (void);
+extern void M_Menu_Main_f (const quake::common::argv & args);
 
 /*
 ================
 Con_ToggleConsole_f
 ================
 */
-void Con_ToggleConsole_f (void)
+void Con_ToggleConsole_f (const quake::common::argv & argv)
 {
 	if (key_dest == key_console)
 	{
@@ -83,7 +83,7 @@ void Con_ToggleConsole_f (void)
 		}
 		else
 		{
-			M_Menu_Main_f ();
+			M_Menu_Main_f ({});
 		}
 	}
 	else
@@ -98,7 +98,7 @@ void Con_ToggleConsole_f (void)
 Con_Clear_f
 ================
 */
-void Con_Clear_f (void)
+void Con_Clear_f (const quake::common::argv & argv)
 {
 	if (con_text)
 		Q_memset (con_text, ' ', CON_TEXTSIZE);
@@ -126,7 +126,7 @@ Con_MessageMode_f
 */
 extern qboolean team_message;
 
-void Con_MessageMode_f (void)
+void Con_MessageMode_f (const quake::common::argv & argv)
 {
 	key_dest = key_message;
 	team_message = false;
@@ -138,7 +138,7 @@ void Con_MessageMode_f (void)
 Con_MessageMode2_f
 ================
 */
-void Con_MessageMode2_f (void)
+void Con_MessageMode2_f (const quake::common::argv & argv)
 {
 	key_dest = key_message;
 	team_message = true;

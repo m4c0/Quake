@@ -407,7 +407,7 @@ void Key_SetBinding (int keynum, const char *binding)
 Key_Unbind_f
 ===================
 */
-void Key_Unbind_f (void)
+void Key_Unbind_f (const quake::common::argv & argv)
 {
 	int		b;
 
@@ -427,7 +427,7 @@ void Key_Unbind_f (void)
 	Key_SetBinding (b, "");
 }
 
-void Key_Unbindall_f (void)
+void Key_Unbindall_f (const quake::common::argv & argv)
 {
 	int		i;
 	
@@ -441,7 +441,7 @@ void Key_Unbindall_f (void)
 Key_Bind_f
 ===================
 */
-void Key_Bind_f (void)
+void Key_Bind_f (const quake::common::argv & argv)
 {
 	int			i, c, b;
 	char		cmd[1024];
@@ -631,7 +631,7 @@ void Key_Event (int key, qboolean down)
 			break;
 		case key_game:
 		case key_console:
-			M_ToggleMenu_f ();
+			M_ToggleMenu_f ({});
 			break;
 		default:
 			Sys_Error ("Bad key_dest");
@@ -671,7 +671,7 @@ void Key_Event (int key, qboolean down)
 //
 	if (cls.demoplayback && down && consolekeys[key] && key_dest == key_game)
 	{
-		M_ToggleMenu_f ();
+		M_ToggleMenu_f ({});
 		return;
 	}
 

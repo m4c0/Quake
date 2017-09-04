@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // net.h -- quake's interface to the networking layer
 
+#include "quake/common.hpp"
+
 struct qsockaddr
 {
 	short sa_family;
@@ -334,4 +336,4 @@ extern	qboolean	slistInProgress;
 extern	qboolean	slistSilent;
 extern	qboolean	slistLocal;
 
-void NET_Slist_f (void);
+void NET_Slist_f (const quake::common::argv & args);

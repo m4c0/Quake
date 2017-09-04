@@ -219,7 +219,7 @@ PR_Profile_f
 
 ============
 */
-void PR_Profile_f (void)
+void PR_Profile_f (const quake::common::argv & argv)
 {
 	dfunction_t	*f, *best;
 	int			max;

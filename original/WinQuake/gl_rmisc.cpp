@@ -107,7 +107,7 @@ R_Envmap_f
 Grab six views for environment mapping tests
 ===============
 */
-void R_Envmap_f (void)
+void R_Envmap_f (const quake::common::argv & argv)
 {
 	byte	buffer[256*256*4];
 	char	name[1024];
@@ -426,7 +426,7 @@ R_TimeRefresh_f
 For program optimization
 ====================
 */
-void R_TimeRefresh_f (void)
+void R_TimeRefresh_f (const quake::common::argv & argv)
 {
 	int			i;
 	float		start, stop, time;

@@ -29,24 +29,24 @@ void (*vid_menukeyfn)(int key);
 enum {m_none, m_main, m_singleplayer, m_load, m_save, m_multiplayer, m_setup, m_net, m_options, m_video, m_keys, m_help, m_quit, m_serialconfig, m_modemconfig, m_lanconfig, m_gameoptions, m_search, m_slist};
 int m_state;
 
-void M_Menu_Main_f (void);
-	void M_Menu_SinglePlayer_f (void);
-		void M_Menu_Load_f (void);
-		void M_Menu_Save_f (void);
-	void M_Menu_MultiPlayer_f (void);
-		void M_Menu_Setup_f (void);
-		void M_Menu_Net_f (void);
-	void M_Menu_Options_f (void);
-		void M_Menu_Keys_f (void);
-		void M_Menu_Video_f (void);
-	void M_Menu_Help_f (void);
-	void M_Menu_Quit_f (void);
-void M_Menu_SerialConfig_f (void);
-	void M_Menu_ModemConfig_f (void);
-void M_Menu_LanConfig_f (void);
-void M_Menu_GameOptions_f (void);
-void M_Menu_Search_f (void);
-void M_Menu_ServerList_f (void);
+void M_Menu_Main_f (const quake::common::argv & args);
+	void M_Menu_SinglePlayer_f (const quake::common::argv & args);
+		void M_Menu_Load_f (const quake::common::argv & args);
+		void M_Menu_Save_f (const quake::common::argv & args);
+	void M_Menu_MultiPlayer_f (const quake::common::argv & args);
+		void M_Menu_Setup_f (const quake::common::argv & args);
+		void M_Menu_Net_f (const quake::common::argv & args);
+	void M_Menu_Options_f (const quake::common::argv & args);
+		void M_Menu_Keys_f (const quake::common::argv & args);
+		void M_Menu_Video_f (const quake::common::argv & args);
+	void M_Menu_Help_f (const quake::common::argv & args);
+	void M_Menu_Quit_f (const quake::common::argv & args);
+void M_Menu_SerialConfig_f (const quake::common::argv & args);
+	void M_Menu_ModemConfig_f (const quake::common::argv & args);
+void M_Menu_LanConfig_f (const quake::common::argv & args);
+void M_Menu_GameOptions_f (const quake::common::argv & args);
+void M_Menu_Search_f (const quake::common::argv & args);
+void M_Menu_ServerList_f (const quake::common::argv & args);
 
 void M_Main_Draw (void);
 	void M_SinglePlayer_Draw (void);
@@ -243,7 +243,7 @@ int m_save_demonum;
 M_ToggleMenu_f
 ================
 */
-void M_ToggleMenu_f (void)
+void M_ToggleMenu_f (const quake::common::argv & argv)
 {
 	m_entersound = true;
 
@@ -251,7 +251,7 @@ void M_ToggleMenu_f (void)
 	{
 		if (m_state != m_main)
 		{
-			M_Menu_Main_f ();
+			M_Menu_Main_f ({});
 			return;
 		}
 		key_dest = key_game;
@@ -260,11 +260,11 @@ void M_ToggleMenu_f (void)
 	}
 	if (key_dest == key_console)
 	{
-		Con_ToggleConsole_f ();
+		Con_ToggleConsole_f ({});
 	}
 	else
 	{
-		M_Menu_Main_f ();
+		M_Menu_Main_f ({});
 	}
 }
 
@@ -276,7 +276,7 @@ int	m_main_cursor;
 #define	MAIN_ITEMS	5
 
 
-void M_Menu_Main_f (void)
+void M_Menu_Main_f (const quake::common::argv & argv)
 {
 	if (key_dest != key_menu)
 	{
@@ -335,23 +335,23 @@ void M_Main_Key (int key)
 		switch (m_main_cursor)
 		{
 		case 0:
-			M_Menu_SinglePlayer_f ();
+			M_Menu_SinglePlayer_f ({});
 			break;
 
 		case 1:
-			M_Menu_MultiPlayer_f ();
+			M_Menu_MultiPlayer_f ({});
 			break;
 
 		case 2:
-			M_Menu_Options_f ();
+			M_Menu_Options_f ({});
 			break;
 
 		case 3:
-			M_Menu_Help_f ();
+			M_Menu_Help_f ({});
 			break;
 
 		case 4:
-			M_Menu_Quit_f ();
+			M_Menu_Quit_f ({});
 			break;
 		}
 	}
@@ -364,7 +364,7 @@ int	m_singleplayer_cursor;
 #define	SINGLEPLAYER_ITEMS	3
 
 
-void M_Menu_SinglePlayer_f (void)
+void M_Menu_SinglePlayer_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_singleplayer;
@@ -393,7 +393,7 @@ void M_SinglePlayer_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-		M_Menu_Main_f ();
+		M_Menu_Main_f ({});
 		break;
 
 	case K_DOWNARROW:
@@ -425,11 +425,11 @@ void M_SinglePlayer_Key (int key)
 			break;
 
 		case 1:
-			M_Menu_Load_f ();
+			M_Menu_Load_f ({});
 			break;
 
 		case 2:
-			M_Menu_Save_f ();
+			M_Menu_Save_f ({});
 			break;
 		}
 	}
@@ -472,7 +472,7 @@ void M_ScanSaves (void)
 	}
 }
 
-void M_Menu_Load_f (void)
+void M_Menu_Load_f (const quake::common::argv & args)
 {
 	m_entersound = true;
 	m_state = m_load;
@@ -481,7 +481,7 @@ void M_Menu_Load_f (void)
 }
 
 
-void M_Menu_Save_f (void)
+void M_Menu_Save_f (const quake::common::argv & args)
 {
 	if (!sv.active)
 		return;
@@ -533,7 +533,7 @@ void M_Load_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
-		M_Menu_SinglePlayer_f ();
+		M_Menu_SinglePlayer_f ({});
 		break;
 
 	case K_ENTER:
@@ -575,7 +575,7 @@ void M_Save_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
-		M_Menu_SinglePlayer_f ();
+		M_Menu_SinglePlayer_f ({});
 		break;
 
 	case K_ENTER:
@@ -609,7 +609,7 @@ int	m_multiplayer_cursor;
 #define	MULTIPLAYER_ITEMS	3
 
 
-void M_Menu_MultiPlayer_f (void)
+void M_Menu_MultiPlayer_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_multiplayer;
@@ -642,7 +642,7 @@ void M_MultiPlayer_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-		M_Menu_Main_f ();
+		M_Menu_Main_f ({});
 		break;
 
 	case K_DOWNARROW:
@@ -663,16 +663,16 @@ void M_MultiPlayer_Key (int key)
 		{
 		case 0:
 			if (serialAvailable || ipxAvailable || tcpipAvailable)
-				M_Menu_Net_f ();
+				M_Menu_Net_f ({});
 			break;
 
 		case 1:
 			if (serialAvailable || ipxAvailable || tcpipAvailable)
-				M_Menu_Net_f ();
+				M_Menu_Net_f ({});
 			break;
 
 		case 2:
-			M_Menu_Setup_f ();
+			M_Menu_Setup_f ({});
 			break;
 		}
 	}
@@ -693,7 +693,7 @@ int		setup_bottom;
 
 #define	NUM_SETUP_CMDS	5
 
-void M_Menu_Setup_f (void)
+void M_Menu_Setup_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_setup;
@@ -750,7 +750,7 @@ void M_Setup_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
-		M_Menu_MultiPlayer_f ();
+		M_Menu_MultiPlayer_f ({});
 		break;
 
 	case K_UPARROW:
@@ -802,7 +802,7 @@ forward:
 		if (setup_top != setup_oldtop || setup_bottom != setup_oldbottom)
 			Cbuf_AddText( va ("color %i %i\n", setup_top, setup_bottom) );
 		m_entersound = true;
-		M_Menu_MultiPlayer_f ();
+		M_Menu_MultiPlayer_f ({});
 		break;
 
 	case K_BACKSPACE:
@@ -883,7 +883,7 @@ const char *net_helpMessage [] =
   " Area Network.          "
 };
 
-void M_Menu_Net_f (void)
+void M_Menu_Net_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_net;
@@ -982,7 +982,7 @@ again:
 	switch (k)
 	{
 	case K_ESCAPE:
-		M_Menu_MultiPlayer_f ();
+		M_Menu_MultiPlayer_f ({});
 		break;
 
 	case K_DOWNARROW:
@@ -1003,19 +1003,19 @@ again:
 		switch (m_net_cursor)
 		{
 		case 0:
-			M_Menu_SerialConfig_f ();
+			M_Menu_SerialConfig_f ({});
 			break;
 
 		case 1:
-			M_Menu_SerialConfig_f ();
+			M_Menu_SerialConfig_f ({});
 			break;
 
 		case 2:
-			M_Menu_LanConfig_f ();
+			M_Menu_LanConfig_f ({});
 			break;
 
 		case 3:
-			M_Menu_LanConfig_f ();
+			M_Menu_LanConfig_f ({});
 			break;
 
 		case 4:
@@ -1047,7 +1047,7 @@ again:
 
 int		options_cursor;
 
-void M_Menu_Options_f (void)
+void M_Menu_Options_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_options;
@@ -1242,7 +1242,7 @@ void M_Options_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
-		M_Menu_Main_f ();
+		M_Menu_Main_f ({});
 		break;
 
 	case K_ENTER:
@@ -1250,17 +1250,17 @@ void M_Options_Key (int k)
 		switch (options_cursor)
 		{
 		case 0:
-			M_Menu_Keys_f ();
+			M_Menu_Keys_f ({});
 			break;
 		case 1:
 			m_state = m_none;
-			Con_ToggleConsole_f ();
+			Con_ToggleConsole_f ({});
 			break;
 		case 2:
 			Cbuf_AddText ("exec default.cfg\n");
 			break;
 		case 12:
-			M_Menu_Video_f ();
+			M_Menu_Video_f ({});
 			break;
 		default:
 			M_AdjustSliders (1);
@@ -1340,7 +1340,7 @@ const char *bindnames[][2] =
 int		keys_cursor;
 int		bind_grab;
 
-void M_Menu_Keys_f (void)
+void M_Menu_Keys_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_keys;
@@ -1467,7 +1467,7 @@ void M_Keys_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
-		M_Menu_Options_f ();
+		M_Menu_Options_f ({});
 		break;
 
 	case K_LEFTARROW:
@@ -1505,7 +1505,7 @@ void M_Keys_Key (int k)
 //=============================================================================
 /* VIDEO MENU */
 
-void M_Menu_Video_f (void)
+void M_Menu_Video_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_video;
@@ -1531,7 +1531,7 @@ int		help_page;
 #define	NUM_HELP_PAGES	6
 
 
-void M_Menu_Help_f (void)
+void M_Menu_Help_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_help;
@@ -1552,7 +1552,7 @@ void M_Help_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-		M_Menu_Main_f ();
+		M_Menu_Main_f ({});
 		break;
 
 	case K_UPARROW:
@@ -1625,7 +1625,7 @@ const char *quitMessage [] =
 };
 #endif
 
-void M_Menu_Quit_f (void)
+void M_Menu_Quit_f (const quake::common::argv & args)
 {
 	if (m_state == m_quit)
 		return;
@@ -1660,7 +1660,7 @@ void M_Quit_Key (int key)
 	case 'Y':
 	case 'y':
 		key_dest = key_console;
-		Host_Quit_f ();
+		Host_Quit_f ({});
 		break;
 
 	default:
@@ -1729,7 +1729,7 @@ int		serialConfig_irq ;
 int		serialConfig_baud;
 char	serialConfig_phone[16];
 
-void M_Menu_SerialConfig_f (void)
+void M_Menu_SerialConfig_f (const quake::common::argv & args)
 {
 	int		n;
 	int		port;
@@ -1844,7 +1844,7 @@ void M_SerialConfig_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-		M_Menu_Net_f ();
+		M_Menu_Net_f ({});
 		break;
 
 	case K_UPARROW:
@@ -1934,7 +1934,7 @@ forward:
 		{
 			(*SetComPortConfig) (0, ISA_uarts[serialConfig_comport-1], serialConfig_irq, serialConfig_baudrate[serialConfig_baud], SerialConfig);
 
-			M_Menu_ModemConfig_f ();
+			M_Menu_ModemConfig_f ({});
 			break;
 		}
 
@@ -1951,7 +1951,7 @@ forward:
 
 		if (StartingGame)
 		{
-			M_Menu_GameOptions_f ();
+			M_Menu_GameOptions_f ({});
 			break;
 		}
 
@@ -2017,7 +2017,7 @@ char	modemConfig_clear [16];
 char	modemConfig_init [32];
 char	modemConfig_hangup [16];
 
-void M_Menu_ModemConfig_f (void)
+void M_Menu_ModemConfig_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_modemconfig;
@@ -2074,7 +2074,7 @@ void M_ModemConfig_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-		M_Menu_SerialConfig_f ();
+		M_Menu_SerialConfig_f ({});
 		break;
 
 	case K_UPARROW:
@@ -2117,7 +2117,7 @@ void M_ModemConfig_Key (int key)
 		{
 			(*SetModemConfig) (0, va ("%c", modemConfig_dialing), modemConfig_clear, modemConfig_init, modemConfig_hangup);
 			m_entersound = true;
-			M_Menu_SerialConfig_f ();
+			M_Menu_SerialConfig_f ({});
 		}
 		break;
 
@@ -2188,7 +2188,7 @@ int 	lanConfig_port;
 char	lanConfig_portname[6];
 char	lanConfig_joinname[22];
 
-void M_Menu_LanConfig_f (void)
+void M_Menu_LanConfig_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_lanconfig;
@@ -2276,7 +2276,7 @@ void M_LanConfig_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-		M_Menu_Net_f ();
+		M_Menu_Net_f ({});
 		break;
 
 	case K_UPARROW:
@@ -2305,10 +2305,10 @@ void M_LanConfig_Key (int key)
 		{
 			if (StartingGame)
 			{
-				M_Menu_GameOptions_f ();
+				M_Menu_GameOptions_f ({});
 				break;
 			}
-			M_Menu_Search_f();
+			M_Menu_Search_f({});
 			break;
 		}
 
@@ -2534,7 +2534,7 @@ int maxplayers;
 qboolean m_serverInfoMessage = false;
 double m_serverInfoMessageTime;
 
-void M_Menu_GameOptions_f (void)
+void M_Menu_GameOptions_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_gameoptions;
@@ -2782,7 +2782,7 @@ void M_GameOptions_Key (int key)
 	switch (key)
 	{
 	case K_ESCAPE:
-		M_Menu_Net_f ();
+		M_Menu_Net_f ({});
 		break;
 
 	case K_UPARROW:
@@ -2844,7 +2844,7 @@ void M_GameOptions_Key (int key)
 qboolean	searchComplete = false;
 double		searchCompleteTime;
 
-void M_Menu_Search_f (void)
+void M_Menu_Search_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_search;
@@ -2852,7 +2852,7 @@ void M_Menu_Search_f (void)
 	slistSilent = true;
 	slistLocal = false;
 	searchComplete = false;
-	NET_Slist_f();
+	NET_Slist_f({});
 
 }
 
@@ -2882,7 +2882,7 @@ void M_Search_Draw (void)
 
 	if (hostCacheCount)
 	{
-		M_Menu_ServerList_f ();
+		M_Menu_ServerList_f ({});
 		return;
 	}
 
@@ -2890,7 +2890,7 @@ void M_Search_Draw (void)
 	if ((realtime - searchCompleteTime) < 3.0)
 		return;
 
-	M_Menu_LanConfig_f ();
+	M_Menu_LanConfig_f ({});
 }
 
 
@@ -2904,7 +2904,7 @@ void M_Search_Key (int key)
 int		slist_cursor;
 qboolean slist_sorted;
 
-void M_Menu_ServerList_f (void)
+void M_Menu_ServerList_f (const quake::common::argv & args)
 {
 	key_dest = key_menu;
 	m_state = m_slist;
@@ -2962,11 +2962,11 @@ void M_ServerList_Key (int k)
 	switch (k)
 	{
 	case K_ESCAPE:
-		M_Menu_LanConfig_f ();
+		M_Menu_LanConfig_f ({});
 		break;
 
 	case K_SPACE:
-		M_Menu_Search_f ();
+		M_Menu_Search_f ({});
 		break;
 
 	case K_UPARROW:

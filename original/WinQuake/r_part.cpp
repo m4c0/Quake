@@ -183,7 +183,7 @@ void R_ClearParticles (void)
 }
 
 
-void R_ReadPointFile_f (void)
+void R_ReadPointFile_f (const quake::common::argv & argv)
 {
 	FILE	*f;
 	vec3_t	org;

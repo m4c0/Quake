@@ -40,7 +40,7 @@ void Con_SafePrintf (const char *fmt, ...);
 void Con_Clear_f (void);
 void Con_DrawNotify (void);
 void Con_ClearNotify (void);
-void Con_ToggleConsole_f (void);
+void Con_ToggleConsole_f (const quake::common::argv & args);
 
 void Con_NotifyBox (const char *text);	// during startup for sound / cd warnings
 

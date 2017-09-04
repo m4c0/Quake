@@ -72,7 +72,7 @@ Sbar_ShowScores
 Tab key down
 ===============
 */
-void Sbar_ShowScores (void)
+void Sbar_ShowScores (const quake::common::argv & argv)
 {
 	if (sb_showscores)
 		return;
@@ -87,7 +87,7 @@ Sbar_DontShowScores
 Tab key up
 ===============
 */
-void Sbar_DontShowScores (void)
+void Sbar_DontShowScores (const quake::common::argv & argv)
 {
 	sb_showscores = false;
 	sb_updates = 0;

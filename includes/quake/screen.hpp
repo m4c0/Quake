@@ -3,7 +3,7 @@
 
 namespace quake {
     namespace screen {
-        void screenshot();
+        void screenshot(const quake::common::argv & argv);
     }
 }
 

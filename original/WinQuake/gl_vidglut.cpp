@@ -513,7 +513,7 @@ void Sys_SendKeyEvents(void)
 {
 }
 
-void Force_CenterView_f (void)
+void Force_CenterView_f (const quake::common::argv & args)
 {
 	cl.viewangles[PITCH] = 0;
 }

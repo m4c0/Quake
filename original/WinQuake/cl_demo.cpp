@@ -163,7 +163,7 @@ CL_Stop_f
 stop recording a demo
 ====================
 */
-void CL_Stop_f (void)
+void CL_Stop_f (const quake::common::argv & argv)
 {
 	if (cmd_source != src_command)
 		return;
@@ -193,7 +193,7 @@ CL_Record_f
 record <demoname> <map> [cd track]
 ====================
 */
-void CL_Record_f (void)
+void CL_Record_f (const quake::common::argv & argv)
 {
 	int		c;
 	char	name[MAX_OSPATH];
@@ -265,7 +265,7 @@ CL_PlayDemo_f
 play [demoname]
 ====================
 */
-void CL_PlayDemo_f (void)
+void CL_PlayDemo_f (const quake::common::argv & argv)
 {
 	char	name[256];
 	int c;
@@ -344,7 +344,7 @@ CL_TimeDemo_f
 timedemo [demoname]
 ====================
 */
-void CL_TimeDemo_f (void)
+void CL_TimeDemo_f (const quake::common::argv & argv)
 {
 	if (cmd_source != src_command)
 		return;
@@ -355,7 +355,7 @@ void CL_TimeDemo_f (void)
 		return;
 	}
 
-	CL_PlayDemo_f ();
+	CL_PlayDemo_f (argv);
 	
 // cls.td_starttime will be grabbed at the second frame of the demo, so
 // all the loading time doesn't get counted

@@ -1828,7 +1828,7 @@ void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 Mod_Print
 ================
 */
-void Mod_Print (void)
+void Mod_Print (const quake::common::argv & argv)
 {
 	int		i;
 	model_t	*mod;

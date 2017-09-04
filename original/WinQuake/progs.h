@@ -68,7 +68,7 @@ void PR_Init (void);
 void PR_ExecuteProgram (func_t fnum);
 void PR_LoadProgs (void);
 
-void PR_Profile_f (void);
+void PR_Profile_f (const quake::common::argv & argv);
 
 edict_t *ED_Alloc (void);
 void ED_Free (edict_t *ed);
@@ -127,7 +127,7 @@ extern	unsigned short		pr_crc;
 
 void PR_RunError (const char *error, ...);
 
-void ED_PrintEdicts (void);
+void ED_PrintEdicts (const quake::common::argv & args);
 void ED_PrintNum (int ent);
 
 eval_t *GetEdictFieldValue(edict_t *ed, const char *field);

@@ -45,6 +45,7 @@ state bit 2 is edge triggered on the down to up transition
 ===============================================================================
 */
 
+using args = quake::common::argv;
 
 kbutton_t	in_mlook, in_klook;
 kbutton_t	in_left, in_right, in_forward, in_back;
@@ -114,49 +115,49 @@ void KeyUp (kbutton_t *b)
 	b->state |= 4; 		// impulse up
 }
 
-void IN_KLookDown (void) {KeyDown(&in_klook);}
-void IN_KLookUp (void) {KeyUp(&in_klook);}
-void IN_MLookDown (void) {KeyDown(&in_mlook);}
-void IN_MLookUp (void) {
-KeyUp(&in_mlook);
-if ( !(in_mlook.state&1) &&  lookspring.value)
-	V_StartPitchDrift();
+void IN_KLookDown (const args & args) { KeyDown(&in_klook); }
+void IN_KLookUp   (const args & args) { KeyUp(&in_klook);   }
+void IN_MLookDown (const args & args) { KeyDown(&in_mlook); }
+void IN_MLookUp   (const args & args) {
+    KeyUp(&in_mlook);
+    if ( !(in_mlook.state&1) &&  lookspring.value)
+        V_StartPitchDrift({});
 }
-void IN_UpDown(void) {KeyDown(&in_up);}
-void IN_UpUp(void) {KeyUp(&in_up);}
-void IN_DownDown(void) {KeyDown(&in_down);}
-void IN_DownUp(void) {KeyUp(&in_down);}
-void IN_LeftDown(void) {KeyDown(&in_left);}
-void IN_LeftUp(void) {KeyUp(&in_left);}
-void IN_RightDown(void) {KeyDown(&in_right);}
-void IN_RightUp(void) {KeyUp(&in_right);}
-void IN_ForwardDown(void) {KeyDown(&in_forward);}
-void IN_ForwardUp(void) {KeyUp(&in_forward);}
-void IN_BackDown(void) {KeyDown(&in_back);}
-void IN_BackUp(void) {KeyUp(&in_back);}
-void IN_LookupDown(void) {KeyDown(&in_lookup);}
-void IN_LookupUp(void) {KeyUp(&in_lookup);}
-void IN_LookdownDown(void) {KeyDown(&in_lookdown);}
-void IN_LookdownUp(void) {KeyUp(&in_lookdown);}
-void IN_MoveleftDown(void) {KeyDown(&in_moveleft);}
-void IN_MoveleftUp(void) {KeyUp(&in_moveleft);}
-void IN_MoverightDown(void) {KeyDown(&in_moveright);}
-void IN_MoverightUp(void) {KeyUp(&in_moveright);}
+void IN_UpDown       (const args & args) { KeyDown(&in_up); }
+void IN_UpUp         (const args & args) { KeyUp  (&in_up); }
+void IN_DownDown     (const args & args) { KeyDown(&in_down); }
+void IN_DownUp       (const args & args) { KeyUp  (&in_down); }
+void IN_LeftDown     (const args & args) { KeyDown(&in_left); }
+void IN_LeftUp       (const args & args) { KeyUp  (&in_left); }
+void IN_RightDown    (const args & args) { KeyDown(&in_right); }
+void IN_RightUp      (const args & args) { KeyUp  (&in_right); }
+void IN_ForwardDown  (const args & args) { KeyDown(&in_forward); }
+void IN_ForwardUp    (const args & args) { KeyUp  (&in_forward); }
+void IN_BackDown     (const args & args) { KeyDown(&in_back); }
+void IN_BackUp       (const args & args) { KeyUp  (&in_back); }
+void IN_LookupDown   (const args & args) { KeyDown(&in_lookup); }
+void IN_LookupUp     (const args & args) { KeyUp  (&in_lookup); }
+void IN_LookdownDown (const args & args) { KeyDown(&in_lookdown); }
+void IN_LookdownUp   (const args & args) { KeyUp  (&in_lookdown); }
+void IN_MoveleftDown (const args & args) { KeyDown(&in_moveleft); }
+void IN_MoveleftUp   (const args & args) { KeyUp  (&in_moveleft); }
+void IN_MoverightDown(const args & args) { KeyDown(&in_moveright); }
+void IN_MoverightUp  (const args & args) { KeyUp  (&in_moveright); }
 
-void IN_SpeedDown(void) {KeyDown(&in_speed);}
-void IN_SpeedUp(void) {KeyUp(&in_speed);}
-void IN_StrafeDown(void) {KeyDown(&in_strafe);}
-void IN_StrafeUp(void) {KeyUp(&in_strafe);}
+void IN_SpeedDown    (const args & args) { KeyDown(&in_speed); }
+void IN_SpeedUp      (const args & args) { KeyUp(&in_speed); }
+void IN_StrafeDown   (const args & args) { KeyDown(&in_strafe); }
+void IN_StrafeUp     (const args & args) { KeyUp(&in_strafe); }
 
-void IN_AttackDown(void) {KeyDown(&in_attack);}
-void IN_AttackUp(void) {KeyUp(&in_attack);}
+void IN_AttackDown   (const args & args) { KeyDown(&in_attack); }
+void IN_AttackUp     (const args & args) { KeyUp(&in_attack); }
 
-void IN_UseDown (void) {KeyDown(&in_use);}
-void IN_UseUp (void) {KeyUp(&in_use);}
-void IN_JumpDown (void) {KeyDown(&in_jump);}
-void IN_JumpUp (void) {KeyUp(&in_jump);}
+void IN_UseDown      (const args & args) { KeyDown(&in_use); }
+void IN_UseUp        (const args & args) { KeyUp(&in_use); }
+void IN_JumpDown     (const args & args) { KeyDown(&in_jump); }
+void IN_JumpUp       (const args & args) { KeyUp(&in_jump); }
 
-void IN_Impulse (void) {in_impulse=Q_atoi(Cmd_Argv(1));}
+void IN_Impulse      (const args & args) { in_impulse=Q_atoi(Cmd_Argv(1)); }
 
 /*
 ===============

@@ -343,7 +343,7 @@ SCR_SizeUp_f
 Keybinding command
 =================
 */
-void SCR_SizeUp_f (void)
+void SCR_SizeUp_f (const quake::common::argv & argv)
 {
 	Cvar_SetValue ("viewsize",scr_viewsize.value+10);
 	vid.recalc_refdef = 1;
@@ -357,7 +357,7 @@ SCR_SizeDown_f
 Keybinding command
 =================
 */
-void SCR_SizeDown_f (void)
+void SCR_SizeDown_f (const quake::common::argv & argv)
 {
 	Cvar_SetValue ("viewsize",scr_viewsize.value-10);
 	vid.recalc_refdef = 1;

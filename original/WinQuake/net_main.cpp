@@ -176,7 +176,7 @@ void NET_FreeQSocket(qsocket_t *sock)
 }
 
 
-static void NET_Listen_f (void)
+static void NET_Listen_f (const quake::common::argv & argv)
 {
 	if (Cmd_Argc () != 2)
 	{
@@ -195,7 +195,7 @@ static void NET_Listen_f (void)
 }
 
 
-static void MaxPlayers_f (void)
+static void MaxPlayers_f (const quake::common::argv & argv)
 {
 	int 	n;
 
@@ -234,7 +234,7 @@ static void MaxPlayers_f (void)
 }
 
 
-static void NET_Port_f (void)
+static void NET_Port_f (const quake::common::argv & argv)
 {
 	int 	n;
 
@@ -295,7 +295,7 @@ static void PrintSlistTrailer(void)
 }
 
 
-void NET_Slist_f (void)
+void NET_Slist_f (const quake::common::argv & argv)
 {
 	if (slistInProgress)
 		return;
@@ -402,7 +402,7 @@ qsocket_t *NET_Connect (const char *host)
 	}
 
 	slistSilent = host ? true : false;
-	NET_Slist_f ();
+	NET_Slist_f ({});
 
 	while(slistInProgress)
 		NET_Poll();

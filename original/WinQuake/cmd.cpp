@@ -26,7 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <map>
 #include <numeric>
 
-void Cmd_ForwardToServer (void);
+void Cmd_ForwardToServer (const quake::common::argv & argv);
 
 static std::map<std::string, std::string> _aliases;
 
@@ -46,7 +46,7 @@ next frame.  This allows commands like:
 bind g "impulse 5 ; +attack ; wait ; -attack ; impulse 2"
 ============
 */
-void Cmd_Wait_f (void)
+void Cmd_Wait_f (const quake::common::argv & argv)
 {
 	cmd_wait = true;
 }
@@ -167,7 +167,7 @@ quake +prog jctest.qp +cmd amlev1
 quake -nosound +cmd amlev1
 ===============
 */
-void Cmd_StuffCmds_f (void)
+void Cmd_StuffCmds_f (const quake::common::argv & args)
 {
     auto & argv = quake::common::argv::current;
 		
@@ -215,7 +215,7 @@ void Cmd_StuffCmds_f (void)
 Cmd_Exec_f
 ===============
 */
-void Cmd_Exec_f (void)
+void Cmd_Exec_f (const quake::common::argv & argv)
 {
 	char	*f;
 	int		mark;
@@ -247,7 +247,7 @@ Cmd_Echo_f
 Just prints the rest of the line to the console
 ===============
 */
-void Cmd_Echo_f (void)
+void Cmd_Echo_f (const quake::common::argv & argv)
 {
 	int		i;
 	
@@ -264,7 +264,7 @@ Creates a new command that executes a command string (possibly ; seperated)
 ===============
 */
 
-void Cmd_Alias_f (void)
+void Cmd_Alias_f (const quake::common::argv & argv)
 {
 	char		cmd[1024];
 	int			i, c;
@@ -523,7 +523,7 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 	{
 		if (!Q_strcasecmp (cmd_argv[0],cmd->name))
 		{
-			cmd->function ();
+			cmd->function ({ cmd_argc, cmd_argv });
 			return;
 		}
 	}
@@ -550,7 +550,7 @@ Cmd_ForwardToServer
 Sends the entire command line over to the server
 ===================
 */
-void Cmd_ForwardToServer (void)
+void Cmd_ForwardToServer (const quake::common::argv & args)
 {
 	if (cls.state != ca_connected)
 	{

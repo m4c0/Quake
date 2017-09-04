@@ -87,7 +87,7 @@ char *StrAddr (struct qsockaddr *addr)
 unsigned long banAddr = 0x00000000;
 unsigned long banMask = 0xffffffff;
 
-void NET_Ban_f (void)
+void NET_Ban_f (const quake::common::argv & argv)
 {
 	char	addrStr [32];
 	char	maskStr [32];
@@ -97,7 +97,7 @@ void NET_Ban_f (void)
 	{
 		if (!sv.active)
 		{
-			Cmd_ForwardToServer ();
+			Cmd_ForwardToServer (argv);
 			return;
 		}
 		print = Con_Printf;
@@ -456,7 +456,7 @@ void PrintStats(qsocket_t *s)
 	Con_Printf("\n");
 }
 
-void NET_Stats_f (void)
+void NET_Stats_f (const quake::common::argv & argv)
 {
 	qsocket_t	*s;
 
@@ -561,7 +561,7 @@ static void Test_Poll(void *)
 	}
 }
 
-static void Test_f (void)
+static void Test_f (const quake::common::argv & argv)
 {
 	const char	*host;
 	int		n;
@@ -690,7 +690,7 @@ Done:
 	return;
 }
 
-static void Test2_f (void)
+static void Test2_f (const quake::common::argv & argv)
 {
 	const char	*host;
 	int		n;

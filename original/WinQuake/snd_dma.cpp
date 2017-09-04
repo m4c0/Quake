@@ -23,12 +23,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quake/common.hpp"
 
-void S_Play(void);
-void S_PlayVol(void);
-void S_SoundList(void);
+void S_Play(const quake::common::argv & argv);
+void S_PlayVol(const quake::common::argv & argv);
+void S_SoundList(const quake::common::argv & argv);
 void S_Update_();
 void S_StopAllSounds(qboolean clear);
-void S_StopAllSoundsC(void);
+void S_StopAllSoundsC(const quake::common::argv & argv);
 
 // =======================================================================
 // Internal sound data & structures
@@ -107,7 +107,7 @@ void S_AmbientOn (void)
 }
 
 
-void S_SoundInfo_f(void)
+void S_SoundInfo_f(const quake::common::argv & argv)
 {
 	if (!sound_started || !shm)
 	{
@@ -551,7 +551,7 @@ void S_StopAllSounds(qboolean clear)
 		S_ClearBuffer ();
 }
 
-void S_StopAllSoundsC (void)
+void S_StopAllSoundsC (const quake::common::argv & argv)
 {
 	S_StopAllSounds (true);
 }
@@ -909,7 +909,7 @@ console functions
 ===============================================================================
 */
 
-void S_Play(void)
+void S_Play(const quake::common::argv & argv)
 {
 	static int hash=345;
 	int 	i;
@@ -932,7 +932,7 @@ void S_Play(void)
 	}
 }
 
-void S_PlayVol(void)
+void S_PlayVol(const quake::common::argv & argv)
 {
 	static int hash=543;
 	int i;
@@ -957,7 +957,7 @@ void S_PlayVol(void)
 	}
 }
 
-void S_SoundList(void)
+void S_SoundList(const quake::common::argv & argv)
 {
 	int		i;
 	sfx_t	*sfx;
