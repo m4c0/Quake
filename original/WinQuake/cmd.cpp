@@ -228,6 +228,7 @@ void Cmd_StuffCmds_f (void)
 	}
 
 // build the combined string to parse from
+    if (argv->size() == 0) return;
     std::string text = std::accumulate(
             std::next(argv->begin()),
             argv->end(),

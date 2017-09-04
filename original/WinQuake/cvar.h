@@ -53,10 +53,12 @@ Cvars are restricted from having the same names as commands to keep this
 interface from being ambiguous.
 */
 
+#include <string>
+
 typedef struct cvar_s
 {
-	const char	*name;
-	const char	*string;
+	const std::string name;
+	std::string string;
 	qboolean archive;		// set to true to cause it to be saved to vars.rc
 	qboolean server;		// notifies players when changed
 	float	value;

@@ -1508,8 +1508,6 @@ byte *COM_LoadFile (const char *path, int usehunk)
 		buf = (byte *)Hunk_AllocName (len+1, base);
 	else if (usehunk == 2)
 		buf = (byte *)Hunk_TempAlloc (len+1);
-	else if (usehunk == 0)
-		buf = (byte *)Z_Malloc (len+1);
 	else if (usehunk == 3)
 		buf = (byte *)Cache_Alloc (loadcache, len+1, base);
 	else if (usehunk == 4)

@@ -29,15 +29,13 @@ const char	*cvar_null_string = "";
 Cvar_FindVar
 ============
 */
-cvar_t *Cvar_FindVar (const char *var_name)
-{
-	cvar_t	*var;
-	
-	for (var=cvar_vars ; var ; var=var->next)
-		if (!Q_strcmp (var_name, var->name))
-			return var;
-
-	return NULL;
+cvar_t * Cvar_FindVar (const char *var_name) {
+    for (cvar_t * var = cvar_vars; var; var = var->next) {
+        if (var->name == var_name) {
+            return var;
+        }
+    }
+	return nullptr;
 }
 
 /*
@@ -45,14 +43,9 @@ cvar_t *Cvar_FindVar (const char *var_name)
 Cvar_VariableValue
 ============
 */
-float	Cvar_VariableValue (const char *var_name)
-{
-	cvar_t	*var;
-	
-	var = Cvar_FindVar (var_name);
-	if (!var)
-		return 0;
-	return Q_atof (var->string);
+float Cvar_VariableValue (const char *var_name) {
+	cvar_t * var = Cvar_FindVar(var_name);
+    return var ? std::stof(var->string) : 0;
 }
 
 
@@ -61,14 +54,9 @@ float	Cvar_VariableValue (const char *var_name)
 Cvar_VariableString
 ============
 */
-const char *Cvar_VariableString (const char *var_name)
-{
-	cvar_t *var;
-	
-	var = Cvar_FindVar (var_name);
-	if (!var)
-		return cvar_null_string;
-	return var->string;
+const char *Cvar_VariableString (const char *var_name) {
+	cvar_t * var = Cvar_FindVar(var_name);
+    return var ? var->string.c_str() : cvar_null_string;
 }
 
 
@@ -88,9 +76,11 @@ const char *Cvar_CompleteVariable (const char *partial)
 		return NULL;
 		
 // check functions
-	for (cvar=cvar_vars ; cvar ; cvar=cvar->next)
-		if (!Q_strncmp (partial,cvar->name, len))
-			return cvar->name;
+    for (cvar_t * var = cvar_vars; var; var = var->next) {
+        if (cvar->name.compare(0, len, partial) == 0) {
+            return cvar->name.c_str();
+        }
+    }
 
 	return NULL;
 }
@@ -113,19 +103,18 @@ void Cvar_Set (const char *var_name, const char *value)
 		return;
 	}
 
-	changed = Q_strcmp(var->string, value);
+	changed = var->string != value;
 	
-    // FIXME: This is really wrong. We should not mix heap pointers and constant pointers...
-	Z_Free ((char *)var->string);	// free the old value string
-	
-	char * dup = (char *)Z_Malloc (Q_strlen(value)+1);
-	Q_strcpy (dup, value);
-    var->string = dup;
-	var->value = Q_atof (var->string);
+    var->string = value;
+    try {
+        var->value = std::stof(var->string);
+    } catch (std::invalid_argument) {
+        var->value = 0;
+    }
 	if (var->server && changed)
 	{
 		if (sv.active)
-			SV_BroadcastPrintf ("\"%s\" changed to \"%s\"\n", var->name, var->string);
+			SV_BroadcastPrintf ("\"%s\" changed to \"%s\"\n", var->name.c_str(), var->string.c_str());
 	}
 }
 
@@ -153,24 +142,24 @@ Adds a freestanding variable to the variable list.
 void Cvar_RegisterVariable (cvar_t *variable)
 {
 // first check to see if it has allready been defined
-	if (Cvar_FindVar (variable->name))
+	if (Cvar_FindVar (variable->name.c_str()))
 	{
-		Con_Printf ("Can't register variable %s, allready defined\n", variable->name);
+		Con_Printf ("Can't register variable %s, allready defined\n", variable->name.c_str());
 		return;
 	}
 	
 // check for overlap with a command
-	if (Cmd_Exists (variable->name))
+	if (Cmd_Exists (variable->name.c_str()))
 	{
-		Con_Printf ("Cvar_RegisterVariable: %s is a command\n", variable->name);
+		Con_Printf ("Cvar_RegisterVariable: %s is a command\n", variable->name.c_str());
 		return;
 	}
-		
-// copy the value off, because future sets will Z_Free it
-    char * newstr = (char *)Z_Malloc (Q_strlen(variable->string)+1);	
-	Q_strcpy (newstr, variable->string);
-    variable->string = newstr;
-	variable->value = Q_atof (variable->string);
+
+    try {
+        variable->value = std::stof(variable->string);
+    } catch (std::invalid_argument) {
+        variable->value = 0;
+    }
 	
 // link the variable in
 	variable->next = cvar_vars;
@@ -196,11 +185,11 @@ qboolean	Cvar_Command (void)
 // perform a variable print or set
 	if (Cmd_Argc() == 1)
 	{
-		Con_Printf ("\"%s\" is \"%s\"\n", v->name, v->string);
+		Con_Printf ("\"%s\" is \"%s\"\n", v->name.c_str(), v->string.c_str());
 		return true;
 	}
 
-	Cvar_Set (v->name, Cmd_Argv(1));
+	Cvar_Set (v->name.c_str(), Cmd_Argv(1));
 	return true;
 }
 
@@ -219,6 +208,6 @@ void Cvar_WriteVariables (FILE *f)
 	
 	for (var = cvar_vars ; var ; var = var->next)
 		if (var->archive)
-			fprintf (f, "%s \"%s\"\n", var->name, var->string);
+			fprintf (f, "%s \"%s\"\n", var->name.c_str(), var->string.c_str());
 }
 

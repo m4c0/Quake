@@ -916,7 +916,7 @@ void Host_Name_f (void)
 
 	if (Cmd_Argc () == 1)
 	{
-		Con_Printf ("\"name\" is \"%s\"\n", cl_name.string);
+		Con_Printf ("\"name\" is \"%s\"\n", cl_name.string.c_str());
 		return;
 	}
 	if (Cmd_Argc () == 2)
@@ -927,8 +927,8 @@ void Host_Name_f (void)
 
 	if (cmd_source == src_command)
 	{
-		if (Q_strcmp(cl_name.string, newName) == 0)
-			return;
+		if (cl_name.string == newName) return;
+
 		Cvar_Set ("_cl_name", newName);
 		if (cls.state == ca_connected)
 			Cmd_ForwardToServer ();
@@ -1056,7 +1056,7 @@ void Host_Say(qboolean teamonly)
 	if (!fromServer)
 		sprintf ((char *)text, "%c%s: ", 1, save->name);
 	else
-		sprintf ((char *)text, "%c<%s> ", 1, hostname.string);
+		sprintf ((char *)text, "%c<%s> ", 1, hostname.string.c_str());
 
     _concat_args(text, 64);
 
@@ -1459,7 +1459,7 @@ void Host_Kick_f (void)
 			if (cls.state == ca_dedicated)
 				who = "Console";
 			else
-				who = cl_name.string;
+				who = cl_name.string.c_str();
 		else
 			who = save->name;
 
