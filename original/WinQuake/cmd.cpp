@@ -67,16 +67,14 @@ void Cmd_Wait_f (void)
 =============================================================================
 */
 
-sizebuf_t	cmd_text;
+std::string cmd_text;
 
 /*
 ============
 Cbuf_Init
 ============
 */
-void Cbuf_Init (void)
-{
-	SZ_Alloc (&cmd_text, 8192);		// space for commands and script files
+void Cbuf_Init (void) {
 }
 
 
@@ -87,19 +85,8 @@ Cbuf_AddText
 Adds command text at the end of the buffer
 ============
 */
-void Cbuf_AddText (const char *text)
-{
-	int		l;
-	
-	l = Q_strlen (text);
-
-	if (cmd_text.cursize + l >= cmd_text.maxsize)
-	{
-		Con_Printf ("Cbuf_AddText: overflow\n");
-		return;
-	}
-
-	SZ_Write (&cmd_text, text, Q_strlen (text));
+void Cbuf_AddText (const std::string & text) {
+    cmd_text.append(text);
 }
 
 
@@ -112,31 +99,8 @@ Adds a \n to the text
 FIXME: actually change the command buffer to do less copying
 ============
 */
-void Cbuf_InsertText (const char *text)
-{
-	char	*temp;
-	int		templen;
-
-// copy off any commands still remaining in the exec buffer
-	templen = cmd_text.cursize;
-	if (templen)
-	{
-		temp = (char *)Z_Malloc (templen);
-		Q_memcpy (temp, cmd_text.data, templen);
-		SZ_Clear (&cmd_text);
-	}
-	else
-		temp = NULL;	// shut up compiler
-		
-// add the entire text of the file
-	Cbuf_AddText (text);
-	
-// add the copied off data
-	if (templen)
-	{
-		SZ_Write (&cmd_text, temp, templen);
-		Z_Free (temp);
-	}
+void Cbuf_InsertText (const std::string & text) {
+    cmd_text.insert(0, text);
 }
 
 /*
@@ -151,13 +115,13 @@ void Cbuf_Execute (void)
 	char	line[1024];
 	int		quotes;
 	
-	while (cmd_text.cursize)
+	while (cmd_text.size())
 	{
 // find a \n or ; line break
-		text = (char *)cmd_text.data;
+		text = (char *)cmd_text.c_str();
 
 		quotes = 0;
-		for (i=0 ; i< cmd_text.cursize ; i++)
+		for (i=0 ; i< cmd_text.size(); i++)
 		{
 			if (text[i] == '"')
 				quotes++;
@@ -175,13 +139,10 @@ void Cbuf_Execute (void)
 // this is necessary because commands (exec, alias) can insert data at the
 // beginning of the text buffer
 
-		if (i == cmd_text.cursize)
-			cmd_text.cursize = 0;
-		else
-		{
-			i++;
-			cmd_text.cursize -= i;
-			Q_memcpy (text, text+i, cmd_text.cursize);
+		if (i == cmd_text.size()) {
+			cmd_text.clear();
+        } else {
+            cmd_text = cmd_text.substr(i + 1);
 		}
 
 // execute the command line
