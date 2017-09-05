@@ -912,48 +912,34 @@ console functions
 void S_Play(const quake::common::argv & argv)
 {
 	static int hash=345;
-	int 	i;
-	char name[256];
 	sfx_t	*sfx;
-	
-	i = 1;
-	while (i<Cmd_Argc())
-	{
-		if (!Q_strrchr(Cmd_Argv(i), '.'))
-		{
-			Q_strcpy(name, Cmd_Argv(i));
-			Q_strcat(name, ".wav");
-		}
-		else
-			Q_strcpy(name, Cmd_Argv(i));
-		sfx = S_PrecacheSound(name);
+
+    for (auto arg : argv) {
+        std::string name = arg;
+        if (arg.find('.') == std::string::npos) {
+            name += ".wav";
+        }
+
+		sfx = S_PrecacheSound(name.c_str());
 		S_StartSound(hash++, 0, sfx, listener_origin, 1.0, 1.0);
-		i++;
 	}
 }
 
 void S_PlayVol(const quake::common::argv & argv)
 {
 	static int hash=543;
-	int i;
 	float vol;
-	char name[256];
 	sfx_t	*sfx;
-	
-	i = 1;
-	while (i<Cmd_Argc())
-	{
-		if (!Q_strrchr(Cmd_Argv(i), '.'))
-		{
-			Q_strcpy(name, Cmd_Argv(i));
-			Q_strcat(name, ".wav");
-		}
-		else
-			Q_strcpy(name, Cmd_Argv(i));
-		sfx = S_PrecacheSound(name);
-		vol = Q_atof(Cmd_Argv(i+1));
+
+    for (int i = 0; i < argv.size(); i += 2) {
+        std::string name = argv[i];
+        if (name.find('.') == std::string::npos) {
+            name += ".wav";
+        }
+
+		sfx = S_PrecacheSound(name.c_str());
+		vol = argv.stof(i + 1, 0.0);
 		S_StartSound(hash++, 0, sfx, listener_origin, vol, 1.0);
-		i+=2;
 	}
 }
 

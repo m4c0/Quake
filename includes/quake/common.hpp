@@ -47,6 +47,15 @@ namespace quake {
                     return def_val;
                 }
             }
+            // Allows an easy replacement for old permissive "atof"
+            float stof(int idx, float def_val) const {
+                if (idx >= contents.size()) return def_val;
+                try {
+                    return std::stof(contents[idx]);
+                } catch (...) {
+                    return def_val;
+                }
+            }
 
             auto find_parameter(const std::string & name) const {
                 return std::find(contents.begin(), contents.end(), name);

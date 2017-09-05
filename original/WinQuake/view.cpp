@@ -386,10 +386,10 @@ V_cshift_f
 */
 void V_cshift_f (const quake::common::argv & args)
 {
-	cshift_empty.destcolor[0] = atoi(Cmd_Argv(1));
-	cshift_empty.destcolor[1] = atoi(Cmd_Argv(2));
-	cshift_empty.destcolor[2] = atoi(Cmd_Argv(3));
-	cshift_empty.percent = atoi(Cmd_Argv(4));
+	cshift_empty.destcolor[0] = args.stoi(0, 0);
+	cshift_empty.destcolor[1] = args.stoi(1, 0);
+	cshift_empty.destcolor[2] = args.stoi(2, 0);
+	cshift_empty.percent      = args.stoi(3, 0);
 }
 
 
