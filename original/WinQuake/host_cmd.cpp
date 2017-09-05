@@ -654,8 +654,7 @@ void Host_Name_f (const quake::common::argv & argv)
 {
 	char newName[16];
 
-	if (Cmd_Argc () == 1)
-	{
+	if (argv.size() == 0) {
 		Con_Printf ("\"name\" is \"%s\"\n", cl_name.string.c_str());
 		return;
 	}
@@ -1173,9 +1172,8 @@ void Host_Kick_f (const quake::common::argv & argv)
 
 	save = host_client;
 
-	if (Cmd_Argc() > 2 && Q_strcmp(Cmd_Argv(1), "#") == 0)
-	{
-		i = Q_atof(Cmd_Argv(2)) - 1;
+	if ((argv.size() > 1) && (argv[0] == "#")) {
+		i = argv.stof(1) - 1;
 		if (i < 0 || i >= svs.maxclients)
 			return;
 		if (!svs.clients[i].active)

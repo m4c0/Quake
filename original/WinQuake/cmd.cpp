@@ -171,8 +171,7 @@ void Cmd_StuffCmds_f (const quake::common::argv & args)
 {
     auto & argv = quake::common::argv::current;
 		
-	if (Cmd_Argc () != 1)
-	{
+	if (args.size() != 0) {
 		Con_Printf ("stuffcmds : execute command line parameters\n");
 		return;
 	}
