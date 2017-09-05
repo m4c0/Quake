@@ -57,14 +57,7 @@ int			in_impulse;
 
 
 static void KeyDown(kbutton_t * b, const args & args) {
-	int		k;
-	const char	*c;
-
-	c = Cmd_Argv(1);
-	if (c[0])
-		k = atoi(c);
-	else
-		k = -1;		// typed manually at the console for continuous down
+	int k = args.stoi(0, -1); // k==-1 -> typed manually at the console for continuous down
 
 	if (k == b->down[0] || k == b->down[1])
 		return;		// repeating key
@@ -85,14 +78,8 @@ static void KeyDown(kbutton_t * b, const args & args) {
 }
 
 static void KeyUp(kbutton_t * b, const args & args) {
-	int		k;
-	const char	*c;
-	
-	c = Cmd_Argv(1);
-	if (c[0])
-		k = atoi(c);
-	else
-	{ // typed manually at the console, assume for unsticking, so clear all
+	int k = args.stoi(0, -1);
+    if (k == -1) { // typed manually at the console, assume for unsticking, so clear all
 		b->down[0] = b->down[1] = 0;
 		b->state = 4;	// impulse up
 		return;
@@ -155,7 +142,7 @@ void IN_UseUp        (const args & args) { KeyUp  (&in_use,  args); }
 void IN_JumpDown     (const args & args) { KeyDown(&in_jump, args); }
 void IN_JumpUp       (const args & args) { KeyUp  (&in_jump, args); }
 
-void IN_Impulse      (const args & args) { in_impulse=Q_atoi(Cmd_Argv(1)); }
+void IN_Impulse      (const args & args) { in_impulse = std::stoi(args[0]); }
 
 /*
 ===============

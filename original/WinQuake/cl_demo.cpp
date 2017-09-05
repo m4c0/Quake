@@ -195,48 +195,42 @@ record <demoname> <map> [cd track]
 */
 void CL_Record_f (const quake::common::argv & argv)
 {
-	int		c;
 	char	name[MAX_OSPATH];
 	int		track;
 
 	if (cmd_source != src_command)
 		return;
 
-	c = Cmd_Argc();
-	if (c != 2 && c != 3 && c != 4)
-	{
+    int c = argv.size();
+	if ((c < 1) || (c > 3)) {
 		Con_Printf ("record <demoname> [<map> [cd track]]\n");
 		return;
 	}
 
-	if (strstr(Cmd_Argv(1), ".."))
-	{
+	if (argv[0].find("..") != std::string::npos) {
 		Con_Printf ("Relative pathnames are not allowed.\n");
 		return;
 	}
 
-	if (c == 2 && cls.state == ca_connected)
+	if (c == 1 && cls.state == ca_connected)
 	{
 		Con_Printf("Can not record - already connected to server\nClient demo recording must be started before connecting\n");
 		return;
 	}
 
 // write the forced cd track number, or -1
-	if (c == 4)
-	{
-		track = atoi(Cmd_Argv(3));
+    track = argv.stoi(2, -1);
+	if (track != -1) {
 		Con_Printf ("Forcing CD track to %i\n", cls.forcetrack);
 	}
-	else
-		track = -1;	
 
-	sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
+	sprintf (name, "%s/%s", com_gamedir, argv[0].c_str());
 	
 //
 // start the map up
 //
-	if (c > 2)
-		Cmd_ExecuteString ( va("map %s", Cmd_Argv(2)), src_command);
+	if (c > 1)
+		Cmd_ExecuteString ( va("map %s", argv[1].c_str()), src_command);
 	
 //
 // open the demo file
@@ -274,8 +268,7 @@ void CL_PlayDemo_f (const quake::common::argv & argv)
 	if (cmd_source != src_command)
 		return;
 
-	if (Cmd_Argc() != 2)
-	{
+	if (argv.size() != 1) {
 		Con_Printf ("play <demoname> : plays a demo\n");
 		return;
 	}
@@ -288,7 +281,7 @@ void CL_PlayDemo_f (const quake::common::argv & argv)
 //
 // open the demo file
 //
-	strcpy (name, Cmd_Argv(1));
+	strcpy (name, argv[0].c_str());
 	COM_DefaultExtension (name, ".dem");
 
 	Con_Printf ("Playing demo from %s.\n", name);
@@ -349,8 +342,7 @@ void CL_TimeDemo_f (const quake::common::argv & argv)
 	if (cmd_source != src_command)
 		return;
 
-	if (Cmd_Argc() != 2)
-	{
+	if (argv.size() != 1) {
 		Con_Printf ("timedemo <demoname> : gets demo speeds\n");
 		return;
 	}

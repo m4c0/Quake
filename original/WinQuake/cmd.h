@@ -100,10 +100,6 @@ const char	*Cmd_Args (void);
 // functions. Cmd_Argv () will return an empty string, not a NULL
 // if arg > argc, so string operations are allways safe.
 
-void Cmd_TokenizeString (const char *text);
-// Takes a null terminated string.  Does not need to be /n terminated.
-// breaks the string up into arg tokens.
-
 void	Cmd_ExecuteString (const char *text, cmd_source_t src);
 // Parses a single line of text into arguments and tries to execute it.
 // The text can come from the command buffer, a remote client, or stdin.

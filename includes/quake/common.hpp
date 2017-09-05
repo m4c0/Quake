@@ -33,6 +33,21 @@ namespace quake {
                 return contents.size();
             }
 
+            const std::string & operator[](int idx) const {
+                static std::string null = "";
+                if (idx >= contents.size()) return null;
+                return contents[idx];
+            }
+            // Allows an easy replacement for old permissive "atoi"
+            int stoi(int idx, int def_val) const {
+                if (idx >= contents.size()) return def_val;
+                try {
+                    return std::stoi(contents[idx]);
+                } catch (...) {
+                    return def_val;
+                }
+            }
+
             auto find_parameter(const std::string & name) const {
                 return std::find(contents.begin(), contents.end(), name);
             }
