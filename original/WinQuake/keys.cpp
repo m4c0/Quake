@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "quakedef.h"
 
+#include <numeric>
 /*
 
 key up events are sent even if in console mode
@@ -411,16 +412,16 @@ void Key_Unbind_f (const quake::common::argv & argv)
 {
 	int		b;
 
-	if (Cmd_Argc() != 2)
+	if (argv.size() != 1)
 	{
 		Con_Printf ("unbind <key> : remove commands from a key\n");
 		return;
 	}
 	
-	b = Key_StringToKeynum (Cmd_Argv(1));
+	b = Key_StringToKeynum (argv[0].c_str());
 	if (b==-1)
 	{
-		Con_Printf ("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+		Con_Printf ("\"%s\" isn't a valid key\n", argv[0].c_str());
 		return;
 	}
 
@@ -441,44 +442,34 @@ void Key_Unbindall_f (const quake::common::argv & argv)
 Key_Bind_f
 ===================
 */
-void Key_Bind_f (const quake::common::argv & argv)
-{
-	int			i, c, b;
-	char		cmd[1024];
-	
-	c = Cmd_Argc();
-
-	if (c != 2 && c != 3)
-	{
+void Key_Bind_f (const quake::common::argv & argv) {
+	int c = argv.size();
+	if ((c < 1) || (c > 2)) {
 		Con_Printf ("bind <key> [command] : attach a command to a key\n");
 		return;
 	}
-	b = Key_StringToKeynum (Cmd_Argv(1));
+
+    auto keyname = argv[0].c_str();
+	int b = Key_StringToKeynum (keyname);
 	if (b==-1)
 	{
-		Con_Printf ("\"%s\" isn't a valid key\n", Cmd_Argv(1));
+		Con_Printf ("\"%s\" isn't a valid key\n", keyname);
 		return;
 	}
 
-	if (c == 2)
+	if (c == 1)
 	{
 		if (keybindings[b] != "")
-			Con_Printf ("\"%s\" = \"%s\"\n", Cmd_Argv(1), keybindings[b].c_str() );
+			Con_Printf ("\"%s\" = \"%s\"\n", keyname, keybindings[b].c_str() );
 		else
-			Con_Printf ("\"%s\" is not bound\n", Cmd_Argv(1) );
+			Con_Printf ("\"%s\" is not bound\n", keyname );
 		return;
 	}
 	
 // copy the rest of the command line
-	cmd[0] = 0;		// start out with a null string
-	for (i=2 ; i< c ; i++)
-	{
-		if (i > 2)
-			strcat (cmd, " ");
-		strcat (cmd, Cmd_Argv(i));
-	}
+    std::string cmd = std::accumulate(argv.begin() + 2, argv.end(), argv[1], [](const auto & acc, const auto & val) { return acc + " " + val; });
 
-	Key_SetBinding (b, cmd);
+	Key_SetBinding (b, cmd.c_str());
 }
 
 /*
