@@ -109,9 +109,8 @@ void NET_Ban_f (const quake::common::argv & argv)
 		print = SV_ClientPrintf;
 	}
 
-	switch (Cmd_Argc ())
-	{
-		case 1:
+	switch (argv.size()) {
+		case 0:
 			if (((struct in_addr *)&banAddr)->s_addr)
 			{
 				Q_strcpy(addrStr, inet_ntoa(*(struct in_addr *)&banAddr));
@@ -122,17 +121,18 @@ void NET_Ban_f (const quake::common::argv & argv)
 				print("Banning not active\n");
 			break;
 
-		case 2:
-			if (Q_strcasecmp(Cmd_Argv(1), "off") == 0)
+		case 1:
+			if (argv[0] == "off") {
 				banAddr = 0x00000000;
-			else
-				banAddr = inet_addr(Cmd_Argv(1));
+            } else {
+				banAddr = inet_addr(argv[0].c_str());
+            }
 			banMask = 0xffffffff;
 			break;
 
-		case 3:
-			banAddr = inet_addr(Cmd_Argv(1));
-			banMask = inet_addr(Cmd_Argv(2));
+		case 2:
+			banAddr = inet_addr(argv[0].c_str());
+			banMask = inet_addr(argv[1].c_str());
 			break;
 
 		default:
@@ -460,8 +460,7 @@ void NET_Stats_f (const quake::common::argv & argv)
 {
 	qsocket_t	*s;
 
-	if (Cmd_Argc () == 1)
-	{
+	if (argv.size() == 0) {
 		Con_Printf("unreliable messages sent   = %i\n", unreliableMessagesSent);
 		Con_Printf("unreliable messages recv   = %i\n", unreliableMessagesReceived);
 		Con_Printf("reliable messages sent     = %i\n", messagesSent);
@@ -472,25 +471,21 @@ void NET_Stats_f (const quake::common::argv & argv)
 		Con_Printf("receivedDuplicateCount     = %i\n", receivedDuplicateCount);
 		Con_Printf("shortPacketCount           = %i\n", shortPacketCount);
 		Con_Printf("droppedDatagrams           = %i\n", droppedDatagrams);
-	}
-	else if (Q_strcmp(Cmd_Argv(1), "*") == 0)
-	{
+	} else if (argv[0] == "*") {
 		for (s = net_activeSockets; s; s = s->next)
 			PrintStats(s);
 		for (s = net_freeSockets; s; s = s->next)
 			PrintStats(s);
-	}
-	else
-	{
-		for (s = net_activeSockets; s; s = s->next)
-			if (Q_strcasecmp(Cmd_Argv(1), s->address) == 0)
-				break;
-		if (s == NULL)
-			for (s = net_freeSockets; s; s = s->next)
-				if (Q_strcasecmp(Cmd_Argv(1), s->address) == 0)
-					break;
-		if (s == NULL)
-			return;
+	} else {
+		for (s = net_activeSockets; s; s = s->next) {
+			if (argv[0] == s->address) break;
+        }
+		if (s == NULL) {
+			for (s = net_freeSockets; s; s = s->next) {
+                if (argv[0] == s->address) break;
+            }
+        }
+		if (s == NULL) return;
 		PrintStats(s);
 	}
 }
@@ -563,7 +558,6 @@ static void Test_Poll(void *)
 
 static void Test_f (const quake::common::argv & argv)
 {
-	const char	*host;
 	int		n;
 	int		max = MAX_SCOREBOARD;
 	struct qsockaddr sendaddr;
@@ -571,13 +565,12 @@ static void Test_f (const quake::common::argv & argv)
 	if (testInProgress)
 		return;
 
-	host = Cmd_Argv (1);
+    const std::string & host = argv[0];
 
-	if (host && hostCacheCount)
+	if ((host != "") && hostCacheCount)
 	{
 		for (n = 0; n < hostCacheCount; n++)
-			if (Q_strcasecmp (host, hostcache[n].name) == 0)
-			{
+			if (host == hostcache[n].name) {
 				if (hostcache[n].driver != myDriverLevel)
 					continue;
 				net_landriverlevel = hostcache[n].ldriver;
@@ -595,7 +588,7 @@ static void Test_f (const quake::common::argv & argv)
 			continue;
 
 		// see if we can resolve the host name
-		if (dfunc.GetAddrFromName(host, &sendaddr) != -1)
+		if (dfunc.GetAddrFromName(host.c_str(), &sendaddr) != -1)
 			break;
 	}
 	if (net_landriverlevel == net_numlandrivers)
@@ -692,20 +685,18 @@ Done:
 
 static void Test2_f (const quake::common::argv & argv)
 {
-	const char	*host;
 	int		n;
 	struct qsockaddr sendaddr;
 
 	if (test2InProgress)
 		return;
 
-	host = Cmd_Argv (1);
+	const std::string & host = argv[0];
 
-	if (host && hostCacheCount)
+	if ((host != "") && hostCacheCount)
 	{
 		for (n = 0; n < hostCacheCount; n++)
-			if (Q_strcasecmp (host, hostcache[n].name) == 0)
-			{
+			if (host == hostcache[n].name) {
 				if (hostcache[n].driver != myDriverLevel)
 					continue;
 				net_landriverlevel = hostcache[n].ldriver;
@@ -722,7 +713,7 @@ static void Test2_f (const quake::common::argv & argv)
 			continue;
 
 		// see if we can resolve the host name
-		if (dfunc.GetAddrFromName(host, &sendaddr) != -1)
+		if (dfunc.GetAddrFromName(host.c_str(), &sendaddr) != -1)
 			break;
 	}
 	if (net_landriverlevel == net_numlandrivers)
