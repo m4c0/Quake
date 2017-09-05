@@ -518,12 +518,14 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 	if (!Cmd_Argc())
 		return;		// no tokens
 
+    quake::common::argv args(cmd_argc, cmd_argv);
+
 // check functions
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 	{
 		if (!Q_strcasecmp (cmd_argv[0],cmd->name))
 		{
-			cmd->function ({ cmd_argc, cmd_argv });
+			cmd->function (args);
 			return;
 		}
 	}
@@ -537,8 +539,8 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 	}
 	
 // check cvars
-	if (!Cvar_Command ())
-		Con_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
+	if (!Cvar_Command (cmd_argv[0], args))
+		Con_Printf ("Unknown command \"%s\"\n", cmd_argv[0]);
 	
 }
 

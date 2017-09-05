@@ -67,7 +67,6 @@ Cvar_CompleteVariable
 */
 const char *Cvar_CompleteVariable (const char *partial)
 {
-	cvar_t		*cvar;
 	int			len;
 	
 	len = Q_strlen(partial);
@@ -77,8 +76,8 @@ const char *Cvar_CompleteVariable (const char *partial)
 		
 // check functions
     for (cvar_t * var = cvar_vars; var; var = var->next) {
-        if (cvar->name.compare(0, len, partial) == 0) {
-            return cvar->name.c_str();
+        if (var->name.compare(0, len, partial) == 0) {
+            return var->name.c_str();
         }
     }
 
@@ -173,23 +172,21 @@ Cvar_Command
 Handles variable inspection and changing from the console
 ============
 */
-qboolean	Cvar_Command (void)
-{
+qboolean Cvar_Command (std::string cmd, const quake::common::argv & args) {
 	cvar_t			*v;
 
 // check variables
-	v = Cvar_FindVar (Cmd_Argv(0));
+	v = Cvar_FindVar (cmd.c_str());
 	if (!v)
 		return false;
 		
 // perform a variable print or set
-	if (Cmd_Argc() == 1)
-	{
+	if (args.size() == 0) {
 		Con_Printf ("\"%s\" is \"%s\"\n", v->name.c_str(), v->string.c_str());
 		return true;
 	}
 
-	Cvar_Set (v->name.c_str(), Cmd_Argv(1));
+	Cvar_Set (v->name.c_str(), args[0].c_str());
 	return true;
 }
 

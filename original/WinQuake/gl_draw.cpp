@@ -325,22 +325,22 @@ void Draw_TextureMode_f (const quake::common::argv & argv)
 	int		i;
 	gltexture_t	*glt;
 
-	if (Cmd_Argc() == 1)
-	{
-		for (i=0 ; i< 6 ; i++)
+	if (argv.size() == 0) {
+		for (int i = 0; i < 6; i++) {
 			if (gl_filter_min == modes[i].minimize)
 			{
 				Con_Printf ("%s\n", modes[i].name);
 				return;
 			}
-		Con_Printf ("current filter is unknown???\n");
+        }
+		Con_Printf ("current filter is unknown\n");
 		return;
 	}
 
-	for (i=0 ; i< 6 ; i++)
-	{
-		if (!Q_strcasecmp (modes[i].name, Cmd_Argv(1) ) )
-			break;
+	for (i = 0; i < 6; i++) {
+        if (argv[0] == modes[i].name) {
+            break;
+        }
 	}
 	if (i == 6)
 	{
