@@ -552,7 +552,7 @@ For debugging, prints a single edicy
 */
 void ED_PrintEdict_f (const quake::common::argv & argv)
 {
-	int i = argv.stoi(1, 0);
+	int i = argv.stoi(0);
 	if (i >= sv.num_edicts)
 	{
 		Con_Printf("Bad edict number\n");

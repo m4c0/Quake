@@ -178,13 +178,12 @@ void NET_FreeQSocket(qsocket_t *sock)
 
 static void NET_Listen_f (const quake::common::argv & argv)
 {
-	if (Cmd_Argc () != 2)
-	{
+	if (argv.size() != 1) {
 		Con_Printf ("\"listen\" is \"%u\"\n", listening ? 1 : 0);
 		return;
 	}
 
-	listening = Q_atoi(Cmd_Argv(1)) ? true : false;
+	listening = argv.stoi(0) ? true : false;
 
 	for (net_driverlevel=0 ; net_driverlevel<net_numdrivers; net_driverlevel++)
 	{
@@ -197,10 +196,7 @@ static void NET_Listen_f (const quake::common::argv & argv)
 
 static void MaxPlayers_f (const quake::common::argv & argv)
 {
-	int 	n;
-
-	if (Cmd_Argc () != 2)
-	{
+	if (argv.size() != 1) {
 		Con_Printf ("\"maxplayers\" is \"%u\"\n", svs.maxclients);
 		return;
 	}
@@ -211,7 +207,7 @@ static void MaxPlayers_f (const quake::common::argv & argv)
 		return;
 	}
 
-	n = Q_atoi(Cmd_Argv(1));
+	int n = argv.stoi(0);
 	if (n < 1)
 		n = 1;
 	if (n > svs.maxclientslimit)
@@ -236,15 +232,12 @@ static void MaxPlayers_f (const quake::common::argv & argv)
 
 static void NET_Port_f (const quake::common::argv & argv)
 {
-	int 	n;
-
-	if (Cmd_Argc () != 2)
-	{
+	if (argv.size() != 1) {
 		Con_Printf ("\"port\" is \"%u\"\n", net_hostport);
 		return;
 	}
 
-	n = Q_atoi(Cmd_Argv(1));
+    int n = argv.stoi(0);
 	if (n < 1 || n > 65534)
 	{
 		Con_Printf ("Bad value, must be between 1 and 65534\n");

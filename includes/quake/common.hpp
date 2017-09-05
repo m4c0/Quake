@@ -47,6 +47,9 @@ namespace quake {
                     return def_val;
                 }
             }
+            int stoi(int idx) const {
+                return stoi(idx, 0);
+            }
             // Allows an easy replacement for old permissive "atof"
             float stof(int idx, float def_val) const {
                 if (idx >= contents.size()) return def_val;
@@ -55,6 +58,9 @@ namespace quake {
                 } catch (...) {
                     return def_val;
                 }
+            }
+            float stof(float idx) const {
+                return stof(idx, 0.0f);
             }
 
             auto find_parameter(const std::string & name) const {
