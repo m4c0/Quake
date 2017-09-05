@@ -271,14 +271,6 @@ void Host_Map_f (const quake::common::argv & argv)
 	key_dest = key_game;			// remove console or menu
 	SCR_BeginLoadingPlaque ();
 
-	cls.mapstring[0] = 0;
-	for (i=0 ; i<Cmd_Argc() ; i++)
-	{
-		strcat (cls.mapstring, Cmd_Argv(i));
-		strcat (cls.mapstring, " ");
-	}
-	strcat (cls.mapstring, "\n");
-
 	svs.serverflags = 0;			// haven't completed an episode yet
 	strcpy (name, Cmd_Argv(1));
 #ifdef QUAKE2
