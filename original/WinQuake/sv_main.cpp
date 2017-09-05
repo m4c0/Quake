@@ -1041,11 +1041,7 @@ This is called at the start of each level
 */
 extern float		scr_centertime_off;
 
-#ifdef QUAKE2
-void SV_SpawnServer (char *server, char *startspot)
-#else
-void SV_SpawnServer (char *server)
-#endif
+void SV_SpawnServer (const char *server)
 {
 	edict_t		*ent;
 	int			i;

@@ -258,7 +258,6 @@ command from the console.  Active clients are kicked off.
 void Host_Map_f (const quake::common::argv & argv)
 {
 	int		i;
-	char	name[MAX_QPATH];
 
 	if (cmd_source != src_command)
 		return;
@@ -272,24 +271,19 @@ void Host_Map_f (const quake::common::argv & argv)
 	SCR_BeginLoadingPlaque ();
 
 	svs.serverflags = 0;			// haven't completed an episode yet
-	strcpy (name, Cmd_Argv(1));
-#ifdef QUAKE2
-	SV_SpawnServer (name, NULL);
-#else
-	SV_SpawnServer (name);
-#endif
+
+	SV_SpawnServer (argv[0].c_str());
+
 	if (!sv.active)
 		return;
 	
 	if (cls.state != ca_dedicated)
 	{
-		strcpy (cls.spawnparms, "");
-
-		for (i=2 ; i<Cmd_Argc() ; i++)
-		{
-			strcat (cls.spawnparms, Cmd_Argv(i));
-			strcat (cls.spawnparms, " ");
-		}
+        std::string buffer = "";
+        if (argv.size() > 1) {
+            buffer = std::accumulate(argv.begin() + 2, argv.end(), argv[1], [](auto & a, auto & b) { return a + " " + b; })
+        }
+		strcpy (cls.spawnparms, buffer.c_str());
 		
 		Cmd_ExecuteString ("connect local", src_command);
 	}	
