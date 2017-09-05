@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include <numeric>
 #include <string>
 
 extern cvar_t	pausable;
@@ -281,7 +282,7 @@ void Host_Map_f (const quake::common::argv & argv)
 	{
         std::string buffer = "";
         if (argv.size() > 1) {
-            buffer = std::accumulate(argv.begin() + 2, argv.end(), argv[1], [](auto & a, auto & b) { return a + " " + b; })
+            buffer = std::accumulate(argv.begin() + 2, argv.end(), argv[1], [](auto & a, auto & b) { return a + " " + b; });
         }
 		strcpy (cls.spawnparms, buffer.c_str());
 		
@@ -298,38 +299,7 @@ Goes to a new map, taking all clients along
 */
 void Host_Changelevel_f (const quake::common::argv & argv)
 {
-#ifdef QUAKE2
-	char	level[MAX_QPATH];
-	char	_startspot[MAX_QPATH];
-	char	*startspot;
-
-	if (Cmd_Argc() < 2)
-	{
-		Con_Printf ("changelevel <levelname> : continue game on a new level\n");
-		return;
-	}
-	if (!sv.active || cls.demoplayback)
-	{
-		Con_Printf ("Only the server may changelevel\n");
-		return;
-	}
-
-	strcpy (level, Cmd_Argv(1));
-	if (Cmd_Argc() == 2)
-		startspot = NULL;
-	else
-	{
-		strcpy (_startspot, Cmd_Argv(2));
-		startspot = _startspot;
-	}
-
-	SV_SaveSpawnparms ();
-	SV_SpawnServer (level, startspot);
-#else
-	char	level[MAX_QPATH];
-
-	if (Cmd_Argc() != 2)
-	{
+	if (argv.size() != 1) {
 		Con_Printf ("changelevel <levelname> : continue game on a new level\n");
 		return;
 	}
@@ -339,9 +309,7 @@ void Host_Changelevel_f (const quake::common::argv & argv)
 		return;
 	}
 	SV_SaveSpawnparms ();
-	strcpy (level, Cmd_Argv(1));
-	SV_SpawnServer (level);
-#endif
+	SV_SpawnServer (argv[0].c_str());
 }
 
 /*
@@ -354,9 +322,6 @@ Restarts the current server for a dead player
 void Host_Restart_f (const quake::common::argv & argv)
 {
 	char	mapname[MAX_QPATH];
-#ifdef QUAKE2
-	char	startspot[MAX_QPATH];
-#endif
 
 	if (cls.demoplayback || !sv.active)
 		return;
@@ -365,12 +330,7 @@ void Host_Restart_f (const quake::common::argv & argv)
 		return;
 	strcpy (mapname, sv.name);	// must copy out, because it gets cleared
 								// in sv_spawnserver
-#ifdef QUAKE2
-	strcpy(startspot, sv.startspot);
-	SV_SpawnServer (mapname, startspot);
-#else
 	SV_SpawnServer (mapname);
-#endif
 }
 
 /*
@@ -404,7 +364,7 @@ void Host_Connect_f (const quake::common::argv & argv)
 		CL_StopPlayback ();
 		CL_Disconnect ();
 	}
-	strcpy (name, Cmd_Argv(1));
+	strcpy (name, argv[0].c_str());
 	CL_EstablishConnection (name);
 	Host_Reconnect_f ({});
 }
@@ -478,14 +438,12 @@ void Host_Savegame_f (const quake::common::argv & argv)
 		return;
 	}
 
-	if (Cmd_Argc() != 2)
-	{
+	if (argv.size() != 1) {
 		Con_Printf ("save <savename> : save a game\n");
 		return;
 	}
 
-	if (strstr(Cmd_Argv(1), ".."))
-	{
+	if (argv[0].find("..") != std::string::npos) {
 		Con_Printf ("Relative pathnames are not allowed.\n");
 		return;
 	}
@@ -499,7 +457,7 @@ void Host_Savegame_f (const quake::common::argv & argv)
 		}
 	}
 
-	sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
+	sprintf (name, "%s/%s", com_gamedir, argv[0].c_str());
 	COM_DefaultExtension (name, ".sav");
 	
 	Con_Printf ("Saving game to %s...\n", name);
@@ -563,7 +521,7 @@ void Host_Loadgame_f (const quake::common::argv & argv)
 	if (cmd_source != src_command)
 		return;
 
-	if (Cmd_Argc() != 2)
+	if (argv.size() != 1)
 	{
 		Con_Printf ("load <savename> : load a game\n");
 		return;
@@ -571,7 +529,7 @@ void Host_Loadgame_f (const quake::common::argv & argv)
 
 	cls.demonum = -1;		// stop demo loop in case this fails
 
-	sprintf (name, "%s/%s", com_gamedir, Cmd_Argv(1));
+	sprintf (name, "%s/%s", com_gamedir, argv[0].c_str());
 	COM_DefaultExtension (name, ".sav");
 	
 // we can't call SCR_BeginLoadingPlaque, because too much stack space has
@@ -601,22 +559,12 @@ void Host_Loadgame_f (const quake::common::argv & argv)
 	current_skill = (int)(tfloat + 0.1);
 	Cvar_SetValue ("skill", (float)current_skill);
 
-#ifdef QUAKE2
-	Cvar_SetValue ("deathmatch", 0);
-	Cvar_SetValue ("coop", 0);
-	Cvar_SetValue ("teamplay", 0);
-#endif
-
 	fscanf (f, "%s\n",mapname);
 	fscanf (f, "%f\n",&time);
 
 	CL_Disconnect_f ({});
 	
-#ifdef QUAKE2
-	SV_SpawnServer (mapname, NULL);
-#else
 	SV_SpawnServer (mapname);
-#endif
 	if (!sv.active)
 	{
 		Con_Printf ("Couldn't load map\n");
@@ -694,200 +642,6 @@ void Host_Loadgame_f (const quake::common::argv & argv)
 		Host_Reconnect_f ({});
 	}
 }
-
-#ifdef QUAKE2
-void SaveGamestate()
-{
-	char	name[256];
-	FILE	*f;
-	int		i;
-	char	comment[SAVEGAME_COMMENT_LENGTH+1];
-	edict_t	*ent;
-
-	sprintf (name, "%s/%s.gip", com_gamedir, sv.name);
-	
-	Con_Printf ("Saving game to %s...\n", name);
-	f = fopen (name, "w");
-	if (!f)
-	{
-		Con_Printf ("ERROR: couldn't open.\n");
-		return;
-	}
-	
-	fprintf (f, "%i\n", SAVEGAME_VERSION);
-	Host_SavegameComment (comment);
-	fprintf (f, "%s\n", comment);
-//	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
-//		fprintf (f, "%f\n", svs.clients->spawn_parms[i]);
-	fprintf (f, "%f\n", skill.value);
-	fprintf (f, "%s\n", sv.name);
-	fprintf (f, "%f\n", sv.time);
-
-// write the light styles
-
-	for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
-	{
-		if (sv.lightstyles[i])
-			fprintf (f, "%s\n", sv.lightstyles[i]);
-		else
-			fprintf (f,"m\n");
-	}
-
-
-	for (i=svs.maxclients+1 ; i<sv.num_edicts ; i++)
-	{
-		ent = EDICT_NUM(i);
-		if ((int)ent->v.flags & FL_ARCHIVE_OVERRIDE)
-			continue;
-		fprintf (f, "%i\n",i);
-		ED_Write (f, ent);
-		fflush (f);
-	}
-	fclose (f);
-	Con_Printf ("done.\n");
-}
-
-int LoadGamestate(char *level, char *startspot)
-{
-	char	name[MAX_OSPATH];
-	FILE	*f;
-	char	mapname[MAX_QPATH];
-	float	time, sk;
-	char	str[32768], *start;
-	int		i, r;
-	edict_t	*ent;
-	int		entnum;
-	int		version;
-//	float	spawn_parms[NUM_SPAWN_PARMS];
-
-	sprintf (name, "%s/%s.gip", com_gamedir, level);
-	
-	Con_Printf ("Loading game from %s...\n", name);
-	f = fopen (name, "r");
-	if (!f)
-	{
-		Con_Printf ("ERROR: couldn't open.\n");
-		return -1;
-	}
-
-	fscanf (f, "%i\n", &version);
-	if (version != SAVEGAME_VERSION)
-	{
-		fclose (f);
-		Con_Printf ("Savegame is version %i, not %i\n", version, SAVEGAME_VERSION);
-		return -1;
-	}
-	fscanf (f, "%s\n", str);
-//	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
-//		fscanf (f, "%f\n", &spawn_parms[i]);
-	fscanf (f, "%f\n", &sk);
-	Cvar_SetValue ("skill", sk);
-
-	fscanf (f, "%s\n",mapname);
-	fscanf (f, "%f\n",&time);
-
-	SV_SpawnServer (mapname, startspot);
-
-	if (!sv.active)
-	{
-		Con_Printf ("Couldn't load map\n");
-		return -1;
-	}
-
-// load the light styles
-	for (i=0 ; i<MAX_LIGHTSTYLES ; i++)
-	{
-		fscanf (f, "%s\n", str);
-		sv.lightstyles[i] = Hunk_Alloc (strlen(str)+1);
-		strcpy (sv.lightstyles[i], str);
-	}
-
-// load the edicts out of the savegame file
-	while (!feof(f))
-	{
-		fscanf (f, "%i\n",&entnum);
-		for (i=0 ; i<sizeof(str)-1 ; i++)
-		{
-			r = fgetc (f);
-			if (r == EOF || !r)
-				break;
-			str[i] = r;
-			if (r == '}')
-			{
-				i++;
-				break;
-			}
-		}
-		if (i == sizeof(str)-1)
-			Sys_Error ("Loadgame buffer overflow");
-		str[i] = 0;
-		start = str;
-		start = COM_Parse(str);
-		if (!com_token[0])
-			break;		// end of file
-		if (strcmp(com_token,"{"))
-			Sys_Error ("First token isn't a brace");
-			
-		// parse an edict
-
-		ent = EDICT_NUM(entnum);
-		memset (&ent->v, 0, progs->entityfields * 4);
-		ent->free = false;
-		ED_ParseEdict (start, ent);
-	
-		// link it into the bsp tree
-		if (!ent->free)
-			SV_LinkEdict (ent, false);
-	}
-	
-//	sv.num_edicts = entnum;
-	sv.time = time;
-	fclose (f);
-
-//	for (i=0 ; i<NUM_SPAWN_PARMS ; i++)
-//		svs.clients->spawn_parms[i] = spawn_parms[i];
-
-	return 0;
-}
-
-// changing levels within a unit
-void Host_Changelevel2_f (void)
-{
-	char	level[MAX_QPATH];
-	char	_startspot[MAX_QPATH];
-	char	*startspot;
-
-	if (Cmd_Argc() < 2)
-	{
-		Con_Printf ("changelevel2 <levelname> : continue game on a new level in the unit\n");
-		return;
-	}
-	if (!sv.active || cls.demoplayback)
-	{
-		Con_Printf ("Only the server may changelevel\n");
-		return;
-	}
-
-	strcpy (level, Cmd_Argv(1));
-	if (Cmd_Argc() == 2)
-		startspot = NULL;
-	else
-	{
-		strcpy (_startspot, Cmd_Argv(2));
-		startspot = _startspot;
-	}
-
-	SV_SaveSpawnparms ();
-
-	// save the current level's state
-	SaveGamestate ();
-
-	// try to restore the new level
-	if (LoadGamestate (level, startspot))
-		SV_SpawnServer (level, startspot);
-}
-#endif
-
 
 //============================================================================
 
