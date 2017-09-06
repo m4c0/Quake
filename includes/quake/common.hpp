@@ -1,6 +1,8 @@
 #ifndef QUAKE_COMMON_HPP
 #define QUAKE_COMMON_HPP
 
+#include "quake/legacy.hpp"
+
 #include <string>
 #include <vector>
 
@@ -27,6 +29,37 @@ namespace quake {
             argv(int argc, char ** argv) : contents() {
                 for (int i = 1; i < argc; i++) {
                     contents.push_back(argv[i]);
+                }
+            }
+            argv(const char * text) {
+                // FIXME: improve this code (formely "Cmd_TokenizeString")
+                while (true) {
+                    // skip whitespace up to a /n
+                    while (*text && *text <= ' ' && *text != '\n') {
+                        text++;
+                    }
+
+                    if (*text == '\n') {
+                        // a newline seperates commands in the buffer
+                        text++;
+                        break;
+                    }
+
+                    if (!*text)
+                        return;
+
+                    if (cmd != "")
+                        all = text;
+
+                    text = COM_Parse (text);
+                    if (!text)
+                        return;
+
+                    if (cmd == "") {
+                        cmd = com_token;
+                    } else {
+                        contents.push_back(com_token);
+                    }
                 }
             }
 

@@ -297,13 +297,6 @@ typedef struct cmd_function_s
 } cmd_function_t;
 
 
-#define	MAX_ARGS		80
-
-static	int			cmd_argc;
-static	char		*cmd_argv[MAX_ARGS];
-static	const char		*cmd_null_string = "";
-static	const char		*cmd_args = NULL;
-
 cmd_source_t	cmd_source;
 
 
@@ -326,59 +319,6 @@ void Cmd_Init (void)
 	Cmd_AddCommand ("cmd", Cmd_ForwardToServer);
 	Cmd_AddCommand ("wait", Cmd_Wait_f);
 }
-
-/*
-============
-Cmd_TokenizeString
-
-Parses the given string into command line tokens.
-============
-*/
-void Cmd_TokenizeString (const char *text)
-{
-	int		i;
-	
-// clear the args from the last string
-	for (i=0 ; i<cmd_argc ; i++)
-		Z_Free (cmd_argv[i]);
-		
-	cmd_argc = 0;
-	cmd_args = NULL;
-	
-	while (1)
-	{
-// skip whitespace up to a /n
-		while (*text && *text <= ' ' && *text != '\n')
-		{
-			text++;
-		}
-		
-		if (*text == '\n')
-		{	// a newline seperates commands in the buffer
-			text++;
-			break;
-		}
-
-		if (!*text)
-			return;
-	
-		if (cmd_argc == 1)
-			 cmd_args = text;
-			
-		text = COM_Parse (text);
-		if (!text)
-			return;
-
-		if (cmd_argc < MAX_ARGS)
-		{
-			cmd_argv[cmd_argc] = (char *)Z_Malloc (Q_strlen(com_token)+1);
-			Q_strcpy (cmd_argv[cmd_argc], com_token);
-			cmd_argc++;
-		}
-	}
-	
-}
-
 
 /*
 ============
@@ -472,15 +412,12 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 	cmd_function_t	*cmd;
 
 	cmd_source = src;
-	Cmd_TokenizeString (text);
+
+    quake::common::argv args { text };
 			
 // execute the command line
-	if (!cmd_argc)
+	if (args.cmd == "")
 		return;		// no tokens
-
-    quake::common::argv args(cmd_argc, cmd_argv);
-    args.all = cmd_args ?: "";
-    args.cmd = cmd_argv[0];
 
 // check functions
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
@@ -502,7 +439,7 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 	
 // check cvars
 	if (!Cvar_Command (args.cmd.c_str(), args))
-		Con_Printf ("Unknown command \"%s\"\n", cmd_argv[0]);
+		Con_Printf ("Unknown command \"%s\"\n", args.cmd.c_str());
 	
 }
 
