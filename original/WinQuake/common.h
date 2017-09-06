@@ -171,7 +171,6 @@ void COM_CloseFile (int h);
 byte *COM_LoadStackFile (const char *path, void *buffer, int bufsize);
 byte *COM_LoadTempFile (const char *path);
 byte *COM_LoadHunkFile (const char *path);
-void COM_LoadCacheFile (const char *path, struct cache_user_s *cu);
 
 
 extern	struct cvar_s	registered;

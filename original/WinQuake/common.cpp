@@ -1505,8 +1505,6 @@ byte *COM_LoadFile (const char *path, int usehunk)
 		buf = (byte *)Hunk_AllocName (len+1, base);
 	else if (usehunk == 2)
 		buf = (byte *)Hunk_TempAlloc (len+1);
-	else if (usehunk == 3)
-		buf = (byte *)Cache_Alloc (loadcache, len+1, base);
 	else if (usehunk == 4)
 	{
 		if (len+1 > loadsize)
@@ -1538,12 +1536,6 @@ byte *COM_LoadHunkFile (const char *path)
 byte *COM_LoadTempFile (const char *path)
 {
 	return COM_LoadFile (path, 2);
-}
-
-void COM_LoadCacheFile (const char *path, struct cache_user_s *cu)
-{
-	loadcache = cu;
-	COM_LoadFile (path, 3);
 }
 
 // uses temp hunk if larger than bufsize
