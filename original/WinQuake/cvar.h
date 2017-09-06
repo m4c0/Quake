@@ -57,15 +57,15 @@ interface from being ambiguous.
 
 #include <string>
 
-typedef struct cvar_s
+struct cvar_t
 {
 	const std::string name;
 	std::string string;
 	qboolean archive;		// set to true to cause it to be saved to vars.rc
 	qboolean server;		// notifies players when changed
 	float	value;
-	struct cvar_s *next;
-} cvar_t;
+	cvar_t *next;
+};
 
 void 	Cvar_RegisterVariable (cvar_t *variable);
 // registers a cvar that allready has the name, string, and optionally the

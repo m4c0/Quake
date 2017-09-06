@@ -173,6 +173,4 @@ byte *COM_LoadTempFile (const char *path);
 byte *COM_LoadHunkFile (const char *path);
 
 
-extern	struct cvar_s	registered;
-
 extern qboolean		standard_quake, rogue, hipnotic;
