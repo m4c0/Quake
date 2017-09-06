@@ -13,6 +13,11 @@ namespace quake {
         public:
             static std::unique_ptr<const argv> current;
 
+            // FIXME: Provide a better interface, or remove usages
+            // Currently, in use by commands with "dynamic parameters".
+            // Ex: "kick <user> <msg>"
+            std::string all;
+
             argv() : contents() {
             }
             argv(const std::vector<std::string> & args) : contents(args) {

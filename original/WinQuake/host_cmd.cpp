@@ -658,10 +658,8 @@ void Host_Name_f (const quake::common::argv & argv)
 		Con_Printf ("\"name\" is \"%s\"\n", cl_name.string.c_str());
 		return;
 	}
-	if (Cmd_Argc () == 2)
-		strncpy(newName, Cmd_Argv(1), 15);	
-	else
-		strncpy(newName, Cmd_Args(), 15);
+
+    strncpy(newName, argv.all.c_str(), 15);
 	newName[15] = 0;
 
 	if (cmd_source == src_command)
@@ -704,9 +702,8 @@ void Host_Please_f (const quake::common::argv & argv)
 	if (cmd_source != src_command)
 		return;
 
-	if ((Cmd_Argc () == 3) && Q_strcmp(Cmd_Argv(1), "#") == 0)
-	{
-		j = Q_atof(Cmd_Argv(2)) - 1;
+    if ((argv.size() == 2) && (argv[0] == "#")) {
+		j = argv.stof(1) - 1;
 		if (j < 0 || j >= svs.maxclients)
 			return;
 		if (!svs.clients[j].active)
@@ -723,14 +720,14 @@ void Host_Please_f (const quake::common::argv & argv)
 			cl->privileged = true;
 	}
 
-	if (Cmd_Argc () != 2)
+	if (argv.size () != 1)
 		return;
 
 	for (j=0, cl = svs.clients ; j<svs.maxclients ; j++, cl++)
 	{
 		if (!cl->active)
 			continue;
-		if (Q_strcasecmp(cl->name, Cmd_Argv(1)) == 0)
+		if (Q_strcasecmp(cl->name, argv[0].c_str()) == 0)
 		{
 			if (cl->privileged)
 			{
@@ -747,8 +744,8 @@ void Host_Please_f (const quake::common::argv & argv)
 }
 #endif
 
-static void _concat_args(char * text, int maxlen) {
-    std::string p = Cmd_Args();
+static void _concat_args(const quake::common::argv & argv, char * text, int maxlen) {
+    std::string p = argv.all;
 
     // remove quotes if present
 	if (p.front() == '"') {
@@ -787,7 +784,7 @@ void Host_Say(qboolean teamonly, const quake::common::argv & argv)
 		}
 	}
 
-	if (Cmd_Argc () < 2)
+	if (argv.size() < 1)
 		return;
 
 	save = host_client;
@@ -798,7 +795,7 @@ void Host_Say(qboolean teamonly, const quake::common::argv & argv)
 	else
 		sprintf ((char *)text, "%c<%s> ", 1, hostname.string.c_str());
 
-    _concat_args(text, 64);
+    _concat_args(argv, text, 64);
 
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
@@ -840,20 +837,20 @@ void Host_Tell_f(const quake::common::argv & argv)
 		return;
 	}
 
-	if (Cmd_Argc () < 3)
+	if (argv.size() < 2)
 		return;
 
 	Q_strcpy(text, host_client->name);
 	Q_strcat(text, ": ");
 
-    _concat_args(text, 64);
+    _concat_args(argv, text, 64);
 
 	save = host_client;
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
 		if (!client->active || !client->spawned)
 			continue;
-		if (Q_strcasecmp(client->name, Cmd_Argv(1)))
+		if (Q_strcasecmp(client->name, argv[0].c_str()))
 			continue;
 		host_client = client;
 		SV_ClientPrintf("%s", text);
@@ -873,19 +870,19 @@ void Host_Color_f(const quake::common::argv & argv)
 	int		top, bottom;
 	int		playercolor;
 	
-	if (Cmd_Argc() == 1)
+	if (argv.size() == 0)
 	{
 		Con_Printf ("\"color\" is \"%i %i\"\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 0x0f);
 		Con_Printf ("color <0-13> [0-13]\n");
 		return;
 	}
 
-	if (Cmd_Argc() == 2)
-		top = bottom = atoi(Cmd_Argv(1));
+	if (argv.size() == 1)
+		top = bottom = argv.stoi(0);
 	else
 	{
-		top = atoi(Cmd_Argv(1));
-		bottom = atoi(Cmd_Argv(2));
+		top = argv.stoi(0);
+		bottom = argv.stoi(1);
 	}
 	
 	top &= 15;
@@ -1187,7 +1184,7 @@ void Host_Kick_f (const quake::common::argv & argv)
 		{
 			if (!host_client->active)
 				continue;
-			if (Q_strcasecmp(host_client->name, Cmd_Argv(1)) == 0)
+			if (Q_strcasecmp(host_client->name, argv[0].c_str()) == 0)
 				break;
 		}
 	}
@@ -1206,15 +1203,14 @@ void Host_Kick_f (const quake::common::argv & argv)
 		if (host_client == save)
 			return;
 
-		if (Cmd_Argc() > 2)
-		{
-			message = COM_Parse(Cmd_Args());
+		if (argv.size() > 1) {
+			message = COM_Parse(argv.all.c_str());
 			if (byNumber)
 			{
 				message++;							// skip the #
 				while (*message == ' ')				// skip white space
 					message++;
-				message += Q_strlen(Cmd_Argv(2));	// skip the number
+				message += argv[1].size(); // skip the number
 			}
 			while (*message && *message == ' ')
 				message++;
@@ -1244,8 +1240,7 @@ Host_Give_f
 */
 void Host_Give_f (const quake::common::argv & argv)
 {
-	const char	*t;
-	int		v, w;
+	int		w;
 	eval_t	*val;
 
 	if (cmd_source == src_command)
@@ -1257,8 +1252,8 @@ void Host_Give_f (const quake::common::argv & argv)
 	if (pr_global_struct->deathmatch && !host_client->privileged)
 		return;
 
-	t = Cmd_Argv(1);
-	v = atoi (Cmd_Argv(2));
+    auto & t = argv[0];
+	int v = argv.stoi(1);
 	
 	switch (t[0])
 	{
@@ -1425,10 +1420,10 @@ void Host_Viewmodel_f (const quake::common::argv & argv)
 	if (!e)
 		return;
 
-	m = Mod_ForName (Cmd_Argv(1), false);
+	m = Mod_ForName (argv[0].c_str(), false);
 	if (!m)
 	{
-		Con_Printf ("Can't load %s\n", Cmd_Argv(1));
+		Con_Printf ("Can't load %s\n", argv[0].c_str());
 		return;
 	}
 	
@@ -1452,7 +1447,7 @@ void Host_Viewframe_f (const quake::common::argv & argv)
 		return;
 	m = cl.model_precache[(int)e->v.modelindex];
 
-	f = atoi(Cmd_Argv(1));
+	f = argv.stoi(0);
 	if (f >= m->numframes)
 		f = m->numframes-1;
 
@@ -1543,7 +1538,7 @@ void Host_Startdemos_f (const quake::common::argv & argv)
 		return;
 	}
 
-	c = Cmd_Argc() - 1;
+	c = argv.size();
 	if (c > MAX_DEMOS)
 	{
 		Con_Printf ("Max %i demos in demoloop\n", MAX_DEMOS);
@@ -1552,7 +1547,7 @@ void Host_Startdemos_f (const quake::common::argv & argv)
 	Con_Printf ("%i demo(s) in loop\n", c);
 
 	for (i=1 ; i<c+1 ; i++)
-		strncpy (cls.demos[i-1], Cmd_Argv(i), sizeof(cls.demos[0])-1);
+		strncpy (cls.demos[i-1], argv[i - 1].c_str(), sizeof(cls.demos[0])-1);
 
 	if (!sv.active && cls.demonum != -1 && !cls.demoplayback)
 	{

@@ -518,6 +518,7 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 		return;		// no tokens
 
     quake::common::argv args(cmd_argc, cmd_argv);
+    args.all = cmd_args;
 
 // check functions
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
