@@ -329,39 +329,6 @@ void Cmd_Init (void)
 
 /*
 ============
-Cmd_Argc
-============
-*/
-int		Cmd_Argc (void)
-{
-	return cmd_argc;
-}
-
-/*
-============
-Cmd_Argv
-============
-*/
-const char	*Cmd_Argv (int arg)
-{
-	if ( (unsigned)arg >= cmd_argc )
-		return cmd_null_string;
-	return cmd_argv[arg];	
-}
-
-/*
-============
-Cmd_Args
-============
-*/
-const char		*Cmd_Args (void)
-{
-	return cmd_args;
-}
-
-
-/*
-============
 Cmd_TokenizeString
 
 Parses the given string into command line tokens.
@@ -508,16 +475,17 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 	Cmd_TokenizeString (text);
 			
 // execute the command line
-	if (!Cmd_Argc())
+	if (!cmd_argc)
 		return;		// no tokens
 
     quake::common::argv args(cmd_argc, cmd_argv);
     args.all = cmd_args ?: "";
+    args.cmd = cmd_argv[0];
 
 // check functions
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
 	{
-		if (!Q_strcasecmp (cmd_argv[0],cmd->name))
+		if (!Q_strcasecmp (args.cmd.c_str(), cmd->name))
 		{
 			cmd->function (args);
 			return;
@@ -526,14 +494,14 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 
 // check alias
     for (auto & kv : _aliases) {
-        if (kv.first == cmd_argv[0]) {
+		if (!Q_strcasecmp (args.cmd.c_str(), kv.first.c_str())) {
 			Cbuf_InsertText(kv.second);
 			return;
 		}
 	}
 	
 // check cvars
-	if (!Cvar_Command (cmd_argv[0], args))
+	if (!Cvar_Command (args.cmd.c_str(), args))
 		Con_Printf ("Unknown command \"%s\"\n", cmd_argv[0]);
 	
 }
@@ -550,7 +518,7 @@ void Cmd_ForwardToServer (const quake::common::argv & args)
 {
 	if (cls.state != ca_connected)
 	{
-		Con_Printf ("Can't \"%s\", not connected\n", Cmd_Argv(0));
+		Con_Printf ("Can't \"%s\", not connected\n", args.cmd.c_str());
 		return;
 	}
 	
@@ -558,9 +526,9 @@ void Cmd_ForwardToServer (const quake::common::argv & args)
 		return;		// not really connected
 
 	MSG_WriteByte (&cls.message, clc_stringcmd);
-	if (Q_strcasecmp(Cmd_Argv(0), "cmd") != 0)
+	if (Q_strcasecmp(args.cmd.c_str(), "cmd") != 0)
 	{
-		SZ_Print (&cls.message, Cmd_Argv(0));
+		SZ_Print (&cls.message, args.cmd.c_str());
 		SZ_Print (&cls.message, " ");
 	}
 	if (args.size() > 0) {

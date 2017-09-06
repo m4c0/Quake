@@ -17,6 +17,8 @@ namespace quake {
             // Currently, in use by commands with "dynamic parameters".
             // Ex: "kick <user> <msg>"
             std::string all;
+            // and this is used by "Cmd_ForwardToServer"
+            std::string cmd;
 
             argv() : contents() {
             }
