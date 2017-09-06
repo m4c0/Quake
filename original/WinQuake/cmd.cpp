@@ -219,20 +219,19 @@ void Cmd_Exec_f (const quake::common::argv & argv)
 	char	*f;
 	int		mark;
 
-	if (Cmd_Argc () != 2)
-	{
+	if (argv.size() != 1) {
 		Con_Printf ("exec <filename> : execute a script file\n");
 		return;
 	}
 
 	mark = Hunk_LowMark ();
-	f = (char *)COM_LoadHunkFile (Cmd_Argv(1));
+	f = (char *)COM_LoadHunkFile (argv[0].c_str());
 	if (!f)
 	{
-		Con_Printf ("couldn't exec %s\n",Cmd_Argv(1));
+		Con_Printf ("couldn't exec %s\n", argv[0].c_str());
 		return;
 	}
-	Con_Printf ("execing %s\n",Cmd_Argv(1));
+	Con_Printf ("execing %s\n", argv[0].c_str());
 	
 	Cbuf_InsertText (f);
 	Hunk_FreeToLowMark (mark);
@@ -248,10 +247,9 @@ Just prints the rest of the line to the console
 */
 void Cmd_Echo_f (const quake::common::argv & argv)
 {
-	int		i;
-	
-	for (i=1 ; i<Cmd_Argc() ; i++)
-		Con_Printf ("%s ",Cmd_Argv(i));
+    for (auto & s : argv) {
+        Con_Printf("%s ", s.c_str());
+    }
 	Con_Printf ("\n");
 }
 
@@ -268,8 +266,7 @@ void Cmd_Alias_f (const quake::common::argv & argv)
 	char		cmd[1024];
 	int			i, c;
 
-	if (Cmd_Argc() == 1)
-	{
+	if (argv.size() == 0) {
 		Con_Printf ("Current alias commands:\n");
         for (auto & kv : _aliases) {
 			Con_Printf("%s : %s\n", kv.first.c_str(), kv.second.c_str());
@@ -277,14 +274,11 @@ void Cmd_Alias_f (const quake::common::argv & argv)
 		return;
 	}
 
-    std::string name = Cmd_Argv(1);
+    std::string name = argv[0];
 
-    std::string args;
-    for (int i = 2; i < Cmd_Argc(); i++) {
-        args += Cmd_Argv(i);
-        args += " ";
-    }
-    _aliases[name] = args;
+    // TODO: It seems we have a lot of this "[cmd] <arg> <...>" pattern to
+    //       consider a new method in argv
+    _aliases[name] = std::accumulate(argv.begin() + 2, argv.end(), argv[1], [](auto a, auto b) { return a + " " + b; });
 }
 
 /*
@@ -518,7 +512,7 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 		return;		// no tokens
 
     quake::common::argv args(cmd_argc, cmd_argv);
-    args.all = cmd_args;
+    args.all = cmd_args ?: "";
 
 // check functions
 	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
@@ -569,9 +563,10 @@ void Cmd_ForwardToServer (const quake::common::argv & args)
 		SZ_Print (&cls.message, Cmd_Argv(0));
 		SZ_Print (&cls.message, " ");
 	}
-	if (Cmd_Argc() > 1)
-		SZ_Print (&cls.message, Cmd_Args());
-	else
+	if (args.size() > 0) {
+		SZ_Print (&cls.message, args.all.c_str());
+    } else {
 		SZ_Print (&cls.message, "\n");
+    }
 }
 
