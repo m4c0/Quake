@@ -33,8 +33,8 @@ static const char     *argvdummy = " ";
 static const char     *safeargvs[NUM_SAFE_ARGVS] =
 	{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse", "-dibonly"};
 
-cvar_t  registered = {"registered","0"};
-cvar_t  cmdline = {"cmdline","0", false, true};
+quake::cvar registered = {"registered","0"};
+quake::cvar cmdline = {"cmdline","0", false, true};
 
 qboolean        com_modified;   // set true if using non-id files
 
@@ -1008,8 +1008,8 @@ void COM_CheckRegistered (void)
 		if (pop[i] != (unsigned short)BigShort (check[i]))
 			Sys_Error ("Corrupted data file.");
 	
-	Cvar_Set ("cmdline", com_cmdline);
-	Cvar_Set ("registered", "1");
+    quake::cvar::by_name("cmdline") = com_cmdline;
+    quake::cvar::by_name("registered") = "1";
 	static_registered = 1;
 	Con_Printf ("Playing registered version.\n");
 }
@@ -1103,8 +1103,6 @@ void COM_Init (const char *basedir)
 		LittleFloat = FloatSwap;
 	}
 
-	Cvar_RegisterVariable (&registered);
-	Cvar_RegisterVariable (&cmdline);
 	Cmd_AddCommand ("path", COM_Path_f);
 
 	COM_InitFilesystem ();

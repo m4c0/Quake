@@ -31,38 +31,38 @@ when crossing a water boudnary.
 
 */
 
-cvar_t		lcd_x = {"lcd_x","0"};
-cvar_t		lcd_yaw = {"lcd_yaw","0"};
+quake::cvar lcd_x = {"lcd_x","0"};
+quake::cvar lcd_yaw = {"lcd_yaw","0"};
 
-cvar_t	scr_ofsx = {"scr_ofsx","0", false};
-cvar_t	scr_ofsy = {"scr_ofsy","0", false};
-cvar_t	scr_ofsz = {"scr_ofsz","0", false};
+quake::cvar scr_ofsx = {"scr_ofsx","0", false};
+quake::cvar scr_ofsy = {"scr_ofsy","0", false};
+quake::cvar scr_ofsz = {"scr_ofsz","0", false};
 
-cvar_t	cl_rollspeed = {"cl_rollspeed", "200"};
-cvar_t	cl_rollangle = {"cl_rollangle", "2.0"};
+quake::cvar cl_rollspeed = {"cl_rollspeed", "200"};
+quake::cvar cl_rollangle = {"cl_rollangle", "2.0"};
 
-cvar_t	cl_bob = {"cl_bob","0.02", false};
-cvar_t	cl_bobcycle = {"cl_bobcycle","0.6", false};
-cvar_t	cl_bobup = {"cl_bobup","0.5", false};
+quake::cvar cl_bob = {"cl_bob","0.02", false};
+quake::cvar cl_bobcycle = {"cl_bobcycle","0.6", false};
+quake::cvar cl_bobup = {"cl_bobup","0.5", false};
 
-cvar_t	v_kicktime = {"v_kicktime", "0.5", false};
-cvar_t	v_kickroll = {"v_kickroll", "0.6", false};
-cvar_t	v_kickpitch = {"v_kickpitch", "0.6", false};
+quake::cvar v_kicktime = {"v_kicktime", "0.5", false};
+quake::cvar v_kickroll = {"v_kickroll", "0.6", false};
+quake::cvar v_kickpitch = {"v_kickpitch", "0.6", false};
 
-cvar_t	v_iyaw_cycle = {"v_iyaw_cycle", "2", false};
-cvar_t	v_iroll_cycle = {"v_iroll_cycle", "0.5", false};
-cvar_t	v_ipitch_cycle = {"v_ipitch_cycle", "1", false};
-cvar_t	v_iyaw_level = {"v_iyaw_level", "0.3", false};
-cvar_t	v_iroll_level = {"v_iroll_level", "0.1", false};
-cvar_t	v_ipitch_level = {"v_ipitch_level", "0.3", false};
+quake::cvar v_iyaw_cycle = {"v_iyaw_cycle", "2", false};
+quake::cvar v_iroll_cycle = {"v_iroll_cycle", "0.5", false};
+quake::cvar v_ipitch_cycle = {"v_ipitch_cycle", "1", false};
+quake::cvar v_iyaw_level = {"v_iyaw_level", "0.3", false};
+quake::cvar v_iroll_level = {"v_iroll_level", "0.1", false};
+quake::cvar v_ipitch_level = {"v_ipitch_level", "0.3", false};
 
-cvar_t	v_idlescale = {"v_idlescale", "0", false};
+quake::cvar v_idlescale = {"v_idlescale", "0", false};
 
-cvar_t	crosshair = {"crosshair", "0", true};
-cvar_t	cl_crossx = {"cl_crossx", "0", false};
-cvar_t	cl_crossy = {"cl_crossy", "0", false};
+quake::cvar crosshair = {"crosshair", "0", true};
+quake::cvar cl_crossx = {"cl_crossx", "0", false};
+quake::cvar cl_crossy = {"cl_crossy", "0", false};
 
-cvar_t	gl_cshiftpercent = {"gl_cshiftpercent", "100", false};
+quake::cvar gl_cshiftpercent = {"gl_cshiftpercent", "100", false};
 
 float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
@@ -139,8 +139,8 @@ float V_CalcBob (void)
 //=============================================================================
 
 
-cvar_t	v_centermove = {"v_centermove", "0.15", false};
-cvar_t	v_centerspeed = {"v_centerspeed","500"};
+quake::cvar v_centermove = {"v_centermove", "0.15", false};
+quake::cvar v_centerspeed = {"v_centerspeed","500"};
 
 
 void V_StartPitchDrift (const quake::common::argv & args)
@@ -256,7 +256,7 @@ cshift_t	cshift_water = { {130,80,50}, 128 };
 cshift_t	cshift_slime = { {0,25,5}, 150 };
 cshift_t	cshift_lava = { {255,80,0}, 150 };
 
-cvar_t		v_gamma = {"gamma", "1", true};
+quake::cvar v_gamma = {"gamma", "1", true};
 
 byte		gammatable[256];	// palette is sent through this
 
@@ -1000,9 +1000,9 @@ void V_RenderView (void)
 // don't allow cheats in multiplayer
 	if (cl.maxclients > 1)
 	{
-		Cvar_Set ("scr_ofsx", "0");
-		Cvar_Set ("scr_ofsy", "0");
-		Cvar_Set ("scr_ofsz", "0");
+        quake::cvar::by_name("scr_ofsx") = "0";
+        quake::cvar::by_name("scr_ofsy") = "0";
+        quake::cvar::by_name("scr_ofsz") = "0";
 	}
 
 	if (cl.intermission)
@@ -1074,40 +1074,7 @@ void V_Init (void)
 	Cmd_AddCommand ("bf", V_BonusFlash_f);
 	Cmd_AddCommand ("centerview", V_StartPitchDrift);
 
-	Cvar_RegisterVariable (&lcd_x);
-	Cvar_RegisterVariable (&lcd_yaw);
-
-	Cvar_RegisterVariable (&v_centermove);
-	Cvar_RegisterVariable (&v_centerspeed);
-
-	Cvar_RegisterVariable (&v_iyaw_cycle);
-	Cvar_RegisterVariable (&v_iroll_cycle);
-	Cvar_RegisterVariable (&v_ipitch_cycle);
-	Cvar_RegisterVariable (&v_iyaw_level);
-	Cvar_RegisterVariable (&v_iroll_level);
-	Cvar_RegisterVariable (&v_ipitch_level);
-
-	Cvar_RegisterVariable (&v_idlescale);
-	Cvar_RegisterVariable (&crosshair);
-	Cvar_RegisterVariable (&cl_crossx);
-	Cvar_RegisterVariable (&cl_crossy);
-	Cvar_RegisterVariable (&gl_cshiftpercent);
-
-	Cvar_RegisterVariable (&scr_ofsx);
-	Cvar_RegisterVariable (&scr_ofsy);
-	Cvar_RegisterVariable (&scr_ofsz);
-	Cvar_RegisterVariable (&cl_rollspeed);
-	Cvar_RegisterVariable (&cl_rollangle);
-	Cvar_RegisterVariable (&cl_bob);
-	Cvar_RegisterVariable (&cl_bobcycle);
-	Cvar_RegisterVariable (&cl_bobup);
-
-	Cvar_RegisterVariable (&v_kicktime);
-	Cvar_RegisterVariable (&v_kickroll);
-	Cvar_RegisterVariable (&v_kickpitch);	
-	
 	BuildGammaTable (1.0);	// no gamma yet
-	Cvar_RegisterVariable (&v_gamma);
 }
 
 

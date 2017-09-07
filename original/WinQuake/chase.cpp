@@ -23,10 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t *trace);
 
-cvar_t	chase_back = {"chase_back", "100"};
-cvar_t	chase_up = {"chase_up", "16"};
-cvar_t	chase_right = {"chase_right", "0"};
-cvar_t	chase_active = {"chase_active", "0"};
+quake::cvar chase_back = {"chase_back", "100"};
+quake::cvar chase_up = {"chase_up", "16"};
+quake::cvar chase_right = {"chase_right", "0"};
+quake::cvar chase_active = {"chase_active", "0"};
 
 vec3_t	chase_pos;
 vec3_t	chase_angles;
@@ -35,18 +35,10 @@ vec3_t	chase_dest;
 vec3_t	chase_dest_angles;
 
 
-void Chase_Init (void)
-{
-	Cvar_RegisterVariable (&chase_back);
-	Cvar_RegisterVariable (&chase_up);
-	Cvar_RegisterVariable (&chase_right);
-	Cvar_RegisterVariable (&chase_active);
+void Chase_Init (void) {
 }
 
-void Chase_Reset (void)
-{
-	// for respawning and teleporting
-//	start position 12 units behind head
+void Chase_Reset (void) {
 }
 
 void TraceLine (vec3_t start, vec3_t end, vec3_t impact)

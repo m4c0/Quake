@@ -59,32 +59,32 @@ jmp_buf 	host_abortserver;
 byte		*host_basepal;
 byte		*host_colormap;
 
-cvar_t	host_framerate = {"host_framerate","0"};	// set for slow motion
-cvar_t	host_speeds = {"host_speeds","0"};			// set for running times
+quake::cvar host_framerate = {"host_framerate","0"};	// set for slow motion
+quake::cvar host_speeds = {"host_speeds","0"};			// set for running times
 
-cvar_t	sys_ticrate = {"sys_ticrate","0.05"};
-cvar_t	serverprofile = {"serverprofile","0"};
+quake::cvar sys_ticrate = {"sys_ticrate","0.05"};
+quake::cvar serverprofile = {"serverprofile","0"};
 
-cvar_t	fraglimit = {"fraglimit","0",false,true};
-cvar_t	timelimit = {"timelimit","0",false,true};
-cvar_t	teamplay = {"teamplay","0",false,true};
+quake::cvar fraglimit = {"fraglimit","0",false,true};
+quake::cvar timelimit = {"timelimit","0",false,true};
+quake::cvar teamplay = {"teamplay","0",false,true};
 
-cvar_t	samelevel = {"samelevel","0"};
-cvar_t	noexit = {"noexit","0",false,true};
+quake::cvar samelevel = {"samelevel","0"};
+quake::cvar noexit = {"noexit","0",false,true};
 
 #ifdef QUAKE2
-cvar_t	developer = {"developer","1"};	// should be 0 for release!
+quake::cvar developer = {"developer","1"};	// should be 0 for release!
 #else
-cvar_t	developer = {"developer","0"};
+quake::cvar developer = {"developer","0"};
 #endif
 
-cvar_t	skill = {"skill","1"};						// 0 - 3
-cvar_t	deathmatch = {"deathmatch","0"};			// 0, 1, or 2
-cvar_t	coop = {"coop","0"};			// 0 or 1
+quake::cvar skill = {"skill","1"};						// 0 - 3
+quake::cvar deathmatch = {"deathmatch","0"};			// 0, 1, or 2
+quake::cvar coop = {"coop","0"};			// 0 or 1
 
-cvar_t	pausable = {"pausable","1"};
+quake::cvar pausable = {"pausable","1"};
 
-cvar_t	temp1 = {"temp1","0"};
+quake::cvar temp1 = {"temp1","0"};
 
 
 /*
@@ -189,9 +189,9 @@ void	Host_FindMaxClients (void)
 	svs.clients = (struct client_s *)Hunk_AllocName (svs.maxclientslimit*sizeof(client_t), "clients");
 
 	if (svs.maxclients > 1)
-		Cvar_SetValue ("deathmatch", 1.0);
+		quake::cvar::by_name("deathmatch") = 1.0;
 	else
-		Cvar_SetValue ("deathmatch", 0.0);
+		quake::cvar::by_name("deathmatch") = 0.0;
 }
 
 
@@ -204,26 +204,6 @@ void Host_InitLocal (void)
 {
 	Host_InitCommands ();
 	
-	Cvar_RegisterVariable (&host_framerate);
-	Cvar_RegisterVariable (&host_speeds);
-
-	Cvar_RegisterVariable (&sys_ticrate);
-	Cvar_RegisterVariable (&serverprofile);
-
-	Cvar_RegisterVariable (&fraglimit);
-	Cvar_RegisterVariable (&timelimit);
-	Cvar_RegisterVariable (&teamplay);
-	Cvar_RegisterVariable (&samelevel);
-	Cvar_RegisterVariable (&noexit);
-	Cvar_RegisterVariable (&skill);
-	Cvar_RegisterVariable (&developer);
-	Cvar_RegisterVariable (&deathmatch);
-	Cvar_RegisterVariable (&coop);
-
-	Cvar_RegisterVariable (&pausable);
-
-	Cvar_RegisterVariable (&temp1);
-
 	Host_FindMaxClients ();
 	
 	host_time = 1.0;		// so a think at time 0 won't get called
@@ -253,7 +233,7 @@ void Host_WriteConfiguration (void)
 		}
 		
 		Key_WriteBindings (f);
-		Cvar_WriteVariables (f);
+        quake::cvar::persist(f);
 
 		fclose (f);
 	}

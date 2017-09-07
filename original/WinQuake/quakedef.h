@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 //#define	GLTEST			// experimental stuff
 
+#include "quake/cvar.hpp"
+
 #define	QUAKE_GAME			// as opposed to utilities
 
 #define	VERSION				1.09
@@ -230,7 +232,6 @@ typedef struct
 
 #include "wad.h"
 #include "draw.h"
-#include "cvar.h"
 #include "screen.h"
 #include "net.h"
 #include "protocol.h"
@@ -291,9 +292,9 @@ extern qboolean noclip_anglehack;
 //
 extern	quakeparms_t host_parms;
 
-extern	cvar_t		sys_ticrate;
-extern	cvar_t		sys_nostdout;
-extern	cvar_t		developer;
+extern quake::cvar sys_ticrate;
+extern quake::cvar sys_nostdout;
+extern quake::cvar developer;
 
 extern	qboolean	host_initialized;		// true if into command execution
 extern	double		host_frametime;
@@ -328,7 +329,7 @@ extern int			minimum_memory;
 //
 // chase
 //
-extern	cvar_t	chase_active;
+extern quake::cvar chase_active;
 
 void Chase_Init (void);
 void Chase_Reset (void);

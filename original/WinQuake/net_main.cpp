@@ -67,21 +67,21 @@ int messagesReceived = 0;
 int unreliableMessagesSent = 0;
 int unreliableMessagesReceived = 0;
 
-cvar_t	net_messagetimeout = {"net_messagetimeout","300"};
-cvar_t	hostname = {"hostname", "UNNAMED"};
+quake::cvar net_messagetimeout = {"net_messagetimeout","300"};
+quake::cvar hostname = {"hostname", "UNNAMED"};
 
 qboolean	configRestored = false;
-cvar_t	config_com_port = {"_config_com_port", "0x3f8", true};
-cvar_t	config_com_irq = {"_config_com_irq", "4", true};
-cvar_t	config_com_baud = {"_config_com_baud", "57600", true};
-cvar_t	config_com_modem = {"_config_com_modem", "1", true};
-cvar_t	config_modem_dialtype = {"_config_modem_dialtype", "T", true};
-cvar_t	config_modem_clear = {"_config_modem_clear", "ATZ", true};
-cvar_t	config_modem_init = {"_config_modem_init", "", true};
-cvar_t	config_modem_hangup = {"_config_modem_hangup", "AT H", true};
+quake::cvar config_com_port = {"_config_com_port", "0x3f8", true};
+quake::cvar config_com_irq = {"_config_com_irq", "4", true};
+quake::cvar config_com_baud = {"_config_com_baud", "57600", true};
+quake::cvar config_com_modem = {"_config_com_modem", "1", true};
+quake::cvar config_modem_dialtype = {"_config_modem_dialtype", "T", true};
+quake::cvar config_modem_clear = {"_config_modem_clear", "ATZ", true};
+quake::cvar config_modem_init = {"_config_modem_init", "", true};
+quake::cvar config_modem_hangup = {"_config_modem_hangup", "AT H", true};
 
 #ifdef IDGODS
-cvar_t	idgods = {"idgods", "0"};
+quake::cvar idgods = {"idgods", "0"};
 #endif
 
 int	vcrFile = -1;
@@ -224,9 +224,9 @@ static void MaxPlayers_f (const quake::common::argv & argv)
 
 	svs.maxclients = n;
 	if (n == 1)
-		Cvar_Set ("deathmatch", "0");
+		quake::cvar::by_name("deathmatch") = "0";
 	else
-		Cvar_Set ("deathmatch", "1");
+		quake::cvar::by_name("deathmatch") = "1";
 }
 
 
@@ -837,20 +837,6 @@ void NET_Init (void)
 
 	// allocate space for network message buffer
 	SZ_Alloc (&net_message, NET_MAXMESSAGE);
-
-	Cvar_RegisterVariable (&net_messagetimeout);
-	Cvar_RegisterVariable (&hostname);
-	Cvar_RegisterVariable (&config_com_port);
-	Cvar_RegisterVariable (&config_com_irq);
-	Cvar_RegisterVariable (&config_com_baud);
-	Cvar_RegisterVariable (&config_com_modem);
-	Cvar_RegisterVariable (&config_modem_dialtype);
-	Cvar_RegisterVariable (&config_modem_clear);
-	Cvar_RegisterVariable (&config_modem_init);
-	Cvar_RegisterVariable (&config_modem_hangup);
-#ifdef IDGODS
-	Cvar_RegisterVariable (&idgods);
-#endif
 
 	Cmd_AddCommand ("slist", NET_Slist_f);
 	Cmd_AddCommand ("listen", NET_Listen_f);

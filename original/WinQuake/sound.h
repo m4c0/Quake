@@ -22,6 +22,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef __SOUND__
 #define __SOUND__
 
+#include "quake/cvar.hpp"
+
 #define DEFAULT_SOUND_PACKET_VOLUME 255
 #define DEFAULT_SOUND_PACKET_ATTENUATION 1.0
 
@@ -155,9 +157,9 @@ extern volatile dma_t *shm;
 extern volatile dma_t sn;
 extern vec_t sound_nominal_clip_dist;
 
-extern	cvar_t loadas8bit;
-extern	cvar_t bgmvolume;
-extern	cvar_t volume;
+extern quake::cvar loadas8bit;
+extern quake::cvar bgmvolume;
+extern quake::cvar volume;
 
 extern qboolean	snd_initialized;
 

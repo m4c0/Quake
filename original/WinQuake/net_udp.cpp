@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 static auto & argv = quake::common::argv::current;
 
-extern cvar_t hostname;
+extern quake::cvar hostname;
 
 static int net_acceptsocket = -1;		// socket for fielding new connections
 static int net_controlsocket;
@@ -75,7 +75,7 @@ int UDP_Init (void)
 	if (hostname.string == "UNNAMED")
 	{
 		buff[15] = 0;
-		Cvar_Set ("hostname", buff);
+        quake::cvar::by_name("hostname") = buff;
 	}
 
 	if ((net_controlsocket = UDP_OpenSocket (0)) == -1)

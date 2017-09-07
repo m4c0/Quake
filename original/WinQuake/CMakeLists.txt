@@ -1,5 +1,5 @@
 add_library(WinQuake STATIC
-    cl_demo.cpp cl_input.cpp cl_main.cpp cl_parse.cpp cl_tent.cpp chase.cpp cmd.cpp common.cpp console.cpp crc.cpp cvar.cpp
+    cl_demo.cpp cl_input.cpp cl_main.cpp cl_parse.cpp cl_tent.cpp chase.cpp cmd.cpp common.cpp console.cpp crc.cpp
 
     gl_draw.cpp gl_mesh.cpp gl_model.cpp gl_refrag.cpp gl_rlight.cpp gl_rmain.cpp gl_rmisc.cpp gl_rsurf.cpp gl_screen.cpp gl_warp.cpp
 

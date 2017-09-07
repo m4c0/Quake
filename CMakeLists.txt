@@ -10,6 +10,7 @@ add_subdirectory(original)
 
 add_executable(quake
     source/common.cpp
+    source/cvar.cpp
     source/screen/screenshot.cpp
     )
 target_include_directories(quake PRIVATE external/stb)

@@ -180,7 +180,7 @@ void Key_Console (int key)
 	{	// command completion
 		cmd = Cmd_CompleteCommand (key_lines[edit_line]+1);
 		if (!cmd)
-			cmd = Cvar_CompleteVariable (key_lines[edit_line]+1);
+			cmd = quake::cvar::complete(key_lines[edit_line]+1);
 		if (cmd)
 		{
 			Q_strcpy (key_lines[edit_line]+1, cmd);

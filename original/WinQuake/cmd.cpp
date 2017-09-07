@@ -333,10 +333,11 @@ void	Cmd_AddCommand (const char *cmd_name, xcommand_t function)
 		Sys_Error ("Cmd_AddCommand after host_initialized");
 		
 // fail if the command is a variable name
-	if (Cvar_VariableString(cmd_name)[0])
-	{
+    try {
+	    quake::cvar::by_name(cmd_name);
 		Con_Printf ("Cmd_AddCommand: %s already defined as a var\n", cmd_name);
 		return;
+    } catch (...) {
 	}
 	
 // fail if the command already exists
@@ -438,8 +439,17 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 	}
 	
 // check cvars
-	if (!Cvar_Command (args.cmd.c_str(), args))
+	//if (!Cvar_Command (args.cmd.c_str(), args))
+    try {
+        auto v = quake::cvar::by_name(args.cmd);
+        if (args.size() == 0) {
+            Con_Printf ("\"%s\" is \"%s\"\n", v.name.c_str(), v.string.c_str());
+        } else {
+            v = args[0];
+        }
+    } catch (...) {
 		Con_Printf ("Unknown command \"%s\"\n", args.cmd.c_str());
+    }
 	
 }
 

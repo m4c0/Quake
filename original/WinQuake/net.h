@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // net.h -- quake's interface to the networking layer
 
 #include "quake/common.hpp"
+#include "quake/cvar.hpp"
 
 struct qsockaddr
 {
@@ -209,7 +210,7 @@ extern int			DEFAULTnet_hostport;
 extern int			net_hostport;
 
 extern int net_driverlevel;
-extern cvar_t		hostname;
+extern quake::cvar hostname;
 extern char			playername[];
 extern int			playercolor;
 

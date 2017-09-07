@@ -30,9 +30,9 @@ qboolean VID_Is8bit(void);
 
 extern unsigned char d_15to8table[65536];
 
-cvar_t		gl_nobind = {"gl_nobind", "0"};
-cvar_t		gl_max_size = {"gl_max_size", "1024"};
-cvar_t		gl_picmip = {"gl_picmip", "0"};
+quake::cvar gl_nobind = {"gl_nobind", "0"};
+quake::cvar gl_max_size = {"gl_max_size", "1024"};
+quake::cvar gl_picmip = {"gl_picmip", "0"};
 
 byte		*draw_chars;				// 8*8 graphic characters
 qpic_t		*draw_disc;
@@ -381,14 +381,10 @@ void Draw_Init (void)
 	int		f, fstep;
 
 
-	Cvar_RegisterVariable (&gl_nobind);
-	Cvar_RegisterVariable (&gl_max_size);
-	Cvar_RegisterVariable (&gl_picmip);
-
 	// 3dfx can only handle 256 wide textures
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4) ||
 		strstr((char *)gl_renderer, "Glide"))
-		Cvar_Set ("gl_max_size", "256");
+		quake::cvar::by_name("gl_max_size") = "256";
 
 	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 

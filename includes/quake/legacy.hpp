@@ -10,6 +10,7 @@ extern int glwidth, glheight, glx, gly;
 
 const char *COM_Parse (const char *data);
 void Con_Printf (const char *fmt, ...);
+void SV_BroadcastPrintf (const char *fmt, ...);
 int	Sys_FileTime (const char *path);
 
 #endif

@@ -83,17 +83,17 @@ float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
 float		oldscreensize, oldfov;
-cvar_t		scr_viewsize = {"viewsize","100", true};
-cvar_t		scr_fov = {"fov","90"};	// 10 - 170
-cvar_t		scr_conspeed = {"scr_conspeed","300"};
-cvar_t		scr_centertime = {"scr_centertime","2"};
-cvar_t		scr_showram = {"showram","1"};
-cvar_t		scr_showturtle = {"showturtle","0"};
-cvar_t		scr_showpause = {"showpause","1"};
-cvar_t		scr_printspeed = {"scr_printspeed","8"};
-cvar_t		gl_triplebuffer = {"gl_triplebuffer", "1", true };
+quake::cvar scr_viewsize = {"viewsize","100", true};
+quake::cvar scr_fov = {"fov","90"};	// 10 - 170
+quake::cvar scr_conspeed = {"scr_conspeed","300"};
+quake::cvar scr_centertime = {"scr_centertime","2"};
+quake::cvar scr_showram = {"showram","1"};
+quake::cvar scr_showturtle = {"showturtle","0"};
+quake::cvar scr_showpause = {"showpause","1"};
+quake::cvar scr_printspeed = {"scr_printspeed","8"};
+quake::cvar gl_triplebuffer = {"gl_triplebuffer", "1", true };
 
-extern	cvar_t	crosshair;
+extern quake::cvar crosshair;
 
 qboolean	scr_initialized;		// ready to draw
 
@@ -273,15 +273,15 @@ static void SCR_CalcRefdef (void)
 	
 // bound viewsize
 	if (scr_viewsize.value < 30)
-		Cvar_Set ("viewsize","30");
+		quake::cvar::by_name("viewsize") = "30";
 	if (scr_viewsize.value > 120)
-		Cvar_Set ("viewsize","120");
+		quake::cvar::by_name("viewsize") = "120";
 
 // bound field of view
 	if (scr_fov.value < 10)
-		Cvar_Set ("fov","10");
+		quake::cvar::by_name("fov") = "10";
 	if (scr_fov.value > 170)
-		Cvar_Set ("fov","170");
+		quake::cvar::by_name("fov") = "170";
 
 // intermission is always full screen	
 	if (cl.intermission)
@@ -345,7 +345,7 @@ Keybinding command
 */
 void SCR_SizeUp_f (const quake::common::argv & argv)
 {
-	Cvar_SetValue ("viewsize",scr_viewsize.value+10);
+	quake::cvar::by_name("viewsize") = scr_viewsize.value + 10;
 	vid.recalc_refdef = 1;
 }
 
@@ -359,7 +359,7 @@ Keybinding command
 */
 void SCR_SizeDown_f (const quake::common::argv & argv)
 {
-	Cvar_SetValue ("viewsize",scr_viewsize.value-10);
+    quake::cvar::by_name("viewsize") = scr_viewsize.value - 10;
 	vid.recalc_refdef = 1;
 }
 
@@ -372,17 +372,6 @@ SCR_Init
 */
 void SCR_Init (void)
 {
-
-	Cvar_RegisterVariable (&scr_fov);
-	Cvar_RegisterVariable (&scr_viewsize);
-	Cvar_RegisterVariable (&scr_conspeed);
-	Cvar_RegisterVariable (&scr_showram);
-	Cvar_RegisterVariable (&scr_showturtle);
-	Cvar_RegisterVariable (&scr_showpause);
-	Cvar_RegisterVariable (&scr_centertime);
-	Cvar_RegisterVariable (&scr_printspeed);
-	Cvar_RegisterVariable (&gl_triplebuffer);
-
 //
 // register our commands
 //

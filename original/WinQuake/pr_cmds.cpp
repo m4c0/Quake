@@ -848,7 +848,7 @@ void PF_cvar (void)
 	
 	str = G_STRING(OFS_PARM0);
 	
-	G_FLOAT(OFS_RETURN) = Cvar_VariableValue (str);
+	G_FLOAT(OFS_RETURN) = quake::cvar::by_name(str).value;
 }
 
 /*
@@ -865,7 +865,7 @@ void PF_cvar_set (void)
 	var = G_STRING(OFS_PARM0);
 	val = G_STRING(OFS_PARM1);
 	
-	Cvar_Set (var, val);
+    quake::cvar::by_name(var) = val;
 }
 
 /*
@@ -1329,7 +1329,7 @@ Pick a vector for the player to shoot along
 vector aim(entity, missilespeed)
 =============
 */
-cvar_t	sv_aim = {"sv_aim", "0.93"};
+quake::cvar sv_aim = {"sv_aim", "0.93"};
 void PF_aim (void)
 {
 	edict_t	*ent, *check, *bestent;

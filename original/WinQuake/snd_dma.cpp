@@ -66,18 +66,18 @@ int 		desired_bits = 16;
 
 int sound_started=0;
 
-cvar_t bgmvolume = {"bgmvolume", "1", true};
-cvar_t volume = {"volume", "0.7", true};
+quake::cvar bgmvolume = {"bgmvolume", "1", true};
+quake::cvar volume = {"volume", "0.7", true};
 
-cvar_t nosound = {"nosound", "0"};
-cvar_t precache = {"precache", "1"};
-cvar_t loadas8bit = {"loadas8bit", "0"};
-cvar_t bgmbuffer = {"bgmbuffer", "4096"};
-cvar_t ambient_level = {"ambient_level", "0.3"};
-cvar_t ambient_fade = {"ambient_fade", "100"};
-cvar_t snd_noextraupdate = {"snd_noextraupdate", "0"};
-cvar_t snd_show = {"snd_show", "0"};
-cvar_t _snd_mixahead = {"_snd_mixahead", "0.1", true};
+quake::cvar nosound = {"nosound", "0"};
+quake::cvar precache = {"precache", "1"};
+quake::cvar loadas8bit = {"loadas8bit", "0"};
+quake::cvar bgmbuffer = {"bgmbuffer", "4096"};
+quake::cvar ambient_level = {"ambient_level", "0.3"};
+quake::cvar ambient_fade = {"ambient_fade", "100"};
+quake::cvar snd_noextraupdate = {"snd_noextraupdate", "0"};
+quake::cvar snd_show = {"snd_show", "0"};
+quake::cvar _snd_mixahead = {"_snd_mixahead", "0.1", true};
 
 
 // ====================================================================
@@ -181,21 +181,9 @@ void S_Init (void)
 	Cmd_AddCommand("soundlist", S_SoundList);
 	Cmd_AddCommand("soundinfo", S_SoundInfo_f);
 
-	Cvar_RegisterVariable(&nosound);
-	Cvar_RegisterVariable(&volume);
-	Cvar_RegisterVariable(&precache);
-	Cvar_RegisterVariable(&loadas8bit);
-	Cvar_RegisterVariable(&bgmvolume);
-	Cvar_RegisterVariable(&bgmbuffer);
-	Cvar_RegisterVariable(&ambient_level);
-	Cvar_RegisterVariable(&ambient_fade);
-	Cvar_RegisterVariable(&snd_noextraupdate);
-	Cvar_RegisterVariable(&snd_show);
-	Cvar_RegisterVariable(&_snd_mixahead);
-
 	if (host_parms.memsize < 0x800000)
 	{
-		Cvar_Set ("loadas8bit", "1");
+        quake::cvar::by_name("loadas8bit") = "1";
 		Con_Printf ("loading all sounds as 8bit\n");
 	}
 

@@ -38,17 +38,17 @@ int		type_size[8] = {1,sizeof(string_t)/4,1,3,1,1,sizeof(func_t)/4,sizeof(void *
 ddef_t *ED_FieldAtOfs (int ofs);
 qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s);
 
-cvar_t	nomonsters = {"nomonsters", "0"};
-cvar_t	gamecfg = {"gamecfg", "0"};
-cvar_t	scratch1 = {"scratch1", "0"};
-cvar_t	scratch2 = {"scratch2", "0"};
-cvar_t	scratch3 = {"scratch3", "0"};
-cvar_t	scratch4 = {"scratch4", "0"};
-cvar_t	savedgamecfg = {"savedgamecfg", "0", true};
-cvar_t	saved1 = {"saved1", "0", true};
-cvar_t	saved2 = {"saved2", "0", true};
-cvar_t	saved3 = {"saved3", "0", true};
-cvar_t	saved4 = {"saved4", "0", true};
+quake::cvar nomonsters = {"nomonsters", "0"};
+quake::cvar gamecfg = {"gamecfg", "0"};
+quake::cvar scratch1 = {"scratch1", "0"};
+quake::cvar scratch2 = {"scratch2", "0"};
+quake::cvar scratch3 = {"scratch3", "0"};
+quake::cvar scratch4 = {"scratch4", "0"};
+quake::cvar savedgamecfg = {"savedgamecfg", "0", true};
+quake::cvar saved1 = {"saved1", "0", true};
+quake::cvar saved2 = {"saved2", "0", true};
+quake::cvar saved3 = {"saved3", "0", true};
+quake::cvar saved4 = {"saved4", "0", true};
 
 #define	MAX_FIELD_LEN	64
 #define GEFV_CACHESIZE	2
@@ -1069,17 +1069,6 @@ void PR_Init (void)
 	Cmd_AddCommand ("edicts", ED_PrintEdicts);
 	Cmd_AddCommand ("edictcount", ED_Count);
 	Cmd_AddCommand ("profile", PR_Profile_f);
-	Cvar_RegisterVariable (&nomonsters);
-	Cvar_RegisterVariable (&gamecfg);
-	Cvar_RegisterVariable (&scratch1);
-	Cvar_RegisterVariable (&scratch2);
-	Cvar_RegisterVariable (&scratch3);
-	Cvar_RegisterVariable (&scratch4);
-	Cvar_RegisterVariable (&savedgamecfg);
-	Cvar_RegisterVariable (&saved1);
-	Cvar_RegisterVariable (&saved2);
-	Cvar_RegisterVariable (&saved3);
-	Cvar_RegisterVariable (&saved4);
 }
 
 

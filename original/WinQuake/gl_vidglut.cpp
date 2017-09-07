@@ -53,13 +53,13 @@ int		svgalib_inited=0;
 int		UseMouse = 1;
 int		UseKeyboard = 1;
 
-cvar_t		vid_mode = {"vid_mode","5",false};
-cvar_t		vid_redrawfull = {"vid_redrawfull","0",false};
-cvar_t		vid_waitforrefresh = {"vid_waitforrefresh","0",true};
+quake::cvar vid_mode = {"vid_mode","5",false};
+quake::cvar vid_redrawfull = {"vid_redrawfull","0",false};
+quake::cvar vid_waitforrefresh = {"vid_waitforrefresh","0",true};
  
 char	*framebuffer_ptr;
 
-cvar_t  mouse_button_commands[3] =
+quake::cvar mouse_button_commands[3] =
 {
     {"mouse1","+attack"},
     {"mouse2","+strafe"},
@@ -73,7 +73,7 @@ float   mouse_x, mouse_y;
 float	old_mouse_x, old_mouse_y;
 int		mx, my;
 
-cvar_t	m_filter = {"m_filter","1"};
+quake::cvar m_filter = {"m_filter","1"};
 
 int scr_width, scr_height;
 
@@ -90,7 +90,7 @@ int		texture_extension_number = 1;
 
 float		gldepthmin, gldepthmax;
 
-cvar_t	gl_ztrick = {"gl_ztrick","1"};
+quake::cvar gl_ztrick = {"gl_ztrick","1"};
 
 const GLubyte *gl_vendor;
 const GLubyte *gl_renderer;
@@ -321,7 +321,7 @@ GL_BeginRendering
 */
 void GL_BeginRendering (int *x, int *y, int *width, int *height)
 {
-	extern cvar_t gl_clear;
+	extern quake::cvar gl_clear;
 
 	*x = *y = 0;
 	*width = scr_width;
@@ -443,11 +443,6 @@ void VID_Init(unsigned char *palette)
 	int i;
 	char	gldir[MAX_OSPATH];
 
-	Cvar_RegisterVariable (&vid_mode);
-	Cvar_RegisterVariable (&vid_redrawfull);
-	Cvar_RegisterVariable (&vid_waitforrefresh);
-	Cvar_RegisterVariable (&gl_ztrick);
-	
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
@@ -541,9 +536,6 @@ void IN_Init(void)
 	if (UseMouse)
 	{
 
-		Cvar_RegisterVariable (&mouse_button_commands[0]);
-		Cvar_RegisterVariable (&mouse_button_commands[1]);
-		Cvar_RegisterVariable (&mouse_button_commands[2]);
 		Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
 		mouse_buttons = 3;

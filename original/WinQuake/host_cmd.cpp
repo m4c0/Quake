@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <numeric>
 #include <string>
 
-extern cvar_t	pausable;
+extern quake::cvar pausable;
 
 int	current_skill;
 
@@ -77,7 +77,7 @@ void Host_Status_f (const quake::common::argv & argv)
 	else
 		print = SV_ClientPrintf;
 
-	print ("host:    %s\n", Cvar_VariableString ("hostname"));
+	print ("host:    %s\n", quake::cvar::by_name("hostname").string.c_str());
 	print ("version: %4.2f\n", VERSION);
 	if (tcpipAvailable)
 		print ("tcp/ip:  %s\n", my_tcpip_address);
@@ -557,7 +557,7 @@ void Host_Loadgame_f (const quake::common::argv & argv)
 // this silliness is so we can load 1.06 save files, which have float skill values
 	fscanf (f, "%f\n", &tfloat);
 	current_skill = (int)(tfloat + 0.1);
-	Cvar_SetValue ("skill", (float)current_skill);
+    quake::cvar::by_name("skill") = (float)current_skill;
 
 	fscanf (f, "%s\n",mapname);
 	fscanf (f, "%f\n",&time);
@@ -666,7 +666,7 @@ void Host_Name_f (const quake::common::argv & argv)
 	{
 		if (cl_name.string == newName) return;
 
-		Cvar_Set ("_cl_name", newName);
+        quake::cvar::by_name("_cl_name") = newName;
 		if (cls.state == ca_connected)
 			Cmd_ForwardToServer (argv);
 		return;
@@ -896,7 +896,7 @@ void Host_Color_f(const quake::common::argv & argv)
 
 	if (cmd_source == src_command)
 	{
-		Cvar_SetValue ("_cl_color", playercolor);
+        quake::cvar::by_name("_cl_color") = playercolor;
 		if (cls.state == ca_connected)
 			Cmd_ForwardToServer (argv);
 		return;

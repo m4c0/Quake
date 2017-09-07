@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // client.h
 
+#include "quake/cvar.hpp"
+
 typedef struct
 {
 	vec3_t	viewangles;
@@ -27,9 +29,6 @@ typedef struct
 	float	forwardmove;
 	float	sidemove;
 	float	upmove;
-#ifdef QUAKE2
-	byte	lightlevel;
-#endif
 } usercmd_t;
 
 typedef struct
@@ -237,35 +236,35 @@ typedef struct
 //
 // cvars
 //
-extern	cvar_t	cl_name;
-extern	cvar_t	cl_color;
+extern quake::cvar cl_name;
+extern quake::cvar cl_color;
 
-extern	cvar_t	cl_upspeed;
-extern	cvar_t	cl_forwardspeed;
-extern	cvar_t	cl_backspeed;
-extern	cvar_t	cl_sidespeed;
+extern quake::cvar cl_upspeed;
+extern quake::cvar cl_forwardspeed;
+extern quake::cvar cl_backspeed;
+extern quake::cvar cl_sidespeed;
 
-extern	cvar_t	cl_movespeedkey;
+extern quake::cvar cl_movespeedkey;
 
-extern	cvar_t	cl_yawspeed;
-extern	cvar_t	cl_pitchspeed;
+extern quake::cvar cl_yawspeed;
+extern quake::cvar cl_pitchspeed;
 
-extern	cvar_t	cl_anglespeedkey;
+extern quake::cvar cl_anglespeedkey;
 
-extern	cvar_t	cl_autofire;
+extern quake::cvar cl_autofire;
 
-extern	cvar_t	cl_shownet;
-extern	cvar_t	cl_nolerp;
+extern quake::cvar cl_shownet;
+extern quake::cvar cl_nolerp;
 
-extern	cvar_t	cl_pitchdriftspeed;
-extern	cvar_t	lookspring;
-extern	cvar_t	lookstrafe;
-extern	cvar_t	sensitivity;
+extern quake::cvar cl_pitchdriftspeed;
+extern quake::cvar lookspring;
+extern quake::cvar lookstrafe;
+extern quake::cvar sensitivity;
 
-extern	cvar_t	m_pitch;
-extern	cvar_t	m_yaw;
-extern	cvar_t	m_forward;
-extern	cvar_t	m_side;
+extern quake::cvar m_pitch;
+extern quake::cvar m_yaw;
+extern quake::cvar m_forward;
+extern quake::cvar m_side;
 
 
 #define	MAX_TEMP_ENTITIES	64			// lightning bolts, etc
