@@ -909,7 +909,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 		prevCvarName = MSG_ReadString();
 		if (*prevCvarName)
 		{
-            it = std::find_if(all_svars.begin(), all_svars.end(), [&](auto v) { return v->name != prevCvarName; });
+            it = std::find_if(all_svars.begin(), all_svars.end(), [&](auto v) { return v->name == prevCvarName; });
             if (it == all_svars.end()) return nullptr;
             it++;
 		}
