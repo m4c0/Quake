@@ -927,7 +927,7 @@ void ED_LoadFromFile (const char *data)
 		data = ED_ParseEdict (data, ent);
 
 // remove things from different skill levels or deathmatch
-		if (deathmatch.value)
+		if (deathmatch.to_bool())
 		{
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_DEATHMATCH))
 			{

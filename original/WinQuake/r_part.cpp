@@ -646,7 +646,6 @@ void R_DrawParticles (void)
 	float			dvel;
 	float			frametime;
 	
-#ifdef GLQUAKE
 	vec3_t			up, right;
 	float			scale;
 
@@ -657,18 +656,12 @@ void R_DrawParticles (void)
 
 	VectorScale (vup, 1.5, up);
 	VectorScale (vright, 1.5, right);
-#else
-	D_StartParticles ();
 
-	VectorScale (vright, xscaleshrink, r_pright);
-	VectorScale (vup, yscaleshrink, r_pup);
-	VectorCopy (vpn, r_ppn);
-#endif
 	frametime = cl.time - cl.oldtime;
 	time3 = frametime * 15;
 	time2 = frametime * 10; // 15;
 	time1 = frametime * 5;
-	grav = frametime * sv_gravity.value * 0.05;
+	grav = frametime * sv_gravity.to_float() * 0.05;
 	dvel = 4*frametime;
 	
 	for ( ;; ) 

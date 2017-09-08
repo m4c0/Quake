@@ -712,7 +712,7 @@ void CL_ParseStaticSound (void)
 }
 
 
-#define SHOWNET(x) if(cl_shownet.value==2)Con_Printf ("%3i:%s\n", msg_readcount-1, x);
+#define SHOWNET(x) if (cl_shownet.to_int() == 2) Con_Printf ("%3i:%s\n", msg_readcount-1, x);
 
 /*
 =====================
@@ -727,10 +727,10 @@ void CL_ParseServerMessage (void)
 //
 // if recording demos, copy the message out
 //
-	if (cl_shownet.value == 1)
-		Con_Printf ("%i ",net_message.cursize);
-	else if (cl_shownet.value == 2)
-		Con_Printf ("------------------\n");
+    switch (cl_shownet.to_int()) {
+        case 1: Con_Printf ("%i ",net_message.cursize); break;
+        case 2: Con_Printf ("------------------\n"); break;
+    }
 	
 	cl.onground = false;	// unless the server says otherwise	
 //

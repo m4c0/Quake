@@ -426,7 +426,7 @@ void Con_DPrintf (const char *fmt, ...)
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
 		
-	if (!developer.value)
+	if (!developer.to_bool())
 		return;			// don't confuse non-developers with techie stuff...
 
 	va_start (argptr,fmt);
@@ -534,7 +534,7 @@ void Con_DrawNotify (void)
 		if (time == 0)
 			continue;
 		time = realtime - time;
-		if (time > con_notifytime.value)
+		if (time > con_notifytime.to_float())
 			continue;
 		text = con_text + (i % con_totallines)*con_linewidth;
 		

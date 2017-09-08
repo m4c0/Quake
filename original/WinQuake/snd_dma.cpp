@@ -320,13 +320,13 @@ sfx_t *S_PrecacheSound (const char *name)
 {
 	sfx_t	*sfx;
 
-	if (!sound_started || nosound.value)
+	if (!sound_started || nosound.to_bool())
 		return NULL;
 
 	sfx = S_FindName (name);
 	
 // cache it in
-	if (precache.value)
+	if (precache.to_bool())
 		S_LoadSound (sfx);
 	
 	return sfx;
@@ -451,7 +451,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	if (!sfx)
 		return;
 
-	if (nosound.value)
+	if (nosound.to_bool())
 		return;
 
 	vol = fvol*255;
@@ -665,7 +665,7 @@ void S_UpdateAmbientSounds (void)
 		return;
 
 	l = Mod_PointInLeaf (listener_origin, cl.worldmodel);
-	if (!l || !ambient_level.value)
+	if (!l || !ambient_level.to_bool())
 	{
 		for (ambient_channel = 0 ; ambient_channel< NUM_AMBIENTS ; ambient_channel++)
 			channels[ambient_channel].sfx = NULL;
@@ -677,20 +677,20 @@ void S_UpdateAmbientSounds (void)
 		chan = &channels[ambient_channel];	
 		chan->sfx = ambient_sfx[ambient_channel];
 	
-		vol = ambient_level.value * l->ambient_sound_level[ambient_channel];
+		vol = ambient_level.to_float() * l->ambient_sound_level[ambient_channel];
 		if (vol < 8)
 			vol = 0;
 
 	// don't adjust volume too fast
 		if (chan->master_vol < vol)
 		{
-			chan->master_vol += host_frametime * ambient_fade.value;
+			chan->master_vol += host_frametime * ambient_fade.to_float();
 			if (chan->master_vol > vol)
 				chan->master_vol = vol;
 		}
 		else if (chan->master_vol > vol)
 		{
-			chan->master_vol -= host_frametime * ambient_fade.value;
+			chan->master_vol -= host_frametime * ambient_fade.to_float();
 			if (chan->master_vol < vol)
 				chan->master_vol = vol;
 		}
@@ -778,7 +778,7 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 //
 // debugging output
 //
-	if (snd_show.value)
+	if (snd_show.to_bool())
 	{
 		total = 0;
 		ch = channels;
@@ -832,12 +832,7 @@ void GetSoundtime(void)
 
 void S_ExtraUpdate (void)
 {
-
-#ifdef _WIN32
-	IN_Accumulate ();
-#endif
-
-	if (snd_noextraupdate.value)
+	if (snd_noextraupdate.to_bool())
 		return;		// don't pollute timings
 	S_Update_();
 }
@@ -861,29 +856,10 @@ void S_Update_(void)
 	}
 
 // mix ahead of current position
-	endtime = soundtime + _snd_mixahead.value * shm->speed;
+	endtime = soundtime + _snd_mixahead.to_float() * shm->speed;
 	samps = shm->samples >> (shm->channels-1);
 	if (endtime - soundtime > samps)
 		endtime = soundtime + samps;
-
-#ifdef _WIN32
-// if the buffer was lost or stopped, restore it and/or restart it
-	{
-		DWORD	dwStatus;
-
-		if (pDSBuf)
-		{
-			if (pDSBuf->lpVtbl->GetStatus (pDSBuf, &dwStatus) != DD_OK)
-				Con_Printf ("Couldn't get sound buffer status\n");
-			
-			if (dwStatus & DSBSTATUS_BUFFERLOST)
-				pDSBuf->lpVtbl->Restore (pDSBuf);
-			
-			if (!(dwStatus & DSBSTATUS_PLAYING))
-				pDSBuf->lpVtbl->Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
-		}
-	}
-#endif
 
 	S_PaintChannels (endtime);
 
@@ -961,7 +937,7 @@ void S_LocalSound (const char *sound)
 {
 	sfx_t	*sfx;
 
-	if (nosound.value)
+	if (nosound.to_bool())
 		return;
 	if (!sound_started)
 		return;

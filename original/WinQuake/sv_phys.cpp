@@ -102,10 +102,10 @@ void SV_CheckVelocity (edict_t *ent)
 			Con_Printf ("Got a NaN origin on %s\n", pr_strings + ent->v.classname);
 			ent->v.origin[i] = 0;
 		}
-		if (ent->v.velocity[i] > sv_maxvelocity.value)
-			ent->v.velocity[i] = sv_maxvelocity.value;
-		else if (ent->v.velocity[i] < -sv_maxvelocity.value)
-			ent->v.velocity[i] = -sv_maxvelocity.value;
+		if (ent->v.velocity[i] > sv_maxvelocity.to_float())
+			ent->v.velocity[i] = sv_maxvelocity.to_float();
+		else if (ent->v.velocity[i] < -sv_maxvelocity.to_float())
+			ent->v.velocity[i] = -sv_maxvelocity.to_float();
 	}
 }
 
@@ -368,12 +368,6 @@ void SV_AddGravity (edict_t *ent)
 {
 	float	ent_gravity;
 
-#ifdef QUAKE2
-	if (ent->v.gravity)
-		ent_gravity = ent->v.gravity;
-	else
-		ent_gravity = 1.0;
-#else
 	eval_t	*val;
 
 	val = GetEdictFieldValue(ent, "gravity");
@@ -381,8 +375,8 @@ void SV_AddGravity (edict_t *ent)
 		ent_gravity = val->_float;
 	else
 		ent_gravity = 1.0;
-#endif
-	ent->v.velocity[2] -= ent_gravity * sv_gravity.value * host_frametime;
+
+	ent->v.velocity[2] -= ent_gravity * sv_gravity.to_float() * host_frametime;
 }
 
 
@@ -980,7 +974,7 @@ void SV_WalkMove (edict_t *ent)
 	if (ent->v.movetype != MOVETYPE_WALK)
 		return;		// gibbed by a trigger
 	
-	if (sv_nostep.value)
+	if (sv_nostep.to_bool())
 		return;
 	
 	if ( (int)sv_player->v.flags & FL_WATERJUMP )
@@ -1468,7 +1462,7 @@ void SV_Physics_Step (edict_t *ent)
 // freefall if not onground
 	if ( ! ((int)ent->v.flags & (FL_ONGROUND | FL_FLY | FL_SWIM) ) )
 	{
-		if (ent->v.velocity[2] < sv_gravity.value*-0.1)
+		if (ent->v.velocity[2] < sv_gravity.to_float()*-0.1)
 			hitsound = true;
 		else
 			hitsound = false;

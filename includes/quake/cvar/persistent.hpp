@@ -17,6 +17,10 @@ namespace quake {
             persistent(const std::string & name, const std::string svalue) : normal(name, svalue) {
                 all().push_back(this);
             }
+
+            void operator=(float value) override {
+                normal::operator=(value);
+            }
         };
     }
 }

@@ -146,7 +146,7 @@ for a few moments
 void SCR_CenterPrint (const char *str)
 {
 	strncpy (scr_centerstring, str, sizeof(scr_centerstring)-1);
-	scr_centertime_off = scr_centertime.value;
+	scr_centertime_off = scr_centertime.to_float();
 	scr_centertime_start = cl.time;
 
 // count the number of lines for centering
@@ -170,7 +170,7 @@ void SCR_DrawCenterString (void)
 
 // the finale prints the characters one at a time
 	if (cl.intermission)
-		remaining = scr_printspeed.value * (cl.time - scr_centertime_start);
+		remaining = scr_printspeed.to_float() * (cl.time - scr_centertime_start);
 	else
 		remaining = 9999;
 
@@ -272,22 +272,16 @@ static void SCR_CalcRefdef (void)
 //========================================
 	
 // bound viewsize
-	if (scr_viewsize.value < 30)
-		*quake::cvar::by_name("viewsize") = "30";
-	if (scr_viewsize.value > 120)
-		*quake::cvar::by_name("viewsize") = "120";
+    scr_viewsize = std::min(120.0f, std::max(30.0f, scr_viewsize.to_float()));
 
 // bound field of view
-	if (scr_fov.value < 10)
-		*quake::cvar::by_name("fov") = "10";
-	if (scr_fov.value > 170)
-		*quake::cvar::by_name("fov") = "170";
+    scr_fov = std::min(170.0f, std::max(10.0f, scr_fov.to_float()));
 
 // intermission is always full screen	
 	if (cl.intermission)
 		size = 120;
 	else
-		size = scr_viewsize.value;
+		size = scr_viewsize.to_float();
 
 	if (size >= 120)
 		sb_lines = 0;		// no status bar at all
@@ -296,11 +290,11 @@ static void SCR_CalcRefdef (void)
 	else
 		sb_lines = 24+16+8;
 
-	if (scr_viewsize.value >= 100.0) {
+	if (scr_viewsize.to_float() >= 100.0) {
 		full = true;
 		size = 100.0;
 	} else
-		size = scr_viewsize.value;
+		size = scr_viewsize.to_float();
 	if (cl.intermission)
 	{
 		full = true;
@@ -329,7 +323,7 @@ static void SCR_CalcRefdef (void)
 	else 
 		r_refdef.vrect.y = (h - r_refdef.vrect.height)/2;
 
-	r_refdef.fov_x = scr_fov.value;
+	r_refdef.fov_x = scr_fov.to_float();
 	r_refdef.fov_y = CalcFov (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
 	scr_vrect = r_refdef.vrect;
@@ -345,7 +339,7 @@ Keybinding command
 */
 void SCR_SizeUp_f (const quake::common::argv & argv)
 {
-	*quake::cvar::by_name("viewsize") = scr_viewsize.value + 10;
+	scr_viewsize = scr_viewsize.to_float() + 10;
 	vid.recalc_refdef = 1;
 }
 
@@ -359,7 +353,7 @@ Keybinding command
 */
 void SCR_SizeDown_f (const quake::common::argv & argv)
 {
-    *quake::cvar::by_name("viewsize") = scr_viewsize.value - 10;
+	scr_viewsize = scr_viewsize.to_float() - 10;
 	vid.recalc_refdef = 1;
 }
 
@@ -395,7 +389,7 @@ SCR_DrawRam
 */
 void SCR_DrawRam (void)
 {
-	if (!scr_showram.value)
+	if (!scr_showram.to_bool())
 		return;
 
 	if (!r_cache_thrash)
@@ -413,7 +407,7 @@ void SCR_DrawTurtle (void)
 {
 	static int	count;
 	
-	if (!scr_showturtle.value)
+	if (!scr_showturtle.to_bool())
 		return;
 
 	if (host_frametime < 0.1)
@@ -453,7 +447,7 @@ void SCR_DrawPause (void)
 {
 	qpic_t	*pic;
 
-	if (!scr_showpause.value)		// turn off for screenshots
+	if (!scr_showpause.to_bool())		// turn off for screenshots
 		return;
 
 	if (!cl.paused)
@@ -515,14 +509,14 @@ void SCR_SetUpToDrawConsole (void)
 	
 	if (scr_conlines < scr_con_current)
 	{
-		scr_con_current -= scr_conspeed.value*host_frametime;
+		scr_con_current -= scr_conspeed.to_float()*host_frametime;
 		if (scr_conlines > scr_con_current)
 			scr_con_current = scr_conlines;
 
 	}
 	else if (scr_conlines > scr_con_current)
 	{
-		scr_con_current += scr_conspeed.value*host_frametime;
+		scr_con_current += scr_conspeed.to_float()*host_frametime;
 		if (scr_conlines < scr_con_current)
 			scr_con_current = scr_conlines;
 	}
@@ -744,7 +738,7 @@ void SCR_UpdateScreen (void)
 	if (block_drawing)
 		return;
 
-	vid.numpages = 2 + gl_triplebuffer.value;
+	vid.numpages = 2 + gl_triplebuffer.to_int();
 
 	scr_copytop = 0;
 	scr_copyeverything = 0;
@@ -769,15 +763,15 @@ void SCR_UpdateScreen (void)
 	//
 	// determine size of refresh window
 	//
-	if (oldfov != scr_fov.value)
+	if (oldfov != scr_fov.to_float())
 	{
-		oldfov = scr_fov.value;
+		oldfov = scr_fov.to_float();
 		vid.recalc_refdef = true;
 	}
 
-	if (oldscreensize != scr_viewsize.value)
+	if (oldscreensize != scr_viewsize.to_float())
 	{
-		oldscreensize = scr_viewsize.value;
+		oldscreensize = scr_viewsize.to_float();
 		vid.recalc_refdef = true;
 	}
 
@@ -821,7 +815,7 @@ void SCR_UpdateScreen (void)
 	}
 	else
 	{
-		if (crosshair.value)
+		if (crosshair.to_bool())
 			Draw_Character (scr_vrect.x + scr_vrect.width/2, scr_vrect.y + scr_vrect.height/2, '+');
 		
 		SCR_DrawRam ();

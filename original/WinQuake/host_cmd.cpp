@@ -801,7 +801,7 @@ void Host_Say(qboolean teamonly, const quake::common::argv & argv)
 	{
 		if (!client || !client->active || !client->spawned)
 			continue;
-		if (teamplay.value && teamonly && client->edict->v.team != save->edict->v.team)
+		if (teamplay.to_bool() && teamonly && client->edict->v.team != save->edict->v.team)
 			continue;
 		host_client = client;
 		SV_ClientPrintf("%s", text);
@@ -872,7 +872,7 @@ void Host_Color_f(const quake::common::argv & argv)
 	
 	if (argv.size() == 0)
 	{
-		Con_Printf ("\"color\" is \"%i %i\"\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 0x0f);
+		Con_Printf ("\"color\" is \"%i %i\"\n", cl_color.to_int() >> 4, cl_color.to_int() & 0x0f);
 		Con_Printf ("color <0-13> [0-13]\n");
 		return;
 	}
@@ -949,7 +949,7 @@ void Host_Pause_f (const quake::common::argv & argv)
 		Cmd_ForwardToServer (argv);
 		return;
 	}
-	if (!pausable.value)
+	if (!pausable.to_bool())
 		SV_ClientPrintf ("Pause not allowed.\n");
 	else
 	{

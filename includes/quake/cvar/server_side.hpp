@@ -18,7 +18,7 @@ namespace quake {
                 all().push_back(this);
             }
 
-            normal & operator=(const std::string & value) override {
+            void operator=(const std::string & value) override {
                 bool changed = this->string != value;
 
                 normal::operator=(value);
@@ -26,7 +26,9 @@ namespace quake {
                 if (changed) {
                     SV_BroadcastPrintf ("\"%s\" changed to \"%s\"\n", this->name.c_str(), this->string.c_str());
                 }
-                return *this;
+            }
+            void operator=(float value) override {
+                *this = std::to_string(value);
             }
         };
     }

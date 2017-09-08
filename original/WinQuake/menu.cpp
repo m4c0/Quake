@@ -19,10 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "quakedef.h"
 
-#ifdef _WIN32
-#include "winquake.h"
-#endif
-
 extern quake::cvar::normal registered;
 
 void (*vid_menudrawfn)(void);
@@ -702,8 +698,8 @@ void M_Menu_Setup_f (const quake::common::argv & args)
 	m_entersound = true;
 	Q_strcpy(setup_myname, cl_name.string.c_str());
 	Q_strcpy(setup_hostname, hostname.string.c_str());
-	setup_top = setup_oldtop = ((int)cl_color.value) >> 4;
-	setup_bottom = setup_oldbottom = ((int)cl_color.value) & 15;
+	setup_top = setup_oldtop = cl_color.to_int() >> 4;
+	setup_bottom = setup_oldbottom = cl_color.to_int() & 15;
 }
 
 
@@ -1071,73 +1067,41 @@ void M_AdjustSliders (int dir)
 	switch (options_cursor)
 	{
 	case 3:	// screen size
-		scr_viewsize.value += dir * 10;
-		if (scr_viewsize.value < 30)
-			scr_viewsize.value = 30;
-		if (scr_viewsize.value > 120)
-			scr_viewsize.value = 120;
-        *quake::cvar::by_name("viewsize") = scr_viewsize.value;
+		scr_viewsize = std::min(120.0f, std::max(30.0f, scr_viewsize.to_float() + dir * 10));
 		break;
 	case 4:	// gamma
-		v_gamma.value -= dir * 0.05;
-		if (v_gamma.value < 0.5)
-			v_gamma.value = 0.5;
-		if (v_gamma.value > 1)
-			v_gamma.value = 1;
-        *quake::cvar::by_name("gamma") = v_gamma.value;
+		v_gamma = std::min(1.0f, std::max(0.5f, v_gamma.to_float() - dir * 0.05f));
 		break;
 	case 5:	// mouse speed
-		sensitivity.value += dir * 0.5;
-		if (sensitivity.value < 1)
-			sensitivity.value = 1;
-		if (sensitivity.value > 11)
-			sensitivity.value = 11;
-        *quake::cvar::by_name("sensitivity") = sensitivity.value;
+		sensitivity = std::min(11.0f, std::max(1.0f, sensitivity.to_float() + dir * 0.5f));
 		break;
 	case 6:	// music volume
-#ifdef _WIN32
-		bgmvolume.value += dir * 1.0;
-#else
-		bgmvolume.value += dir * 0.1;
-#endif
-		if (bgmvolume.value < 0)
-			bgmvolume.value = 0;
-		if (bgmvolume.value > 1)
-			bgmvolume.value = 1;
-        *quake::cvar::by_name("bgmvolume") = bgmvolume.value;
+		bgmvolume = std::min(1.0f, std::max(0.0f, bgmvolume.to_float() + dir * 0.1f));
 		break;
 	case 7:	// sfx volume
-		volume.value += dir * 0.1;
-		if (volume.value < 0)
-			volume.value = 0;
-		if (volume.value > 1)
-			volume.value = 1;
-        *quake::cvar::by_name("volume") = volume.value;
+		volume = std::min(1.0f, std::max(0.0f, volume.to_float() + dir * 0.1f));
 		break;
 
 	case 8:	// allways run
-		if (cl_forwardspeed.value > 200)
-		{
-            *quake::cvar::by_name("cl_forwardspeed") = 200;
-            *quake::cvar::by_name("cl_backspeed") = 200;
-		}
-		else
-		{
-            *quake::cvar::by_name("cl_forwardspeed") = 400;
-            *quake::cvar::by_name("cl_backspeed") = 400;
+		if (cl_forwardspeed.to_float() > 200) {
+            cl_forwardspeed = 200;
+            cl_backspeed    = 200;
+		} else {
+            cl_forwardspeed = 400;
+            cl_backspeed    = 400;
 		}
 		break;
 
 	case 9:	// invert mouse
-        *quake::cvar::by_name("m_pitch") = -m_pitch.value;
+        m_pitch = -m_pitch.to_float();
 		break;
 
 	case 10:	// lookspring
-        *quake::cvar::by_name("lookspring") = !lookspring.value;
+        lookspring = !lookspring.to_bool();
 		break;
 
 	case 11:	// lookstrafe
-        *quake::cvar::by_name("lookstrafe") = !lookstrafe.value;
+        lookstrafe = !lookstrafe.to_bool();
 		break;
 	}
 }
@@ -1186,36 +1150,36 @@ void M_Options_Draw (void)
 	M_Print (16, 48, "     Reset to defaults");
 
 	M_Print (16, 56, "           Screen size");
-	r = (scr_viewsize.value - 30) / (120 - 30);
+	r = (scr_viewsize.to_float() - 30) / (120 - 30);
 	M_DrawSlider (220, 56, r);
 
 	M_Print (16, 64, "            Brightness");
-	r = (1.0 - v_gamma.value) / 0.5;
+	r = (1.0 - v_gamma.to_float()) / 0.5;
 	M_DrawSlider (220, 64, r);
 
 	M_Print (16, 72, "           Mouse Speed");
-	r = (sensitivity.value - 1)/10;
+	r = (sensitivity.to_float() - 1)/10;
 	M_DrawSlider (220, 72, r);
 
 	M_Print (16, 80, "       CD Music Volume");
-	r = bgmvolume.value;
+	r = bgmvolume.to_float();
 	M_DrawSlider (220, 80, r);
 
 	M_Print (16, 88, "          Sound Volume");
-	r = volume.value;
+	r = volume.to_float();
 	M_DrawSlider (220, 88, r);
 
 	M_Print (16, 96,  "            Always Run");
-	M_DrawCheckbox (220, 96, cl_forwardspeed.value > 200);
+	M_DrawCheckbox (220, 96, cl_forwardspeed.to_float() > 200);
 
 	M_Print (16, 104, "          Invert Mouse");
-	M_DrawCheckbox (220, 104, m_pitch.value < 0);
+	M_DrawCheckbox (220, 104, m_pitch.to_float() < 0);
 
 	M_Print (16, 112, "            Lookspring");
-	M_DrawCheckbox (220, 112, lookspring.value);
+	M_DrawCheckbox (220, 112, lookspring.to_bool());
 
 	M_Print (16, 120, "            Lookstrafe");
-	M_DrawCheckbox (220, 120, lookstrafe.value);
+	M_DrawCheckbox (220, 120, lookstrafe.to_bool());
 
 	if (vid_menudrawfn)
 		M_Print (16, 128, "         Video Options");
@@ -2562,7 +2526,7 @@ void M_GameOptions_Draw (void)
 	M_Print (160, 56, va("%i", maxplayers) );
 
 	M_Print (0, 64, "        Game Type");
-	if (coop.value)
+	if (coop.to_bool())
 		M_Print (160, 64, "Cooperative");
 	else
 		M_Print (160, 64, "Deathmatch");
@@ -2572,8 +2536,7 @@ void M_GameOptions_Draw (void)
 	{
 		const char *msg;
 
-		switch((int)teamplay.value)
-		{
+		switch (teamplay.to_int()) {
 			case 1: msg = "No Friendly Fire"; break;
 			case 2: msg = "Friendly Fire"; break;
 			case 3: msg = "Tag"; break;
@@ -2588,8 +2551,7 @@ void M_GameOptions_Draw (void)
 	{
 		const char *msg;
 
-		switch((int)teamplay.value)
-		{
+		switch (teamplay.to_int()) {
 			case 1: msg = "No Friendly Fire"; break;
 			case 2: msg = "Friendly Fire"; break;
 			default: msg = "Off"; break;
@@ -2598,26 +2560,24 @@ void M_GameOptions_Draw (void)
 	}
 
 	M_Print (0, 80, "            Skill");
-	if (skill.value == 0)
-		M_Print (160, 80, "Easy difficulty");
-	else if (skill.value == 1)
-		M_Print (160, 80, "Normal difficulty");
-	else if (skill.value == 2)
-		M_Print (160, 80, "Hard difficulty");
-	else
-		M_Print (160, 80, "Nightmare difficulty");
+    switch (skill.to_int()) {
+        case 0:  M_Print (160, 80, "Easy difficulty");   break;
+        case 1:  M_Print (160, 80, "Normal difficulty"); break;
+        case 2:  M_Print (160, 80, "Hard difficulty");   break;
+        default: M_Print (160, 80, "Nightmare difficulty"); break;
+    }
 
 	M_Print (0, 88, "       Frag Limit");
-	if (fraglimit.value == 0)
+	if (fraglimit.to_int() == 0)
 		M_Print (160, 88, "none");
 	else
-		M_Print (160, 88, va("%i frags", (int)fraglimit.value));
+		M_Print (160, 88, va("%i frags", fraglimit.to_int()));
 
 	M_Print (0, 96, "       Time Limit");
-	if (timelimit.value == 0)
+	if (timelimit.to_int() == 0)
 		M_Print (160, 96, "none");
 	else
-		M_Print (160, 96, va("%i minutes", (int)timelimit.value));
+		M_Print (160, 96, va("%i minutes", timelimit.to_int()));
 
 	M_Print (0, 112, "         Episode");
    //MED 01/06/97 added hipnotic episodes
@@ -2690,7 +2650,7 @@ void M_NetStart_Change (int dir)
 		break;
 
 	case 2:
-        *quake::cvar::by_name("coop") = coop.value ? 0 : 1;
+        coop = !coop.to_bool();
 		break;
 
 	case 3:
@@ -2699,35 +2659,19 @@ void M_NetStart_Change (int dir)
 		else
 			count = 2;
 
-        *quake::cvar::by_name("teamplay") = teamplay.value + dir;
-		if (teamplay.value > count)
-			*quake::cvar::by_name("teamplay") = 0;
-		else if (teamplay.value < 0)
-			*quake::cvar::by_name("teamplay") = count;
+        teamplay = std::max(0, std::min(count, teamplay.to_int() + dir));
 		break;
 
 	case 4:
-        *quake::cvar::by_name("skill") = skill.value + dir;
-		if (skill.value > 3)
-			*quake::cvar::by_name("skill") = 0;
-		if (skill.value < 0)
-			*quake::cvar::by_name("skill") = 3;
+        skill = std::max(0, std::min(3, skill.to_int() + dir));
 		break;
 
 	case 5:
-        *quake::cvar::by_name("fraglimit") = fraglimit.value + dir * 10;
-		if (fraglimit.value > 100)
-			*quake::cvar::by_name("fraglimit") = 0;
-		if (fraglimit.value < 0)
-			*quake::cvar::by_name("fraglimit") = 100;
+        fraglimit = std::max(0, std::min(100, fraglimit.to_int() + dir * 10));
 		break;
 
 	case 6:
-		*quake::cvar::by_name("timelimit") = timelimit.value + dir * 5;
-		if (timelimit.value > 60)
-			*quake::cvar::by_name("timelimit") = 0;
-		if (timelimit.value < 0)
-			*quake::cvar::by_name("timelimit") = 60;
+        timelimit = std::max(0, std::min(60, timelimit.to_int() + dir * 5));
 		break;
 
 	case 7:
@@ -2739,7 +2683,7 @@ void M_NetStart_Change (int dir)
 	//PGM 03/02/97 added 1 for dmatch episode
 		else if (rogue)
 			count = 4;
-		else if (registered.value)
+		else if (registered.to_bool())
 			count = 7;
 		else
 			count = 2;

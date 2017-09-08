@@ -483,8 +483,8 @@ qboolean Host_FilterTime (float time)
 	host_frametime = realtime - oldrealtime;
 	oldrealtime = realtime;
 
-	if (host_framerate.value > 0)
-		host_frametime = host_framerate.value;
+	if (host_framerate.to_float() > 0)
+		host_frametime = host_framerate.to_float();
 	else
 	{	// don't allow really long or short frames
 		if (host_frametime > 0.1)
@@ -669,10 +669,10 @@ void _Host_Frame (float time)
 	}
 
 // update video
-	if (host_speeds.value)
+	if (host_speeds.to_bool())
 		time1 = Sys_FloatTime ();
 		
-	if (host_speeds.value)
+	if (host_speeds.to_bool())
 		time2 = Sys_FloatTime ();
 		
 // update audio
@@ -686,7 +686,7 @@ void _Host_Frame (float time)
 	
 	CDAudio_Update();
 
-	if (host_speeds.value)
+	if (host_speeds.to_bool())
 	{
 		pass1 = (time1 - time3)*1000;
 		time3 = Sys_FloatTime ();
@@ -706,7 +706,7 @@ void Host_Frame (float time)
 	static int		timecount;
 	int		i, c, m;
 
-	if (!serverprofile.value)
+	if (!serverprofile.to_bool())
 	{
 		_Host_Frame (time);
 		return;

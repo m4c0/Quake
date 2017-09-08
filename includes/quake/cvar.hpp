@@ -10,34 +10,35 @@ namespace quake {
         class normal {
         public:
             normal(const std::string & name, const std::string svalue) : name(name), string(svalue) {
-                try {
-                    value = std::stof(svalue);
-                } catch (...) {
-                    value = 0;
-                }
-
                 install(this);
             }
             ~normal() {
                 uninstall(this);
             }
 
-            virtual normal & operator=(const std::string & value) {
+            virtual void operator=(const std::string & value) {
                 this->string = value;
-                try {
-                    this->value = std::stof(value);
-                } catch (std::invalid_argument) {
-                    this->value = 0;
-                }
-                return *this;
             }
-            normal & operator=(float value) {
-                return *this = std::to_string(value);
+            virtual void operator=(float value) {
+                *this = std::to_string(value);
+            }
+
+            bool to_bool() const {
+                return this->to_int() != 0;
+            }
+            int to_int() const {
+                return (int)this->to_float(); // an extra stoi+catch looked messier
+            }
+            float to_float() const {
+                try {
+                    return std::stof(string);
+                } catch (std::invalid_argument) {
+                    return 0;
+                }
             }
 
             const std::string name;
             std::string string;
-            float value;
 
         private:
             static void install(normal * v);

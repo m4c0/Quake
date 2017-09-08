@@ -281,12 +281,12 @@ void R_TranslatePlayerSkin (int playernum)
 	// don't mipmap these, because it takes too long
 	GL_Upload8 (translated, paliashdr->skinwidth, paliashdr->skinheight, false, false, true);
 #else
-	scaled_width = gl_max_size.value < 512 ? gl_max_size.value : 512;
-	scaled_height = gl_max_size.value < 256 ? gl_max_size.value : 256;
+	scaled_width  = gl_max_size.to_int() < 512 ? gl_max_size.to_int() : 512;
+	scaled_height = gl_max_size.to_int() < 256 ? gl_max_size.to_int() : 256;
 
 	// allow users to crunch sizes down even more if they want
-	scaled_width >>= (int)gl_playermip.value;
-	scaled_height >>= (int)gl_playermip.value;
+	scaled_width  >>= gl_playermip.to_int();
+	scaled_height >>= gl_playermip.to_int();
 
 	if (VID_Is8bit()) { // 8bit texture upload
 		byte *out2;

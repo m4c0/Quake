@@ -369,15 +369,15 @@ void Sys_Tick() {
 
     if (cls.state == ca_dedicated)
     {   // play vcrfiles at max speed
-        if (time < sys_ticrate.value && (vcrFile == -1 || recording) )
+        if (time < sys_ticrate.to_float() && (vcrFile == -1 || recording) )
         {
             usleep(1);
             return;       // not time to run a server only tic yet
         }
-        time = sys_ticrate.value;
+        time = sys_ticrate.to_float();
     }
 
-    if (time > sys_ticrate.value*2)
+    if (time > sys_ticrate.to_float()*2)
         oldtime = newtime;
     else
         oldtime += time;
@@ -385,7 +385,7 @@ void Sys_Tick() {
     Host_Frame (time);
 
 // graphic debugging aids
-    if (sys_linerefresh.value)
+    if (sys_linerefresh.to_bool())
         Sys_LineRefresh ();
 
     glutPostRedisplay();
