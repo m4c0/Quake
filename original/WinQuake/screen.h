@@ -46,7 +46,7 @@ extern	int			clearnotify;	// set to 0 whenever notify text is drawn
 extern	qboolean	scr_disabled_for_loading;
 extern	qboolean	scr_skipupdate;
 
-extern quake::cvar scr_viewsize;
+extern quake::cvar::normal scr_viewsize;
 
 // only the refresh window will be updated unless these variables are flagged 
 extern	int			scr_copytop;

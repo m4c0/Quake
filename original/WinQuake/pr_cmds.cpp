@@ -1329,7 +1329,7 @@ Pick a vector for the player to shoot along
 vector aim(entity, missilespeed)
 =============
 */
-quake::cvar sv_aim = {"sv_aim", "0.93"};
+quake::cvar::normal sv_aim = {"sv_aim", "0.93"};
 void PF_aim (void)
 {
 	edict_t	*ent, *check, *bestent;

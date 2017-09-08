@@ -83,17 +83,17 @@ float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
 float		oldscreensize, oldfov;
-quake::cvar scr_viewsize = {"viewsize","100", true};
-quake::cvar scr_fov = {"fov","90"};	// 10 - 170
-quake::cvar scr_conspeed = {"scr_conspeed","300"};
-quake::cvar scr_centertime = {"scr_centertime","2"};
-quake::cvar scr_showram = {"showram","1"};
-quake::cvar scr_showturtle = {"showturtle","0"};
-quake::cvar scr_showpause = {"showpause","1"};
-quake::cvar scr_printspeed = {"scr_printspeed","8"};
-quake::cvar gl_triplebuffer = {"gl_triplebuffer", "1", true };
+quake::cvar::normal scr_viewsize = {"viewsize","100", true};
+quake::cvar::normal scr_fov = {"fov","90"};	// 10 - 170
+quake::cvar::normal scr_conspeed = {"scr_conspeed","300"};
+quake::cvar::normal scr_centertime = {"scr_centertime","2"};
+quake::cvar::normal scr_showram = {"showram","1"};
+quake::cvar::normal scr_showturtle = {"showturtle","0"};
+quake::cvar::normal scr_showpause = {"showpause","1"};
+quake::cvar::normal scr_printspeed = {"scr_printspeed","8"};
+quake::cvar::normal gl_triplebuffer = {"gl_triplebuffer", "1", true };
 
-extern quake::cvar crosshair;
+extern quake::cvar::normal crosshair;
 
 qboolean	scr_initialized;		// ready to draw
 

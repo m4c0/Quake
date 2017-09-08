@@ -66,18 +66,18 @@ int 		desired_bits = 16;
 
 int sound_started=0;
 
-quake::cvar bgmvolume = {"bgmvolume", "1", true};
-quake::cvar volume = {"volume", "0.7", true};
+quake::cvar::normal bgmvolume = {"bgmvolume", "1", true};
+quake::cvar::normal volume = {"volume", "0.7", true};
 
-quake::cvar nosound = {"nosound", "0"};
-quake::cvar precache = {"precache", "1"};
-quake::cvar loadas8bit = {"loadas8bit", "0"};
-quake::cvar bgmbuffer = {"bgmbuffer", "4096"};
-quake::cvar ambient_level = {"ambient_level", "0.3"};
-quake::cvar ambient_fade = {"ambient_fade", "100"};
-quake::cvar snd_noextraupdate = {"snd_noextraupdate", "0"};
-quake::cvar snd_show = {"snd_show", "0"};
-quake::cvar _snd_mixahead = {"_snd_mixahead", "0.1", true};
+quake::cvar::normal nosound = {"nosound", "0"};
+quake::cvar::normal precache = {"precache", "1"};
+quake::cvar::normal loadas8bit = {"loadas8bit", "0"};
+quake::cvar::normal bgmbuffer = {"bgmbuffer", "4096"};
+quake::cvar::normal ambient_level = {"ambient_level", "0.3"};
+quake::cvar::normal ambient_fade = {"ambient_fade", "100"};
+quake::cvar::normal snd_noextraupdate = {"snd_noextraupdate", "0"};
+quake::cvar::normal snd_show = {"snd_show", "0"};
+quake::cvar::normal _snd_mixahead = {"_snd_mixahead", "0.1", true};
 
 
 // ====================================================================

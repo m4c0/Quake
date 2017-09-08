@@ -191,39 +191,39 @@ extern	int	playertextures;
 
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 
-extern quake::cvar r_norefresh;
-extern quake::cvar r_drawentities;
-extern quake::cvar r_drawworld;
-extern quake::cvar r_drawviewmodel;
-extern quake::cvar r_speeds;
-extern quake::cvar r_waterwarp;
-extern quake::cvar r_fullbright;
-extern quake::cvar r_lightmap;
-extern quake::cvar r_shadows;
-extern quake::cvar r_mirroralpha;
-extern quake::cvar r_wateralpha;
-extern quake::cvar r_dynamic;
-extern quake::cvar r_novis;
+extern quake::cvar::normal r_norefresh;
+extern quake::cvar::normal r_drawentities;
+extern quake::cvar::normal r_drawworld;
+extern quake::cvar::normal r_drawviewmodel;
+extern quake::cvar::normal r_speeds;
+extern quake::cvar::normal r_waterwarp;
+extern quake::cvar::normal r_fullbright;
+extern quake::cvar::normal r_lightmap;
+extern quake::cvar::normal r_shadows;
+extern quake::cvar::normal r_mirroralpha;
+extern quake::cvar::normal r_wateralpha;
+extern quake::cvar::normal r_dynamic;
+extern quake::cvar::normal r_novis;
 
-extern quake::cvar gl_clear;
-extern quake::cvar gl_cull;
-extern quake::cvar gl_poly;
-extern quake::cvar gl_texsort;
-extern quake::cvar gl_smoothmodels;
-extern quake::cvar gl_affinemodels;
-extern quake::cvar gl_polyblend;
-extern quake::cvar gl_keeptjunctions;
-extern quake::cvar gl_reporttjunctions;
-extern quake::cvar gl_flashblend;
-extern quake::cvar gl_nocolors;
-extern quake::cvar gl_doubleeyes;
+extern quake::cvar::normal gl_clear;
+extern quake::cvar::normal gl_cull;
+extern quake::cvar::normal gl_poly;
+extern quake::cvar::normal gl_texsort;
+extern quake::cvar::normal gl_smoothmodels;
+extern quake::cvar::normal gl_affinemodels;
+extern quake::cvar::normal gl_polyblend;
+extern quake::cvar::normal gl_keeptjunctions;
+extern quake::cvar::normal gl_reporttjunctions;
+extern quake::cvar::normal gl_flashblend;
+extern quake::cvar::normal gl_nocolors;
+extern quake::cvar::normal gl_doubleeyes;
 
 extern	int		gl_lightmap_format;
 extern	int		gl_solid_format;
 extern	int		gl_alpha_format;
 
-extern quake::cvar gl_max_size;
-extern quake::cvar gl_playermip;
+extern quake::cvar::normal gl_max_size;
+extern quake::cvar::normal gl_playermip;
 
 extern	int			mirrortexturenum;	// quake texturenum, not gltexturenum
 extern	qboolean	mirror;

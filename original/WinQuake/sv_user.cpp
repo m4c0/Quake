@@ -23,9 +23,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 edict_t	*sv_player;
 
-extern quake::cvar sv_friction;
-quake::cvar sv_edgefriction = {"edgefriction", "2"};
-extern quake::cvar sv_stopspeed;
+extern quake::cvar::normal sv_friction;
+quake::cvar::normal sv_edgefriction = {"edgefriction", "2"};
+extern quake::cvar::normal sv_stopspeed;
 
 static	vec3_t		forward, right, up;
 
@@ -41,7 +41,7 @@ qboolean	onground;
 
 usercmd_t	cmd;
 
-quake::cvar sv_idealpitchscale = {"sv_idealpitchscale","0.8"};
+quake::cvar::normal sv_idealpitchscale = {"sv_idealpitchscale","0.8"};
 
 
 /*
@@ -164,29 +164,8 @@ void SV_UserFriction (void)
 SV_Accelerate
 ==============
 */
-quake::cvar sv_maxspeed = {"sv_maxspeed", "320", false, true};
-quake::cvar sv_accelerate = {"sv_accelerate", "10"};
-#if 0
-void SV_Accelerate (vec3_t wishvel)
-{
-	int			i;
-	float		addspeed, accelspeed;
-	vec3_t		pushvec;
-
-	if (wishspeed == 0)
-		return;
-
-	VectorSubtract (wishvel, velocity, pushvec);
-	addspeed = VectorNormalize (pushvec);
-
-	accelspeed = sv_accelerate.value*host_frametime*addspeed;
-	if (accelspeed > addspeed)
-		accelspeed = addspeed;
-	
-	for (i=0 ; i<3 ; i++)
-		velocity[i] += accelspeed*pushvec[i];	
-}
-#endif
+quake::cvar::server_side sv_maxspeed = {"sv_maxspeed", "320"};
+quake::cvar::normal sv_accelerate = {"sv_accelerate", "10"};
 void SV_Accelerate (void)
 {
 	int			i;

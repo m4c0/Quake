@@ -25,20 +25,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // references them even when on a unix system.
 
 // these two are not intended to be set directly
-quake::cvar cl_name = {"_cl_name", "player", true};
-quake::cvar cl_color = {"_cl_color", "0", true};
+quake::cvar::normal cl_name = {"_cl_name", "player", true};
+quake::cvar::normal cl_color = {"_cl_color", "0", true};
 
-quake::cvar cl_shownet = {"cl_shownet","0"};	// can be 0, 1, or 2
-quake::cvar cl_nolerp = {"cl_nolerp","0"};
+quake::cvar::normal cl_shownet = {"cl_shownet","0"};	// can be 0, 1, or 2
+quake::cvar::normal cl_nolerp = {"cl_nolerp","0"};
 
-quake::cvar lookspring = {"lookspring","0", true};
-quake::cvar lookstrafe = {"lookstrafe","0", true};
-quake::cvar sensitivity = {"sensitivity","3", true};
+quake::cvar::normal lookspring = {"lookspring","0", true};
+quake::cvar::normal lookstrafe = {"lookstrafe","0", true};
+quake::cvar::normal sensitivity = {"sensitivity","3", true};
 
-quake::cvar m_pitch = {"m_pitch","0.022", true};
-quake::cvar m_yaw = {"m_yaw","0.022", true};
-quake::cvar m_forward = {"m_forward","1", true};
-quake::cvar m_side = {"m_side","0.8", true};
+quake::cvar::normal m_pitch = {"m_pitch","0.022", true};
+quake::cvar::normal m_yaw = {"m_yaw","0.022", true};
+quake::cvar::normal m_forward = {"m_forward","1", true};
+quake::cvar::normal m_side = {"m_side","0.8", true};
 
 
 client_static_t	cls;

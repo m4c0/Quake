@@ -39,15 +39,11 @@ solid_edge items only clip against bsp models.
 
 */
 
-quake::cvar sv_friction = {"sv_friction","4",false,true};
-quake::cvar sv_stopspeed = {"sv_stopspeed","100"};
-quake::cvar sv_gravity = {"sv_gravity","800",false,true};
-quake::cvar sv_maxvelocity = {"sv_maxvelocity","2000"};
-quake::cvar sv_nostep = {"sv_nostep","0"};
-
-#ifdef QUAKE2
-static	vec3_t	vec_origin = {0.0, 0.0, 0.0};
-#endif
+quake::cvar::server_side sv_friction = {"sv_friction","4"};
+quake::cvar::normal sv_stopspeed = {"sv_stopspeed","100"};
+quake::cvar::server_side sv_gravity = {"sv_gravity","800"};
+quake::cvar::normal sv_maxvelocity = {"sv_maxvelocity","2000"};
+quake::cvar::normal sv_nostep = {"sv_nostep","0"};
 
 #define	MOVE_EPSILON	0.01
 

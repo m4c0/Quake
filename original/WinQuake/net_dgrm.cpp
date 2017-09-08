@@ -901,28 +901,17 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	if (command == CCREQ_RULE_INFO)
 	{
 		char	*prevCvarName;
-		quake::cvar * var;
+
+        auto & all_svars = quake::cvar::server_side::all();
+        auto it = all_svars.begin();
 
 		// find the search start location
 		prevCvarName = MSG_ReadString();
 		if (*prevCvarName)
 		{
-            try {
-                auto & tmp = quake::cvar::by_name(prevCvarName);
-                var = tmp.next();
-            } catch (...) {
-                return nullptr;
-            }
-		}
-		else
-			var = quake::cvar::first();
-
-		// search for the next server cvar
-		while (var)
-		{
-			if (var->server)
-				break;
-			var = var->next();
+            it = std::find_if(all_svars.begin(), all_svars.end(), [&](auto v) { return v->name != prevCvarName; });
+            if (it == all_svars.end()) return nullptr;
+            it++;
 		}
 
 		// send the response
@@ -931,8 +920,9 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 		// save space for the header, filled in later
 		MSG_WriteLong(&net_message, 0);
 		MSG_WriteByte(&net_message, CCREP_RULE_INFO);
-		if (var)
+		if (it != all_svars.end())
 		{
+            auto var = *it;
 			MSG_WriteString(&net_message, var->name.c_str());
 			MSG_WriteString(&net_message, var->string.c_str());
 		}

@@ -30,9 +30,9 @@ qboolean VID_Is8bit(void);
 
 extern unsigned char d_15to8table[65536];
 
-quake::cvar gl_nobind = {"gl_nobind", "0"};
-quake::cvar gl_max_size = {"gl_max_size", "1024"};
-quake::cvar gl_picmip = {"gl_picmip", "0"};
+quake::cvar::normal gl_nobind = {"gl_nobind", "0"};
+quake::cvar::normal gl_max_size = {"gl_max_size", "1024"};
+quake::cvar::normal gl_picmip = {"gl_picmip", "0"};
 
 byte		*draw_chars;				// 8*8 graphic characters
 qpic_t		*draw_disc;

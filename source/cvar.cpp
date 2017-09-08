@@ -4,18 +4,18 @@
 #include <memory>
 
 static auto & _cvars() {
-    static std::map<std::string, quake::cvar *> _cvars;
+    static std::map<std::string, quake::cvar::normal *> _cvars;
     return _cvars;
 }
 
-void quake::cvar::install(quake::cvar * v) {
+void quake::cvar::normal::install(quake::cvar::normal * v) {
     _cvars()[v->name] = v;
 }
-void quake::cvar::uninstall(quake::cvar * v) {
+void quake::cvar::normal::uninstall(quake::cvar::normal * v) {
     _cvars().erase(v->name);
 }
 
-quake::cvar & quake::cvar::by_name(const std::string & n) {
+quake::cvar::normal & quake::cvar::by_name(const std::string & n) {
     return *(_cvars().at(n));
 }
 
@@ -38,14 +38,5 @@ void quake::cvar::persist(FILE * f) {
 			fprintf (f, "%s \"%s\"\n", v->name.c_str(), v->string.c_str());
         }
     }
-}
-
-quake::cvar * quake::cvar::first() {
-    return _cvars().begin()->second;
-}
-quake::cvar * quake::cvar::next() const {
-    auto it = std::find_if(_cvars().begin(), _cvars().end(), [this](auto & kv) { return kv.second == this; });
-    it++;
-    return (it == _cvars().end()) ? nullptr : it->second;
 }
 

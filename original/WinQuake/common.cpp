@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 
 #include "quake/common.hpp"
+#include "quake/cvar/server_side.hpp"
 
 static auto & argv = quake::common::argv::current;
 
@@ -33,8 +34,8 @@ static const char     *argvdummy = " ";
 static const char     *safeargvs[NUM_SAFE_ARGVS] =
 	{"-stdvid", "-nolan", "-nosound", "-nocdaudio", "-nojoy", "-nomouse", "-dibonly"};
 
-quake::cvar registered = {"registered","0"};
-quake::cvar cmdline = {"cmdline","0", false, true};
+quake::cvar::normal registered = {"registered","0"};
+quake::cvar::server_side cmdline = {"cmdline","0"};
 
 qboolean        com_modified;   // set true if using non-id files
 

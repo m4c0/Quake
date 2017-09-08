@@ -21,13 +21,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quake/cvar.hpp"
 
-extern quake::cvar v_gamma;
+extern quake::cvar::normal v_gamma;
 
 extern	byte		gammatable[256];	// palette is sent through this
 extern	byte		ramps[3][256];
 extern float v_blend[4];
 
-extern quake::cvar lcd_x;
+extern quake::cvar::normal lcd_x;
 
 
 void V_Init (void);

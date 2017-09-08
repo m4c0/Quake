@@ -175,7 +175,7 @@ R_Init
 void R_Init (void)
 {	
 	extern byte *hunk_base;
-	extern quake::cvar gl_finish;
+	extern quake::cvar::normal gl_finish;
 
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);	
 	Cmd_AddCommand ("envmap", R_Envmap_f);	

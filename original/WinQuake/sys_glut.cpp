@@ -30,7 +30,7 @@ int nostdout = 0;
 const char *basedir = ".";
 const char *cachedir = "/tmp";
 
-quake::cvar sys_linerefresh = {"sys_linerefresh","0"};// set for entity display
+quake::cvar::normal sys_linerefresh = {"sys_linerefresh","0"};// set for entity display
 
 // =======================================================================
 // General routines

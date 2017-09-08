@@ -67,21 +67,21 @@ int messagesReceived = 0;
 int unreliableMessagesSent = 0;
 int unreliableMessagesReceived = 0;
 
-quake::cvar net_messagetimeout = {"net_messagetimeout","300"};
-quake::cvar hostname = {"hostname", "UNNAMED"};
+quake::cvar::normal net_messagetimeout = {"net_messagetimeout","300"};
+quake::cvar::normal hostname = {"hostname", "UNNAMED"};
 
 qboolean	configRestored = false;
-quake::cvar config_com_port = {"_config_com_port", "0x3f8", true};
-quake::cvar config_com_irq = {"_config_com_irq", "4", true};
-quake::cvar config_com_baud = {"_config_com_baud", "57600", true};
-quake::cvar config_com_modem = {"_config_com_modem", "1", true};
-quake::cvar config_modem_dialtype = {"_config_modem_dialtype", "T", true};
-quake::cvar config_modem_clear = {"_config_modem_clear", "ATZ", true};
-quake::cvar config_modem_init = {"_config_modem_init", "", true};
-quake::cvar config_modem_hangup = {"_config_modem_hangup", "AT H", true};
+quake::cvar::normal config_com_port = {"_config_com_port", "0x3f8", true};
+quake::cvar::normal config_com_irq = {"_config_com_irq", "4", true};
+quake::cvar::normal config_com_baud = {"_config_com_baud", "57600", true};
+quake::cvar::normal config_com_modem = {"_config_com_modem", "1", true};
+quake::cvar::normal config_modem_dialtype = {"_config_modem_dialtype", "T", true};
+quake::cvar::normal config_modem_clear = {"_config_modem_clear", "ATZ", true};
+quake::cvar::normal config_modem_init = {"_config_modem_init", "", true};
+quake::cvar::normal config_modem_hangup = {"_config_modem_hangup", "AT H", true};
 
 #ifdef IDGODS
-quake::cvar idgods = {"idgods", "0"};
+quake::cvar::normal idgods = {"idgods", "0"};
 #endif
 
 int	vcrFile = -1;

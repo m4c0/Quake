@@ -210,7 +210,7 @@ extern int			DEFAULTnet_hostport;
 extern int			net_hostport;
 
 extern int net_driverlevel;
-extern quake::cvar hostname;
+extern quake::cvar::normal hostname;
 extern char			playername[];
 extern int			playercolor;
 

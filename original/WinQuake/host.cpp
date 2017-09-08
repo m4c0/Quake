@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "r_local.h"
 
 #include "quake/common.hpp"
+#include "quake/cvar/server_side.hpp"
 
 static auto & argv = quake::common::argv::current;
 
@@ -59,32 +60,28 @@ jmp_buf 	host_abortserver;
 byte		*host_basepal;
 byte		*host_colormap;
 
-quake::cvar host_framerate = {"host_framerate","0"};	// set for slow motion
-quake::cvar host_speeds = {"host_speeds","0"};			// set for running times
+quake::cvar::normal host_framerate = {"host_framerate","0"};	// set for slow motion
+quake::cvar::normal host_speeds = {"host_speeds","0"};			// set for running times
 
-quake::cvar sys_ticrate = {"sys_ticrate","0.05"};
-quake::cvar serverprofile = {"serverprofile","0"};
+quake::cvar::normal sys_ticrate = {"sys_ticrate","0.05"};
+quake::cvar::normal serverprofile = {"serverprofile","0"};
 
-quake::cvar fraglimit = {"fraglimit","0",false,true};
-quake::cvar timelimit = {"timelimit","0",false,true};
-quake::cvar teamplay = {"teamplay","0",false,true};
+quake::cvar::server_side fraglimit = {"fraglimit","0"};
+quake::cvar::server_side timelimit = {"timelimit","0"};
+quake::cvar::server_side teamplay  = {"teamplay", "0"};
 
-quake::cvar samelevel = {"samelevel","0"};
-quake::cvar noexit = {"noexit","0",false,true};
+quake::cvar::normal samelevel = {"samelevel","0"};
+quake::cvar::server_side noexit = {"noexit","0"};
 
-#ifdef QUAKE2
-quake::cvar developer = {"developer","1"};	// should be 0 for release!
-#else
-quake::cvar developer = {"developer","0"};
-#endif
+quake::cvar::normal developer = {"developer","0"};
 
-quake::cvar skill = {"skill","1"};						// 0 - 3
-quake::cvar deathmatch = {"deathmatch","0"};			// 0, 1, or 2
-quake::cvar coop = {"coop","0"};			// 0 or 1
+quake::cvar::normal skill = {"skill","1"};						// 0 - 3
+quake::cvar::normal deathmatch = {"deathmatch","0"};			// 0, 1, or 2
+quake::cvar::normal coop = {"coop","0"};			// 0 or 1
 
-quake::cvar pausable = {"pausable","1"};
+quake::cvar::normal pausable = {"pausable","1"};
 
-quake::cvar temp1 = {"temp1","0"};
+quake::cvar::normal temp1 = {"temp1","0"};
 
 
 /*

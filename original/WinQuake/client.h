@@ -236,35 +236,35 @@ typedef struct
 //
 // cvars
 //
-extern quake::cvar cl_name;
-extern quake::cvar cl_color;
+extern quake::cvar::normal cl_name;
+extern quake::cvar::normal cl_color;
 
-extern quake::cvar cl_upspeed;
-extern quake::cvar cl_forwardspeed;
-extern quake::cvar cl_backspeed;
-extern quake::cvar cl_sidespeed;
+extern quake::cvar::normal cl_upspeed;
+extern quake::cvar::normal cl_forwardspeed;
+extern quake::cvar::normal cl_backspeed;
+extern quake::cvar::normal cl_sidespeed;
 
-extern quake::cvar cl_movespeedkey;
+extern quake::cvar::normal cl_movespeedkey;
 
-extern quake::cvar cl_yawspeed;
-extern quake::cvar cl_pitchspeed;
+extern quake::cvar::normal cl_yawspeed;
+extern quake::cvar::normal cl_pitchspeed;
 
-extern quake::cvar cl_anglespeedkey;
+extern quake::cvar::normal cl_anglespeedkey;
 
-extern quake::cvar cl_autofire;
+extern quake::cvar::normal cl_autofire;
 
-extern quake::cvar cl_shownet;
-extern quake::cvar cl_nolerp;
+extern quake::cvar::normal cl_shownet;
+extern quake::cvar::normal cl_nolerp;
 
-extern quake::cvar cl_pitchdriftspeed;
-extern quake::cvar lookspring;
-extern quake::cvar lookstrafe;
-extern quake::cvar sensitivity;
+extern quake::cvar::normal cl_pitchdriftspeed;
+extern quake::cvar::normal lookspring;
+extern quake::cvar::normal lookstrafe;
+extern quake::cvar::normal sensitivity;
 
-extern quake::cvar m_pitch;
-extern quake::cvar m_yaw;
-extern quake::cvar m_forward;
-extern quake::cvar m_side;
+extern quake::cvar::normal m_pitch;
+extern quake::cvar::normal m_yaw;
+extern quake::cvar::normal m_forward;
+extern quake::cvar::normal m_side;
 
 
 #define	MAX_TEMP_ENTITIES	64			// lightning bolts, etc

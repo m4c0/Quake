@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // server.h
 
 #include "quake/cvar.hpp"
+#include "quake/cvar/server_side.hpp"
 
 typedef struct
 {
@@ -197,12 +198,13 @@ typedef struct client_s
 
 //============================================================================
 
-extern quake::cvar teamplay;
-extern quake::cvar skill;
-extern quake::cvar deathmatch;
-extern quake::cvar coop;
-extern quake::cvar fraglimit;
-extern quake::cvar timelimit;
+extern quake::cvar::server_side teamplay;
+extern quake::cvar::server_side fraglimit;
+extern quake::cvar::server_side timelimit;
+
+extern quake::cvar::normal skill;
+extern quake::cvar::normal deathmatch;
+extern quake::cvar::normal coop;
 
 extern	server_static_t	svs;				// persistant server info
 extern	server_t		sv;					// local server

@@ -203,17 +203,17 @@ float CL_KeyState (kbutton_t *key)
 
 //==========================================================================
 
-quake::cvar cl_upspeed = {"cl_upspeed","200"};
-quake::cvar cl_forwardspeed = {"cl_forwardspeed","200", true};
-quake::cvar cl_backspeed = {"cl_backspeed","200", true};
-quake::cvar cl_sidespeed = {"cl_sidespeed","350"};
+quake::cvar::normal cl_upspeed = {"cl_upspeed","200"};
+quake::cvar::normal cl_forwardspeed = {"cl_forwardspeed","200", true};
+quake::cvar::normal cl_backspeed = {"cl_backspeed","200", true};
+quake::cvar::normal cl_sidespeed = {"cl_sidespeed","350"};
 
-quake::cvar cl_movespeedkey = {"cl_movespeedkey","2.0"};
+quake::cvar::normal cl_movespeedkey = {"cl_movespeedkey","2.0"};
 
-quake::cvar cl_yawspeed = {"cl_yawspeed","140"};
-quake::cvar cl_pitchspeed = {"cl_pitchspeed","150"};
+quake::cvar::normal cl_yawspeed = {"cl_yawspeed","140"};
+quake::cvar::normal cl_pitchspeed = {"cl_pitchspeed","150"};
 
-quake::cvar cl_anglespeedkey = {"cl_anglespeedkey","1.5"};
+quake::cvar::normal cl_anglespeedkey = {"cl_anglespeedkey","1.5"};
 
 
 /*

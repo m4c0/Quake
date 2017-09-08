@@ -53,13 +53,13 @@ int		svgalib_inited=0;
 int		UseMouse = 1;
 int		UseKeyboard = 1;
 
-quake::cvar vid_mode = {"vid_mode","5",false};
-quake::cvar vid_redrawfull = {"vid_redrawfull","0",false};
-quake::cvar vid_waitforrefresh = {"vid_waitforrefresh","0",true};
+quake::cvar::normal vid_mode = {"vid_mode","5",false};
+quake::cvar::normal vid_redrawfull = {"vid_redrawfull","0",false};
+quake::cvar::normal vid_waitforrefresh = {"vid_waitforrefresh","0",true};
  
 char	*framebuffer_ptr;
 
-quake::cvar mouse_button_commands[3] =
+quake::cvar::normal mouse_button_commands[3] =
 {
     {"mouse1","+attack"},
     {"mouse2","+strafe"},
@@ -73,7 +73,7 @@ float   mouse_x, mouse_y;
 float	old_mouse_x, old_mouse_y;
 int		mx, my;
 
-quake::cvar m_filter = {"m_filter","1"};
+quake::cvar::normal m_filter = {"m_filter","1"};
 
 int scr_width, scr_height;
 
@@ -90,7 +90,7 @@ int		texture_extension_number = 1;
 
 float		gldepthmin, gldepthmax;
 
-quake::cvar gl_ztrick = {"gl_ztrick","1"};
+quake::cvar::normal gl_ztrick = {"gl_ztrick","1"};
 
 const GLubyte *gl_vendor;
 const GLubyte *gl_renderer;
@@ -321,7 +321,7 @@ GL_BeginRendering
 */
 void GL_BeginRendering (int *x, int *y, int *width, int *height)
 {
-	extern quake::cvar gl_clear;
+	extern quake::cvar::normal gl_clear;
 
 	*x = *y = 0;
 	*width = scr_width;

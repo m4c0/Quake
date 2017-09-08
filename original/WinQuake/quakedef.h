@@ -292,9 +292,9 @@ extern qboolean noclip_anglehack;
 //
 extern	quakeparms_t host_parms;
 
-extern quake::cvar sys_ticrate;
-extern quake::cvar sys_nostdout;
-extern quake::cvar developer;
+extern quake::cvar::normal sys_ticrate;
+extern quake::cvar::normal sys_nostdout;
+extern quake::cvar::normal developer;
 
 extern	qboolean	host_initialized;		// true if into command execution
 extern	double		host_frametime;
@@ -329,7 +329,7 @@ extern int			minimum_memory;
 //
 // chase
 //
-extern quake::cvar chase_active;
+extern quake::cvar::normal chase_active;
 
 void Chase_Init (void);
 void Chase_Reset (void);

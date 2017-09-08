@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "winquake.h"
 #endif
 
-extern quake::cvar registered;
+extern quake::cvar::normal registered;
 
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);

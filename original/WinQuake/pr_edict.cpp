@@ -38,17 +38,17 @@ int		type_size[8] = {1,sizeof(string_t)/4,1,3,1,1,sizeof(func_t)/4,sizeof(void *
 ddef_t *ED_FieldAtOfs (int ofs);
 qboolean	ED_ParseEpair (void *base, ddef_t *key, char *s);
 
-quake::cvar nomonsters = {"nomonsters", "0"};
-quake::cvar gamecfg = {"gamecfg", "0"};
-quake::cvar scratch1 = {"scratch1", "0"};
-quake::cvar scratch2 = {"scratch2", "0"};
-quake::cvar scratch3 = {"scratch3", "0"};
-quake::cvar scratch4 = {"scratch4", "0"};
-quake::cvar savedgamecfg = {"savedgamecfg", "0", true};
-quake::cvar saved1 = {"saved1", "0", true};
-quake::cvar saved2 = {"saved2", "0", true};
-quake::cvar saved3 = {"saved3", "0", true};
-quake::cvar saved4 = {"saved4", "0", true};
+quake::cvar::normal nomonsters = {"nomonsters", "0"};
+quake::cvar::normal gamecfg = {"gamecfg", "0"};
+quake::cvar::normal scratch1 = {"scratch1", "0"};
+quake::cvar::normal scratch2 = {"scratch2", "0"};
+quake::cvar::normal scratch3 = {"scratch3", "0"};
+quake::cvar::normal scratch4 = {"scratch4", "0"};
+quake::cvar::normal savedgamecfg = {"savedgamecfg", "0", true};
+quake::cvar::normal saved1 = {"saved1", "0", true};
+quake::cvar::normal saved2 = {"saved2", "0", true};
+quake::cvar::normal saved3 = {"saved3", "0", true};
+quake::cvar::normal saved4 = {"saved4", "0", true};
 
 #define	MAX_FIELD_LEN	64
 #define GEFV_CACHESIZE	2

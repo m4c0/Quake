@@ -23,10 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec3_t p1, vec3_t p2, trace_t *trace);
 
-quake::cvar chase_back = {"chase_back", "100"};
-quake::cvar chase_up = {"chase_up", "16"};
-quake::cvar chase_right = {"chase_right", "0"};
-quake::cvar chase_active = {"chase_active", "0"};
+quake::cvar::normal chase_back = {"chase_back", "100"};
+quake::cvar::normal chase_up = {"chase_up", "16"};
+quake::cvar::normal chase_right = {"chase_right", "0"};
+quake::cvar::normal chase_active = {"chase_active", "0"};
 
 vec3_t	chase_pos;
 vec3_t	chase_angles;

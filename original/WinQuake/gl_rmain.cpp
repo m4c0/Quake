@@ -85,33 +85,33 @@ int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 
 void R_MarkLeaves (void);
 
-quake::cvar r_norefresh = {"r_norefresh","0"};
-quake::cvar r_drawentities = {"r_drawentities","1"};
-quake::cvar r_drawviewmodel = {"r_drawviewmodel","1"};
-quake::cvar r_speeds = {"r_speeds","0"};
-quake::cvar r_fullbright = {"r_fullbright","0"};
-quake::cvar r_lightmap = {"r_lightmap","0"};
-quake::cvar r_shadows = {"r_shadows","0"};
-quake::cvar r_mirroralpha = {"r_mirroralpha","1"};
-quake::cvar r_wateralpha = {"r_wateralpha","1"};
-quake::cvar r_dynamic = {"r_dynamic","1"};
-quake::cvar r_novis = {"r_novis","0"};
+quake::cvar::normal r_norefresh = {"r_norefresh","0"};
+quake::cvar::normal r_drawentities = {"r_drawentities","1"};
+quake::cvar::normal r_drawviewmodel = {"r_drawviewmodel","1"};
+quake::cvar::normal r_speeds = {"r_speeds","0"};
+quake::cvar::normal r_fullbright = {"r_fullbright","0"};
+quake::cvar::normal r_lightmap = {"r_lightmap","0"};
+quake::cvar::normal r_shadows = {"r_shadows","0"};
+quake::cvar::normal r_mirroralpha = {"r_mirroralpha","1"};
+quake::cvar::normal r_wateralpha = {"r_wateralpha","1"};
+quake::cvar::normal r_dynamic = {"r_dynamic","1"};
+quake::cvar::normal r_novis = {"r_novis","0"};
 
-quake::cvar gl_finish = {"gl_finish","0"};
-quake::cvar gl_clear = {"gl_clear","0"};
-quake::cvar gl_cull = {"gl_cull","1"};
-quake::cvar gl_texsort = {"gl_texsort","1"};
-quake::cvar gl_smoothmodels = {"gl_smoothmodels","1"};
-quake::cvar gl_affinemodels = {"gl_affinemodels","0"};
-quake::cvar gl_polyblend = {"gl_polyblend","1"};
-quake::cvar gl_flashblend = {"gl_flashblend","1"};
-quake::cvar gl_playermip = {"gl_playermip","0"};
-quake::cvar gl_nocolors = {"gl_nocolors","0"};
-quake::cvar gl_keeptjunctions = {"gl_keeptjunctions","0"};
-quake::cvar gl_reporttjunctions = {"gl_reporttjunctions","0"};
-quake::cvar gl_doubleeyes = {"gl_doubleeys", "1"};
+quake::cvar::normal gl_finish = {"gl_finish","0"};
+quake::cvar::normal gl_clear = {"gl_clear","0"};
+quake::cvar::normal gl_cull = {"gl_cull","1"};
+quake::cvar::normal gl_texsort = {"gl_texsort","1"};
+quake::cvar::normal gl_smoothmodels = {"gl_smoothmodels","1"};
+quake::cvar::normal gl_affinemodels = {"gl_affinemodels","0"};
+quake::cvar::normal gl_polyblend = {"gl_polyblend","1"};
+quake::cvar::normal gl_flashblend = {"gl_flashblend","1"};
+quake::cvar::normal gl_playermip = {"gl_playermip","0"};
+quake::cvar::normal gl_nocolors = {"gl_nocolors","0"};
+quake::cvar::normal gl_keeptjunctions = {"gl_keeptjunctions","0"};
+quake::cvar::normal gl_reporttjunctions = {"gl_reporttjunctions","0"};
+quake::cvar::normal gl_doubleeyes = {"gl_doubleeys", "1"};
 
-extern	quake::cvar gl_ztrick;
+extern	quake::cvar::normal gl_ztrick;
 
 /*
 =================

@@ -43,7 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 static auto & argv = quake::common::argv::current;
 
-extern quake::cvar hostname;
+extern quake::cvar::normal hostname;
 
 static int net_acceptsocket = -1;		// socket for fielding new connections
 static int net_controlsocket;

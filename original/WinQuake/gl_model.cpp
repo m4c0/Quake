@@ -41,7 +41,7 @@ byte	mod_novis[MAX_MAP_LEAFS/8];
 model_t	mod_known[MAX_MOD_KNOWN];
 int		mod_numknown;
 
-quake::cvar gl_subdivide_size = {"gl_subdivide_size", "128", true};
+quake::cvar::normal gl_subdivide_size = {"gl_subdivide_size", "128", true};
 
 /*
 ===============
