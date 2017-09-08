@@ -1027,7 +1027,7 @@ void SV_SpawnServer (const char *server)
 
 	// let's not have any servers with no name
 	if (hostname.string[0] == 0)
-		quake::cvar::by_name("hostname") = "UNNAMED";
+		*quake::cvar::by_name("hostname") = "UNNAMED";
 	scr_centertime_off = 0;
 
 	Con_DPrintf ("SpawnServer: %s\n",server);
@@ -1045,14 +1045,14 @@ void SV_SpawnServer (const char *server)
 // make cvars consistant
 //
 	if (coop.value)
-		quake::cvar::by_name("deathmatch") = "0";
+		*quake::cvar::by_name("deathmatch") = "0";
 	current_skill = (int)(skill.value + 0.5);
 	if (current_skill < 0)
 		current_skill = 0;
 	if (current_skill > 3)
 		current_skill = 3;
 
-    quake::cvar::by_name("skill") = (float)current_skill;
+    *quake::cvar::by_name("skill") = (float)current_skill;
 	
 //
 // set up the new server

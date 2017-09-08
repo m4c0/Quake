@@ -75,7 +75,7 @@ int UDP_Init (void)
 	if (hostname.string == "UNNAMED")
 	{
 		buff[15] = 0;
-        quake::cvar::by_name("hostname") = buff;
+        *quake::cvar::by_name("hostname") = buff;
 	}
 
 	if ((net_controlsocket = UDP_OpenSocket (0)) == -1)

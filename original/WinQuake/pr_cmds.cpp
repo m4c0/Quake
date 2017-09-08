@@ -848,7 +848,7 @@ void PF_cvar (void)
 	
 	str = G_STRING(OFS_PARM0);
 	
-	G_FLOAT(OFS_RETURN) = quake::cvar::by_name(str).value;
+	G_FLOAT(OFS_RETURN) = quake::cvar::by_name(str)->value;
 }
 
 /*
@@ -865,7 +865,7 @@ void PF_cvar_set (void)
 	var = G_STRING(OFS_PARM0);
 	val = G_STRING(OFS_PARM1);
 	
-    quake::cvar::by_name(var) = val;
+    *quake::cvar::by_name(var) = val;
 }
 
 /*

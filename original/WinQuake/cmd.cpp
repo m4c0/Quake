@@ -443,9 +443,9 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
     try {
         auto v = quake::cvar::by_name(args.cmd);
         if (args.size() == 0) {
-            Con_Printf ("\"%s\" is \"%s\"\n", v.name.c_str(), v.string.c_str());
+            Con_Printf ("\"%s\" is \"%s\"\n", v->name.c_str(), v->string.c_str());
         } else {
-            v = args[0];
+            *v = args[0];
         }
     } catch (...) {
 		Con_Printf ("Unknown command \"%s\"\n", args.cmd.c_str());

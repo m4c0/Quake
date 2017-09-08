@@ -800,7 +800,7 @@ forward:
 		if (cl_name.string != setup_myname)
 			Cbuf_AddText ( va ("name \"%s\"\n", setup_myname) );
 		if (hostname.string != setup_hostname)
-			quake::cvar::by_name("hostname") = setup_hostname;
+			*quake::cvar::by_name("hostname") = setup_hostname;
 		if (setup_top != setup_oldtop || setup_bottom != setup_oldbottom)
 			Cbuf_AddText( va ("color %i %i\n", setup_top, setup_bottom) );
 		m_entersound = true;
@@ -1076,7 +1076,7 @@ void M_AdjustSliders (int dir)
 			scr_viewsize.value = 30;
 		if (scr_viewsize.value > 120)
 			scr_viewsize.value = 120;
-        quake::cvar::by_name("viewsize") = scr_viewsize.value;
+        *quake::cvar::by_name("viewsize") = scr_viewsize.value;
 		break;
 	case 4:	// gamma
 		v_gamma.value -= dir * 0.05;
@@ -1084,7 +1084,7 @@ void M_AdjustSliders (int dir)
 			v_gamma.value = 0.5;
 		if (v_gamma.value > 1)
 			v_gamma.value = 1;
-        quake::cvar::by_name("gamma") = v_gamma.value;
+        *quake::cvar::by_name("gamma") = v_gamma.value;
 		break;
 	case 5:	// mouse speed
 		sensitivity.value += dir * 0.5;
@@ -1092,7 +1092,7 @@ void M_AdjustSliders (int dir)
 			sensitivity.value = 1;
 		if (sensitivity.value > 11)
 			sensitivity.value = 11;
-        quake::cvar::by_name("sensitivity") = sensitivity.value;
+        *quake::cvar::by_name("sensitivity") = sensitivity.value;
 		break;
 	case 6:	// music volume
 #ifdef _WIN32
@@ -1104,7 +1104,7 @@ void M_AdjustSliders (int dir)
 			bgmvolume.value = 0;
 		if (bgmvolume.value > 1)
 			bgmvolume.value = 1;
-        quake::cvar::by_name("bgmvolume") = bgmvolume.value;
+        *quake::cvar::by_name("bgmvolume") = bgmvolume.value;
 		break;
 	case 7:	// sfx volume
 		volume.value += dir * 0.1;
@@ -1112,32 +1112,32 @@ void M_AdjustSliders (int dir)
 			volume.value = 0;
 		if (volume.value > 1)
 			volume.value = 1;
-        quake::cvar::by_name("volume") = volume.value;
+        *quake::cvar::by_name("volume") = volume.value;
 		break;
 
 	case 8:	// allways run
 		if (cl_forwardspeed.value > 200)
 		{
-            quake::cvar::by_name("cl_forwardspeed") = 200;
-            quake::cvar::by_name("cl_backspeed") = 200;
+            *quake::cvar::by_name("cl_forwardspeed") = 200;
+            *quake::cvar::by_name("cl_backspeed") = 200;
 		}
 		else
 		{
-            quake::cvar::by_name("cl_forwardspeed") = 400;
-            quake::cvar::by_name("cl_backspeed") = 400;
+            *quake::cvar::by_name("cl_forwardspeed") = 400;
+            *quake::cvar::by_name("cl_backspeed") = 400;
 		}
 		break;
 
 	case 9:	// invert mouse
-        quake::cvar::by_name("m_pitch") = -m_pitch.value;
+        *quake::cvar::by_name("m_pitch") = -m_pitch.value;
 		break;
 
 	case 10:	// lookspring
-        quake::cvar::by_name("lookspring") = !lookspring.value;
+        *quake::cvar::by_name("lookspring") = !lookspring.value;
 		break;
 
 	case 11:	// lookstrafe
-        quake::cvar::by_name("lookstrafe") = !lookstrafe.value;
+        *quake::cvar::by_name("lookstrafe") = !lookstrafe.value;
 		break;
 	}
 }
@@ -2690,7 +2690,7 @@ void M_NetStart_Change (int dir)
 		break;
 
 	case 2:
-        quake::cvar::by_name("coop") = coop.value ? 0 : 1;
+        *quake::cvar::by_name("coop") = coop.value ? 0 : 1;
 		break;
 
 	case 3:
@@ -2699,35 +2699,35 @@ void M_NetStart_Change (int dir)
 		else
 			count = 2;
 
-        quake::cvar::by_name("teamplay") = teamplay.value + dir;
+        *quake::cvar::by_name("teamplay") = teamplay.value + dir;
 		if (teamplay.value > count)
-			quake::cvar::by_name("teamplay") = 0;
+			*quake::cvar::by_name("teamplay") = 0;
 		else if (teamplay.value < 0)
-			quake::cvar::by_name("teamplay") = count;
+			*quake::cvar::by_name("teamplay") = count;
 		break;
 
 	case 4:
-        quake::cvar::by_name("skill") = skill.value + dir;
+        *quake::cvar::by_name("skill") = skill.value + dir;
 		if (skill.value > 3)
-			quake::cvar::by_name("skill") = 0;
+			*quake::cvar::by_name("skill") = 0;
 		if (skill.value < 0)
-			quake::cvar::by_name("skill") = 3;
+			*quake::cvar::by_name("skill") = 3;
 		break;
 
 	case 5:
-        quake::cvar::by_name("fraglimit") = fraglimit.value + dir * 10;
+        *quake::cvar::by_name("fraglimit") = fraglimit.value + dir * 10;
 		if (fraglimit.value > 100)
-			quake::cvar::by_name("fraglimit") = 0;
+			*quake::cvar::by_name("fraglimit") = 0;
 		if (fraglimit.value < 0)
-			quake::cvar::by_name("fraglimit") = 100;
+			*quake::cvar::by_name("fraglimit") = 100;
 		break;
 
 	case 6:
-		quake::cvar::by_name("timelimit") = timelimit.value + dir * 5;
+		*quake::cvar::by_name("timelimit") = timelimit.value + dir * 5;
 		if (timelimit.value > 60)
-			quake::cvar::by_name("timelimit") = 0;
+			*quake::cvar::by_name("timelimit") = 0;
 		if (timelimit.value < 0)
-			quake::cvar::by_name("timelimit") = 60;
+			*quake::cvar::by_name("timelimit") = 60;
 		break;
 
 	case 7:

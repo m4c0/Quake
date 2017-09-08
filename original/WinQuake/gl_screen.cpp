@@ -273,15 +273,15 @@ static void SCR_CalcRefdef (void)
 	
 // bound viewsize
 	if (scr_viewsize.value < 30)
-		quake::cvar::by_name("viewsize") = "30";
+		*quake::cvar::by_name("viewsize") = "30";
 	if (scr_viewsize.value > 120)
-		quake::cvar::by_name("viewsize") = "120";
+		*quake::cvar::by_name("viewsize") = "120";
 
 // bound field of view
 	if (scr_fov.value < 10)
-		quake::cvar::by_name("fov") = "10";
+		*quake::cvar::by_name("fov") = "10";
 	if (scr_fov.value > 170)
-		quake::cvar::by_name("fov") = "170";
+		*quake::cvar::by_name("fov") = "170";
 
 // intermission is always full screen	
 	if (cl.intermission)
@@ -345,7 +345,7 @@ Keybinding command
 */
 void SCR_SizeUp_f (const quake::common::argv & argv)
 {
-	quake::cvar::by_name("viewsize") = scr_viewsize.value + 10;
+	*quake::cvar::by_name("viewsize") = scr_viewsize.value + 10;
 	vid.recalc_refdef = 1;
 }
 
@@ -359,7 +359,7 @@ Keybinding command
 */
 void SCR_SizeDown_f (const quake::common::argv & argv)
 {
-    quake::cvar::by_name("viewsize") = scr_viewsize.value - 10;
+    *quake::cvar::by_name("viewsize") = scr_viewsize.value - 10;
 	vid.recalc_refdef = 1;
 }
 

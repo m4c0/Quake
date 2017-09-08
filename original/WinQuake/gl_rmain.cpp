@@ -830,7 +830,7 @@ void R_SetupFrame (void)
 
 // don't allow cheats in multiplayer
 	if (cl.maxclients > 1)
-		quake::cvar::by_name("r_fullbright") = "0";
+		*quake::cvar::by_name("r_fullbright") = "0";
 
 	R_AnimateLight ();
 

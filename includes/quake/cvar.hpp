@@ -44,7 +44,7 @@ namespace quake {
             static void uninstall(normal * v);
         };
 
-        normal & by_name(const std::string & name);
+        normal * by_name(const std::string & name);
         const char * complete(const std::string &);
     }
 }

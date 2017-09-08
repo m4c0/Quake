@@ -224,9 +224,9 @@ static void MaxPlayers_f (const quake::common::argv & argv)
 
 	svs.maxclients = n;
 	if (n == 1)
-		quake::cvar::by_name("deathmatch") = "0";
+		*quake::cvar::by_name("deathmatch") = "0";
 	else
-		quake::cvar::by_name("deathmatch") = "1";
+		*quake::cvar::by_name("deathmatch") = "1";
 }
 
 

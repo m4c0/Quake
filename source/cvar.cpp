@@ -15,8 +15,8 @@ void quake::cvar::normal::uninstall(quake::cvar::normal * v) {
     _cvars().erase(v->name);
 }
 
-quake::cvar::normal & quake::cvar::by_name(const std::string & n) {
-    return *(_cvars().at(n));
+quake::cvar::normal * quake::cvar::by_name(const std::string & n) {
+    return _cvars().at(n);
 }
 
 const char * quake::cvar::complete(const std::string & name) {
