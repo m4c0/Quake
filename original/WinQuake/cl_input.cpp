@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/cvar/persistent.hpp"
+
 /*
 ===============================================================================
 
@@ -204,8 +206,8 @@ float CL_KeyState (kbutton_t *key)
 //==========================================================================
 
 quake::cvar::normal cl_upspeed = {"cl_upspeed","200"};
-quake::cvar::normal cl_forwardspeed = {"cl_forwardspeed","200", true};
-quake::cvar::normal cl_backspeed = {"cl_backspeed","200", true};
+quake::cvar::persistent cl_forwardspeed = {"cl_forwardspeed","200"};
+quake::cvar::persistent cl_backspeed = {"cl_backspeed","200"};
 quake::cvar::normal cl_sidespeed = {"cl_sidespeed","350"};
 
 quake::cvar::normal cl_movespeedkey = {"cl_movespeedkey","2.0"};

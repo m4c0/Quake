@@ -9,7 +9,7 @@ namespace quake {
     namespace cvar {
         class normal {
         public:
-            normal(const std::string & name, const std::string svalue, bool archive = false) : name(name), string(svalue), archive(archive) {
+            normal(const std::string & name, const std::string svalue) : name(name), string(svalue) {
                 try {
                     value = std::stof(svalue);
                 } catch (...) {
@@ -37,7 +37,6 @@ namespace quake {
 
             const std::string name;
             std::string string;
-            bool archive;
             float value;
 
         private:
@@ -47,7 +46,6 @@ namespace quake {
 
         normal & by_name(const std::string & name);
         const char * complete(const std::string &);
-        void persist(FILE * f);
     }
 }
 

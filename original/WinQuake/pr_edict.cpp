@@ -44,11 +44,11 @@ quake::cvar::normal scratch1 = {"scratch1", "0"};
 quake::cvar::normal scratch2 = {"scratch2", "0"};
 quake::cvar::normal scratch3 = {"scratch3", "0"};
 quake::cvar::normal scratch4 = {"scratch4", "0"};
-quake::cvar::normal savedgamecfg = {"savedgamecfg", "0", true};
-quake::cvar::normal saved1 = {"saved1", "0", true};
-quake::cvar::normal saved2 = {"saved2", "0", true};
-quake::cvar::normal saved3 = {"saved3", "0", true};
-quake::cvar::normal saved4 = {"saved4", "0", true};
+quake::cvar::persistent savedgamecfg = {"savedgamecfg", "0"};
+quake::cvar::persistent saved1 = {"saved1", "0"};
+quake::cvar::persistent saved2 = {"saved2", "0"};
+quake::cvar::persistent saved3 = {"saved3", "0"};
+quake::cvar::persistent saved4 = {"saved4", "0"};
 
 #define	MAX_FIELD_LEN	64
 #define GEFV_CACHESIZE	2

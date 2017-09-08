@@ -34,35 +34,35 @@ when crossing a water boudnary.
 quake::cvar::normal lcd_x = {"lcd_x","0"};
 quake::cvar::normal lcd_yaw = {"lcd_yaw","0"};
 
-quake::cvar::normal scr_ofsx = {"scr_ofsx","0", false};
-quake::cvar::normal scr_ofsy = {"scr_ofsy","0", false};
-quake::cvar::normal scr_ofsz = {"scr_ofsz","0", false};
+quake::cvar::normal scr_ofsx = {"scr_ofsx","0"};
+quake::cvar::normal scr_ofsy = {"scr_ofsy","0"};
+quake::cvar::normal scr_ofsz = {"scr_ofsz","0"};
 
 quake::cvar::normal cl_rollspeed = {"cl_rollspeed", "200"};
 quake::cvar::normal cl_rollangle = {"cl_rollangle", "2.0"};
 
-quake::cvar::normal cl_bob = {"cl_bob","0.02", false};
-quake::cvar::normal cl_bobcycle = {"cl_bobcycle","0.6", false};
-quake::cvar::normal cl_bobup = {"cl_bobup","0.5", false};
+quake::cvar::normal cl_bob = {"cl_bob","0.02"};
+quake::cvar::normal cl_bobcycle = {"cl_bobcycle","0.6"};
+quake::cvar::normal cl_bobup = {"cl_bobup","0.5"};
 
-quake::cvar::normal v_kicktime = {"v_kicktime", "0.5", false};
-quake::cvar::normal v_kickroll = {"v_kickroll", "0.6", false};
-quake::cvar::normal v_kickpitch = {"v_kickpitch", "0.6", false};
+quake::cvar::normal v_kicktime = {"v_kicktime", "0.5"};
+quake::cvar::normal v_kickroll = {"v_kickroll", "0.6"};
+quake::cvar::normal v_kickpitch = {"v_kickpitch", "0.6"};
 
-quake::cvar::normal v_iyaw_cycle = {"v_iyaw_cycle", "2", false};
-quake::cvar::normal v_iroll_cycle = {"v_iroll_cycle", "0.5", false};
-quake::cvar::normal v_ipitch_cycle = {"v_ipitch_cycle", "1", false};
-quake::cvar::normal v_iyaw_level = {"v_iyaw_level", "0.3", false};
-quake::cvar::normal v_iroll_level = {"v_iroll_level", "0.1", false};
-quake::cvar::normal v_ipitch_level = {"v_ipitch_level", "0.3", false};
+quake::cvar::normal v_iyaw_cycle = {"v_iyaw_cycle", "2"};
+quake::cvar::normal v_iroll_cycle = {"v_iroll_cycle", "0.5"};
+quake::cvar::normal v_ipitch_cycle = {"v_ipitch_cycle", "1"};
+quake::cvar::normal v_iyaw_level = {"v_iyaw_level", "0.3"};
+quake::cvar::normal v_iroll_level = {"v_iroll_level", "0.1"};
+quake::cvar::normal v_ipitch_level = {"v_ipitch_level", "0.3"};
 
-quake::cvar::normal v_idlescale = {"v_idlescale", "0", false};
+quake::cvar::normal v_idlescale = {"v_idlescale", "0"};
 
-quake::cvar::normal crosshair = {"crosshair", "0", true};
-quake::cvar::normal cl_crossx = {"cl_crossx", "0", false};
-quake::cvar::normal cl_crossy = {"cl_crossy", "0", false};
+quake::cvar::persistent crosshair = {"crosshair", "0"};
+quake::cvar::normal cl_crossx = {"cl_crossx", "0"};
+quake::cvar::normal cl_crossy = {"cl_crossy", "0"};
 
-quake::cvar::normal gl_cshiftpercent = {"gl_cshiftpercent", "100", false};
+quake::cvar::normal gl_cshiftpercent = {"gl_cshiftpercent", "100"};
 
 float	v_dmg_time, v_dmg_roll, v_dmg_pitch;
 
@@ -139,7 +139,7 @@ float V_CalcBob (void)
 //=============================================================================
 
 
-quake::cvar::normal v_centermove = {"v_centermove", "0.15", false};
+quake::cvar::normal v_centermove = {"v_centermove", "0.15"};
 quake::cvar::normal v_centerspeed = {"v_centerspeed","500"};
 
 
@@ -256,7 +256,7 @@ cshift_t	cshift_water = { {130,80,50}, 128 };
 cshift_t	cshift_slime = { {0,25,5}, 150 };
 cshift_t	cshift_lava = { {255,80,0}, 150 };
 
-quake::cvar::normal v_gamma = {"gamma", "1", true};
+quake::cvar::persistent v_gamma = {"gamma", "1"};
 
 byte		gammatable[256];	// palette is sent through this
 

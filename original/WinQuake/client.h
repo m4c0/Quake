@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // client.h
 
 #include "quake/cvar.hpp"
+#include "quake/cvar/persistent.hpp"
 
 typedef struct
 {
@@ -236,12 +237,12 @@ typedef struct
 //
 // cvars
 //
-extern quake::cvar::normal cl_name;
-extern quake::cvar::normal cl_color;
+extern quake::cvar::persistent cl_name;
+extern quake::cvar::persistent cl_color;
 
 extern quake::cvar::normal cl_upspeed;
-extern quake::cvar::normal cl_forwardspeed;
-extern quake::cvar::normal cl_backspeed;
+extern quake::cvar::persistent cl_forwardspeed;
+extern quake::cvar::persistent cl_backspeed;
 extern quake::cvar::normal cl_sidespeed;
 
 extern quake::cvar::normal cl_movespeedkey;
@@ -257,14 +258,14 @@ extern quake::cvar::normal cl_shownet;
 extern quake::cvar::normal cl_nolerp;
 
 extern quake::cvar::normal cl_pitchdriftspeed;
-extern quake::cvar::normal lookspring;
-extern quake::cvar::normal lookstrafe;
-extern quake::cvar::normal sensitivity;
+extern quake::cvar::persistent lookspring;
+extern quake::cvar::persistent lookstrafe;
+extern quake::cvar::persistent sensitivity;
 
-extern quake::cvar::normal m_pitch;
-extern quake::cvar::normal m_yaw;
-extern quake::cvar::normal m_forward;
-extern quake::cvar::normal m_side;
+extern quake::cvar::persistent m_pitch;
+extern quake::cvar::persistent m_yaw;
+extern quake::cvar::persistent m_forward;
+extern quake::cvar::persistent m_side;
 
 
 #define	MAX_TEMP_ENTITIES	64			// lightning bolts, etc

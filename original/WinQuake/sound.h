@@ -158,8 +158,8 @@ extern volatile dma_t sn;
 extern vec_t sound_nominal_clip_dist;
 
 extern quake::cvar::normal loadas8bit;
-extern quake::cvar::normal bgmvolume;
-extern quake::cvar::normal volume;
+extern quake::cvar::persistent bgmvolume;
+extern quake::cvar::persistent volume;
 
 extern qboolean	snd_initialized;
 

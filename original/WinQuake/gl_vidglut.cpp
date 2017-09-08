@@ -53,9 +53,9 @@ int		svgalib_inited=0;
 int		UseMouse = 1;
 int		UseKeyboard = 1;
 
-quake::cvar::normal vid_mode = {"vid_mode","5",false};
-quake::cvar::normal vid_redrawfull = {"vid_redrawfull","0",false};
-quake::cvar::normal vid_waitforrefresh = {"vid_waitforrefresh","0",true};
+quake::cvar::normal vid_mode = {"vid_mode","5"};
+quake::cvar::normal vid_redrawfull = {"vid_redrawfull","0"};
+quake::cvar::persistent vid_waitforrefresh = {"vid_waitforrefresh","0"};
  
 char	*framebuffer_ptr;
 

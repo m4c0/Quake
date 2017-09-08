@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 
 #include "quake/common.hpp"
+#include "quake/cvar/persistent.hpp"
 
 void S_Play(const quake::common::argv & argv);
 void S_PlayVol(const quake::common::argv & argv);
@@ -66,8 +67,8 @@ int 		desired_bits = 16;
 
 int sound_started=0;
 
-quake::cvar::normal bgmvolume = {"bgmvolume", "1", true};
-quake::cvar::normal volume = {"volume", "0.7", true};
+quake::cvar::persistent bgmvolume = {"bgmvolume", "1"};
+quake::cvar::persistent volume = {"volume", "0.7"};
 
 quake::cvar::normal nosound = {"nosound", "0"};
 quake::cvar::normal precache = {"precache", "1"};
@@ -77,7 +78,7 @@ quake::cvar::normal ambient_level = {"ambient_level", "0.3"};
 quake::cvar::normal ambient_fade = {"ambient_fade", "100"};
 quake::cvar::normal snd_noextraupdate = {"snd_noextraupdate", "0"};
 quake::cvar::normal snd_show = {"snd_show", "0"};
-quake::cvar::normal _snd_mixahead = {"_snd_mixahead", "0.1", true};
+quake::cvar::persistent _snd_mixahead = {"_snd_mixahead", "0.1"};
 
 
 // ====================================================================

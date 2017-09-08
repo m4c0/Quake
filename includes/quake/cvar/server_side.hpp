@@ -14,11 +14,11 @@ namespace quake {
                 return list;
             }
 
-            server_side(const std::string & name, const std::string svalue) : normal(name, svalue, false) {
+            server_side(const std::string & name, const std::string svalue) : normal(name, svalue) {
                 all().push_back(this);
             }
 
-            normal & operator=(const std::string & value) {
+            normal & operator=(const std::string & value) override {
                 bool changed = this->string != value;
 
                 normal::operator=(value);

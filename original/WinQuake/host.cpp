@@ -24,6 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "r_local.h"
 
 #include "quake/common.hpp"
+#include "quake/cvar/persistent.hpp"
 #include "quake/cvar/server_side.hpp"
 
 static auto & argv = quake::common::argv::current;
@@ -230,7 +231,10 @@ void Host_WriteConfiguration (void)
 		}
 		
 		Key_WriteBindings (f);
-        quake::cvar::persist(f);
+
+        for (auto v : quake::cvar::persistent::all()) {
+            fprintf (f, "%s \"%s\"\n", v->name.c_str(), v->string.c_str());
+        }
 
 		fclose (f);
 	}

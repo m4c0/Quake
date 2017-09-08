@@ -21,24 +21,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/cvar/persistent.hpp"
+
 // we need to declare some mouse variables here, because the menu system
 // references them even when on a unix system.
 
 // these two are not intended to be set directly
-quake::cvar::normal cl_name = {"_cl_name", "player", true};
-quake::cvar::normal cl_color = {"_cl_color", "0", true};
+quake::cvar::persistent cl_name = {"_cl_name", "player"};
+quake::cvar::persistent cl_color = {"_cl_color", "0"};
 
 quake::cvar::normal cl_shownet = {"cl_shownet","0"};	// can be 0, 1, or 2
 quake::cvar::normal cl_nolerp = {"cl_nolerp","0"};
 
-quake::cvar::normal lookspring = {"lookspring","0", true};
-quake::cvar::normal lookstrafe = {"lookstrafe","0", true};
-quake::cvar::normal sensitivity = {"sensitivity","3", true};
+quake::cvar::persistent lookspring  = {"lookspring", "0"};
+quake::cvar::persistent lookstrafe  = {"lookstrafe", "0"};
+quake::cvar::persistent sensitivity = {"sensitivity","3"};
 
-quake::cvar::normal m_pitch = {"m_pitch","0.022", true};
-quake::cvar::normal m_yaw = {"m_yaw","0.022", true};
-quake::cvar::normal m_forward = {"m_forward","1", true};
-quake::cvar::normal m_side = {"m_side","0.8", true};
+quake::cvar::persistent m_pitch   = {"m_pitch",  "0.022"};
+quake::cvar::persistent m_yaw     = {"m_yaw",    "0.022"};
+quake::cvar::persistent m_forward = {"m_forward","1"    };
+quake::cvar::persistent m_side    = {"m_side",   "0.8"  };
 
 
 client_static_t	cls;

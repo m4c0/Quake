@@ -31,12 +31,3 @@ const char * quake::cvar::complete(const std::string & name) {
     return nullptr;
 }
 
-void quake::cvar::persist(FILE * f) {
-    for (auto & kv : _cvars()) {
-        auto v = kv.second;
-        if (v->archive) {
-			fprintf (f, "%s \"%s\"\n", v->name.c_str(), v->string.c_str());
-        }
-    }
-}
-
