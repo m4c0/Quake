@@ -72,7 +72,7 @@ int UDP_Init (void)
 	myAddr = *(int *)local->h_addr_list[0];
 
 	// if the quake hostname isn't set, set it to the machine name
-	if (hostname.string == "UNNAMED")
+	if (hostname == "UNNAMED")
 	{
 		buff[15] = 0;
         *quake::cvar::by_name("hostname") = buff;

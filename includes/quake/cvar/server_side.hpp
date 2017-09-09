@@ -30,6 +30,12 @@ namespace quake {
             void operator=(float value) override {
                 *this = std::to_string(value);
             }
+            bool operator==(const std::string & o) const {
+                return normal::operator==(o);
+            }
+            bool operator!=(const std::string & o) const {
+                return normal::operator!=(o);
+            }
         };
     }
 }

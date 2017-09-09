@@ -77,7 +77,7 @@ void Host_Status_f (const quake::common::argv & argv)
 	else
 		print = SV_ClientPrintf;
 
-	print ("host:    %s\n", quake::cvar::by_name("hostname")->string.c_str());
+	print ("host:    %s\n", quake::cvar::by_name("hostname")->to_cstr());
 	print ("version: %4.2f\n", VERSION);
 	if (tcpipAvailable)
 		print ("tcp/ip:  %s\n", my_tcpip_address);
@@ -655,7 +655,7 @@ void Host_Name_f (const quake::common::argv & argv)
 	char newName[16];
 
 	if (argv.size() == 0) {
-		Con_Printf ("\"name\" is \"%s\"\n", cl_name.string.c_str());
+		Con_Printf ("\"name\" is \"%s\"\n", cl_name.to_cstr());
 		return;
 	}
 
@@ -664,7 +664,7 @@ void Host_Name_f (const quake::common::argv & argv)
 
 	if (cmd_source == src_command)
 	{
-		if (cl_name.string == newName) return;
+		if (cl_name == newName) return;
 
         *quake::cvar::by_name("_cl_name") = newName;
 		if (cls.state == ca_connected)
@@ -793,7 +793,7 @@ void Host_Say(qboolean teamonly, const quake::common::argv & argv)
 	if (!fromServer)
 		sprintf ((char *)text, "%c%s: ", 1, save->name);
 	else
-		sprintf ((char *)text, "%c<%s> ", 1, hostname.string.c_str());
+		sprintf ((char *)text, "%c<%s> ", 1, hostname.to_cstr());
 
     _concat_args(argv, text, 64);
 
@@ -1195,7 +1195,7 @@ void Host_Kick_f (const quake::common::argv & argv)
 			if (cls.state == ca_dedicated)
 				who = "Console";
 			else
-				who = cl_name.string.c_str();
+				who = cl_name.to_cstr();
 		else
 			who = save->name;
 

@@ -21,6 +21,12 @@ namespace quake {
             void operator=(float value) override {
                 normal::operator=(value);
             }
+            bool operator==(const std::string & o) const {
+                return normal::operator==(o);
+            }
+            bool operator!=(const std::string & o) const {
+                return normal::operator!=(o);
+            }
         };
     }
 }

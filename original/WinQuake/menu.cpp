@@ -696,8 +696,8 @@ void M_Menu_Setup_f (const quake::common::argv & args)
 	key_dest = key_menu;
 	m_state = m_setup;
 	m_entersound = true;
-	Q_strcpy(setup_myname, cl_name.string.c_str());
-	Q_strcpy(setup_hostname, hostname.string.c_str());
+	Q_strcpy(setup_myname, cl_name.to_cstr());
+	Q_strcpy(setup_hostname, hostname.to_cstr());
 	setup_top = setup_oldtop = cl_color.to_int() >> 4;
 	setup_bottom = setup_oldbottom = cl_color.to_int() & 15;
 }
@@ -793,9 +793,9 @@ forward:
 			goto forward;
 
 		// setup_cursor == 4 (OK)
-		if (cl_name.string != setup_myname)
+		if (cl_name != setup_myname)
 			Cbuf_AddText ( va ("name \"%s\"\n", setup_myname) );
-		if (hostname.string != setup_hostname)
+		if (hostname != setup_hostname)
 			*quake::cvar::by_name("hostname") = setup_hostname;
 		if (setup_top != setup_oldtop || setup_bottom != setup_oldbottom)
 			Cbuf_AddText( va ("color %i %i\n", setup_top, setup_bottom) );

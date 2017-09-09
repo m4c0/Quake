@@ -233,7 +233,7 @@ void Host_WriteConfiguration (void)
 		Key_WriteBindings (f);
 
         for (auto v : quake::cvar::persistent::all()) {
-            fprintf (f, "%s \"%s\"\n", v->name.c_str(), v->string.c_str());
+            fprintf (f, "%s \"%s\"\n", v->name.c_str(), v->to_cstr());
         }
 
 		fclose (f);

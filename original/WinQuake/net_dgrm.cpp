@@ -849,7 +849,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 		MSG_WriteByte(&net_message, CCREP_SERVER_INFO);
 		dfunc.GetSocketAddr(acceptsock, &newaddr);
 		MSG_WriteString(&net_message, dfunc.AddrToString(&newaddr));
-		MSG_WriteString(&net_message, hostname.string.c_str());
+		MSG_WriteString(&net_message, hostname.to_cstr());
 		MSG_WriteString(&net_message, sv.name);
 		MSG_WriteByte(&net_message, net_activeconnections);
 		MSG_WriteByte(&net_message, svs.maxclients);
@@ -924,7 +924,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 		{
             auto var = *it;
 			MSG_WriteString(&net_message, var->name.c_str());
-			MSG_WriteString(&net_message, var->string.c_str());
+			MSG_WriteString(&net_message, var->to_cstr());
 		}
 		*((int *)net_message.data) = BigLong(NETFLAG_CTL | (net_message.cursize & NETFLAG_LENGTH_MASK));
 		dfunc.Write (acceptsock, net_message.data, net_message.cursize, &clientaddr);

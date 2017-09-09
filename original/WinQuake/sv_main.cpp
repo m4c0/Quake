@@ -1026,8 +1026,8 @@ void SV_SpawnServer (const char *server)
 	int			i;
 
 	// let's not have any servers with no name
-	if (hostname.string[0] == 0)
-		*quake::cvar::by_name("hostname") = "UNNAMED";
+	if (hostname == "")
+		hostname = "UNNAMED";
 	scr_centertime_off = 0;
 
 	Con_DPrintf ("SpawnServer: %s\n",server);

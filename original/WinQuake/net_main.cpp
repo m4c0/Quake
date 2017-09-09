@@ -912,7 +912,7 @@ void NET_Poll(void)
 			else
 				useModem = false;
 			SetComPortConfig (0, config_com_port.to_int(), config_com_irq.to_int(), config_com_baud.to_int(), useModem);
-			SetModemConfig (0, config_modem_dialtype.string.c_str(), config_modem_clear.string.c_str(), config_modem_init.string.c_str(), config_modem_hangup.string.c_str());
+			SetModemConfig (0, config_modem_dialtype.to_cstr(), config_modem_clear.to_cstr(), config_modem_init.to_cstr(), config_modem_hangup.to_cstr());
 		}
 		configRestored = true;
 	}

@@ -189,7 +189,7 @@ Con_DPrintf ("CL_SignonReply: %i\n", cls.signon);
 		
 	case 2:		
 		MSG_WriteByte (&cls.message, clc_stringcmd);
-		MSG_WriteString (&cls.message, va("name \"%s\"\n", cl_name.string.c_str()));
+		MSG_WriteString (&cls.message, va("name \"%s\"\n", cl_name.to_cstr()));
 	
 		MSG_WriteByte (&cls.message, clc_stringcmd);
 		MSG_WriteString (&cls.message, va("color %i %i\n", cl_color.to_int() >> 4, cl_color.to_int() & 15));

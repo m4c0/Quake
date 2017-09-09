@@ -50,10 +50,10 @@ void Loop_SearchForHosts (qboolean xmit)
 		return;
 
 	hostCacheCount = 1;
-	if (hostname.string == "UNNAMED")
+	if (hostname == "UNNAMED")
 		Q_strcpy(hostcache[0].name, "local");
 	else
-		Q_strcpy(hostcache[0].name, hostname.string.c_str());
+		Q_strcpy(hostcache[0].name, hostname.to_cstr());
 	Q_strcpy(hostcache[0].map, sv.name);
 	hostcache[0].users = net_activeconnections;
 	hostcache[0].maxusers = svs.maxclients;

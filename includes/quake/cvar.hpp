@@ -23,6 +23,13 @@ namespace quake {
                 *this = std::to_string(value);
             }
 
+            bool operator==(const std::string & o) const {
+                return string == o;
+            }
+            bool operator!=(const std::string & o) const {
+                return string != o;
+            }
+
             bool to_bool() const {
                 return this->to_int() != 0;
             }
@@ -36,8 +43,13 @@ namespace quake {
                     return 0;
                 }
             }
+            const char * to_cstr() const {
+                return string.c_str();
+            }
 
             const std::string name;
+
+        protected:
             std::string string;
 
         private:
