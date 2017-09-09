@@ -992,9 +992,9 @@ void V_RenderView (void)
 // don't allow cheats in multiplayer
 	if (cl.maxclients > 1)
 	{
-        *quake::cvar::by_name("scr_ofsx") = "0";
-        *quake::cvar::by_name("scr_ofsy") = "0";
-        *quake::cvar::by_name("scr_ofsz") = "0";
+        scr_ofsx = "0";
+        scr_ofsy = "0";
+        scr_ofsz = "0";
 	}
 
 	if (cl.intermission)

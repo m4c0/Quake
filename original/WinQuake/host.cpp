@@ -186,10 +186,7 @@ void	Host_FindMaxClients (void)
 		svs.maxclientslimit = 4;
 	svs.clients = (struct client_s *)Hunk_AllocName (svs.maxclientslimit*sizeof(client_t), "clients");
 
-	if (svs.maxclients > 1)
-		*quake::cvar::by_name("deathmatch") = 1.0;
-	else
-		*quake::cvar::by_name("deathmatch") = 0.0;
+    deathmatch = svs.maxclients > 1 ? 1.0 : 0.0;
 }
 
 

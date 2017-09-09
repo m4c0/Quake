@@ -18,6 +18,9 @@ namespace quake {
                 all().push_back(this);
             }
 
+            void operator=(const std::string & value) override {
+                normal::operator=(value);
+            }
             void operator=(float value) override {
                 normal::operator=(value);
             }

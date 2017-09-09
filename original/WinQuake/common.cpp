@@ -1009,8 +1009,8 @@ void COM_CheckRegistered (void)
 		if (pop[i] != (unsigned short)BigShort (check[i]))
 			Sys_Error ("Corrupted data file.");
 	
-    *quake::cvar::by_name("cmdline") = com_cmdline;
-    *quake::cvar::by_name("registered") = "1";
+    cmdline = com_cmdline;
+    registered = "1";
 	static_registered = 1;
 	Con_Printf ("Playing registered version.\n");
 }

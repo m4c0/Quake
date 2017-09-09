@@ -223,10 +223,7 @@ static void MaxPlayers_f (const quake::common::argv & argv)
 		Cbuf_AddText ("listen 1\n");
 
 	svs.maxclients = n;
-	if (n == 1)
-		*quake::cvar::by_name("deathmatch") = "0";
-	else
-		*quake::cvar::by_name("deathmatch") = "1";
+    deathmatch = n == 1 ? 0 : 1;
 }
 
 

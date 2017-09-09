@@ -184,7 +184,7 @@ void S_Init (void)
 
 	if (host_parms.memsize < 0x800000)
 	{
-        *quake::cvar::by_name("loadas8bit") = "1";
+        loadas8bit = "1";
 		Con_Printf ("loading all sounds as 8bit\n");
 	}
 

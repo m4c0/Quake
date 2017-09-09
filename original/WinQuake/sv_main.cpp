@@ -1052,7 +1052,7 @@ void SV_SpawnServer (const char *server)
 	if (current_skill > 3)
 		current_skill = 3;
 
-    *quake::cvar::by_name("skill") = (float)current_skill;
+    skill = (float)current_skill;
 	
 //
 // set up the new server

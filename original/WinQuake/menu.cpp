@@ -796,7 +796,7 @@ forward:
 		if (cl_name != setup_myname)
 			Cbuf_AddText ( va ("name \"%s\"\n", setup_myname) );
 		if (hostname != setup_hostname)
-			*quake::cvar::by_name("hostname") = setup_hostname;
+			hostname = setup_hostname;
 		if (setup_top != setup_oldtop || setup_bottom != setup_oldbottom)
 			Cbuf_AddText( va ("color %i %i\n", setup_top, setup_bottom) );
 		m_entersound = true;

@@ -182,7 +182,7 @@ void R_Init (void)
 	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
 
  	if (gl_mtexable)
-		*quake::cvar::by_name("gl_texsort") = "0";
+		gl_texsort = "0";
 
 	R_InitParticles ();
 	R_InitParticleTexture ();

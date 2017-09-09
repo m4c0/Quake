@@ -384,7 +384,7 @@ void Draw_Init (void)
 	// 3dfx can only handle 256 wide textures
 	if (!Q_strncasecmp ((char *)gl_renderer, "3dfx",4) ||
 		strstr((char *)gl_renderer, "Glide"))
-		*quake::cvar::by_name("gl_max_size") = "256";
+		gl_max_size = "256";
 
 	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 
