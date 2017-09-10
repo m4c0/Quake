@@ -9,7 +9,12 @@ static auto & _cvars() {
 }
 
 void quake::cvar::normal::install(quake::cvar::normal * v) {
-    _cvars()[v->name] = v;
+    auto & all = _cvars();
+    if (all.find(v->name) != all.end()) {
+        throw std::invalid_argument("Duplicated cvar: " + v->name);
+    } else {
+        all[v->name] = v;
+    }
 }
 void quake::cvar::normal::uninstall(quake::cvar::normal * v) {
     _cvars().erase(v->name);
