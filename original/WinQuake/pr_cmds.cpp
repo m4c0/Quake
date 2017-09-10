@@ -947,14 +947,6 @@ void PF_vtos (void)
 	G_INT(OFS_RETURN) = pr_string_temp - pr_strings;
 }
 
-#ifdef QUAKE2
-void PF_etos (void)
-{
-	sprintf (pr_string_temp, "entity %i", G_EDICTNUM(OFS_PARM0));
-	G_INT(OFS_RETURN) = pr_string_temp - pr_strings;
-}
-#endif
-
 void PF_Spawn (void)
 {
 	edict_t	*ed;
@@ -973,55 +965,6 @@ void PF_Remove (void)
 
 // entity (entity start, .string field, string match) find = #5;
 void PF_Find (void)
-#ifdef QUAKE2
-{
-	int		e;	
-	int		f;
-	char	*s, *t;
-	edict_t	*ed;
-	edict_t	*first;
-	edict_t	*second;
-	edict_t	*last;
-
-	first = second = last = (edict_t *)sv.edicts;
-	e = G_EDICTNUM(OFS_PARM0);
-	f = G_INT(OFS_PARM1);
-	s = G_STRING(OFS_PARM2);
-	if (!s)
-		PR_RunError ("PF_Find: bad search string");
-		
-	for (e++ ; e < sv.num_edicts ; e++)
-	{
-		ed = EDICT_NUM(e);
-		if (ed->free)
-			continue;
-		t = E_STRING(ed,f);
-		if (!t)
-			continue;
-		if (!strcmp(t,s))
-		{
-			if (first == (edict_t *)sv.edicts)
-				first = ed;
-			else if (second == (edict_t *)sv.edicts)
-				second = ed;
-			ed->v.chain = EDICT_TO_PROG(last);
-			last = ed;
-		}
-	}
-
-	if (first != last)
-	{
-		if (last != second)
-			first->v.chain = last->v.chain;
-		else
-			first->v.chain = EDICT_TO_PROG(last);
-		last->v.chain = EDICT_TO_PROG((edict_t *)sv.edicts);
-		if (second && second != last)
-			second->v.chain = EDICT_TO_PROG(last);
-	}
-	RETURN_EDICT(first);
-}
-#else
 {
 	int		e;	
 	int		f;
@@ -1051,7 +994,6 @@ void PF_Find (void)
 
 	RETURN_EDICT(sv.edicts);
 }
-#endif
 
 void PR_CheckEmptyString (char *s)
 {
