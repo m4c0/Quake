@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "modelgen.h"
 #include "spritegn.h"
 
+#include <vector>
+
 /*
 
 d*_t structures are on-disk representations
@@ -412,7 +414,7 @@ typedef struct model_s
 //
 // additional model data
 //
-	cache_user_t	cache;		// only access through Mod_Extradata
+    std::vector<uint8_t> wanna_bobj;
 
 } model_t;
 

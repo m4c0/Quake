@@ -24,6 +24,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include <map>
+
 model_t	*loadmodel;
 char	loadname[32];	// for hunk tags
 
@@ -37,9 +39,7 @@ void GL_SubdivideSurface (msurface_t *fa);
 
 byte	mod_novis[MAX_MAP_LEAFS/8];
 
-#define	MAX_MOD_KNOWN	512
-model_t	mod_known[MAX_MOD_KNOWN];
-int		mod_numknown;
+std::map<std::string, model_t> _known;
 
 quake::cvar::persistent gl_subdivide_size = {"gl_subdivide_size", "128"};
 
@@ -62,17 +62,15 @@ Caches the data if needed
 */
 void *Mod_Extradata (model_t *mod)
 {
-	void	*r;
-	
-	r = Cache_Check (&mod->cache);
-	if (r)
-		return r;
+	if (!mod->wanna_bobj.empty())
+		return mod->wanna_bobj.data();
 
 	Mod_LoadModel (mod, true);
 	
-	if (!mod->cache.data)
-		Sys_Error ("Mod_Extradata: caching failed");
-	return mod->cache.data;
+	if (!mod->wanna_bobj.empty())
+		return mod->wanna_bobj.data();
+
+    Sys_Error ("Mod_Extradata: caching failed");
 }
 
 /*
@@ -169,12 +167,12 @@ Mod_ClearAll
 */
 void Mod_ClearAll (void)
 {
-	int		i;
-	model_t	*mod;
-	
-	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++)
-		if (mod->type != mod_alias)
-			mod->needload = true;
+    for (auto & kv : _known) {
+        auto & mod = kv.second;
+		if (mod.type != mod_alias) {
+			mod.needload = true;
+        }
+    }
 }
 
 /*
@@ -185,29 +183,18 @@ Mod_FindName
 */
 model_t *Mod_FindName (const char *name)
 {
-	int		i;
-	model_t	*mod;
-	
 	if (!name[0])
 		Sys_Error ("Mod_ForName: NULL name");
 		
 //
 // search the currently loaded models
 //
-	for (i=0 , mod=mod_known ; i<mod_numknown ; i++, mod++)
-		if (!strcmp (mod->name, name) )
-			break;
-			
-	if (i == mod_numknown)
-	{
-		if (mod_numknown == MAX_MOD_KNOWN)
-			Sys_Error ("mod_numknown == MAX_MOD_KNOWN");
-		strcpy (mod->name, name);
-		mod->needload = true;
-		mod_numknown++;
+    auto & mod = _known[name];
+	if (!mod.name[0]) {
+		strcpy (mod.name, name);
+		mod.needload = true;
 	}
-
-	return mod;
+	return &mod;
 }
 
 /*
@@ -224,8 +211,9 @@ void Mod_TouchModel (const char *name)
 	
 	if (!mod->needload)
 	{
-		if (mod->type == mod_alias)
-			Cache_Check (&mod->cache);
+		if (mod->type == mod_alias) {
+            // TODO: either remove "touching" or upgrade this method
+        }
 	}
 }
 
@@ -246,9 +234,8 @@ model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 	{
 		if (mod->type == mod_alias)
 		{
-			d = Cache_Check (&mod->cache);
-			if (d)
-				return mod;
+            if (!mod->wanna_bobj.empty())
+                return (model_t *)mod->wanna_bobj.data();
 		}
 		else
 			return mod;		// not cached at all
@@ -1218,7 +1205,7 @@ void Mod_LoadBrushModel (model_t *mod, void *buffer)
 
 			sprintf (name, "*%i", i+1);
 			loadmodel = Mod_FindName (name);
-			*loadmodel = *mod;
+            *loadmodel = *mod;
 			strcpy (loadmodel->name, name);
 			mod = loadmodel;
 		}
@@ -1639,10 +1626,8 @@ void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	end = Hunk_LowMark ();
 	total = end - start;
 	
-	Cache_Alloc (&mod->cache, total, loadname);
-	if (!mod->cache.data)
-		return;
-	memcpy (mod->cache.data, pheader, total);
+    mod->wanna_bobj.assign(total, 0);
+	memcpy (mod->wanna_bobj.data(), pheader, total);
 
 	Hunk_FreeToLowMark (start);
 }
@@ -1770,10 +1755,9 @@ void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 
 	size = sizeof (msprite_t) +	(numframes - 1) * sizeof (psprite->frames);
 
-	psprite = (msprite_t *)Hunk_AllocName (size, loadname);
+    mod->wanna_bobj.assign(size, 0);
 
-	mod->cache.data = psprite;
-
+    psprite = (msprite_t *)mod->wanna_bobj.data();
 	psprite->type = LittleLong (pin->type);
 	psprite->maxwidth = LittleLong (pin->width);
 	psprite->maxheight = LittleLong (pin->height);
@@ -1833,9 +1817,9 @@ void Mod_Print (const quake::common::argv & argv)
 	model_t	*mod;
 
 	Con_Printf ("Cached models:\n");
-	for (i=0, mod=mod_known ; i < mod_numknown ; i++, mod++)
-	{
-		Con_Printf ("%8p : %s\n",mod->cache.data, mod->name);
+    for (auto & kv : _known) {
+        auto & mod = kv.second;
+		Con_Printf ("%s - %ldb\n", mod.name, mod.wanna_bobj.size());
 	}
 }
 
