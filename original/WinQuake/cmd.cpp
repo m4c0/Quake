@@ -30,9 +30,6 @@ void Cmd_ForwardToServer (const quake::common::argv & argv);
 
 static std::map<std::string, std::string> _aliases;
 
-int trashtest;
-int *trashspot;
-
 qboolean	cmd_wait;
 
 //=============================================================================
