@@ -2,6 +2,7 @@
 #include "quake/legacy.hpp"
 
 #include <map>
+#include <typeindex>
 
 static auto & _cmds() {
     static std::map<std::string, quake::cmd::base *> container;
@@ -39,5 +40,13 @@ const char * quake::cmd::complete(const std::string & name) {
     }
 
     return nullptr;
+}
+
+void quake::cmd::find_by_type(const std::type_info & type, std::function<void(base *)> callback) {
+    for (auto cmd : _cmds()) {
+        if (std::type_index(typeid(*cmd.second)) == std::type_index(type)) {
+            callback(cmd.second);
+        }
+    }
 }
 

@@ -29,8 +29,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 void Cmd_ForwardToServer (const quake::common::argv & argv);
 
-static std::map<std::string, std::string> _aliases;
-
 qboolean	cmd_wait;
 
 //=============================================================================
@@ -266,17 +264,23 @@ void Cmd_Alias_f (const quake::common::argv & argv)
 
 	if (argv.size() == 0) {
 		Con_Printf ("Current alias commands:\n");
-        for (auto & kv : _aliases) {
-			Con_Printf("%s : %s\n", kv.first.c_str(), kv.second.c_str());
-        }
+        quake::cmd::find_by_type<quake::cmd::alias>([](auto a) {
+			Con_Printf("%s\n", a->description().c_str());
+        });
 		return;
 	}
 
     std::string name = argv[0];
-
-    // TODO: It seems we have a lot of this "[cmd] <arg> <...>" pattern to
-    //       consider a new method in argv
-    _aliases[name] = std::accumulate(argv.begin() + 2, argv.end(), argv[1], [](auto a, auto b) { return a + " " + b; });
+    try {
+        auto cmd = quake::cmd::by_name(name);
+        auto alias = dynamic_cast<quake::cmd::alias *>(cmd);
+        if (alias) {
+            alias->set_value(argv);
+            return;
+        }
+    } catch (...) {
+    }
+    quake::cmd::install(name, new quake::cmd::alias(argv));
 }
 
 /*
@@ -347,21 +351,13 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 	if (args.cmd == "")
 		return;		// no tokens
 
-// check functions
+// check functions/aliases
     try {
         quake::cmd::by_name(args.cmd)->execute(args);
         return;
     } catch (...) {
     }
 
-// check alias
-    for (auto & kv : _aliases) {
-		if (!Q_strcasecmp (args.cmd.c_str(), kv.first.c_str())) {
-			Cbuf_InsertText(kv.second);
-			return;
-		}
-	}
-	
 // check cvars
 	//if (!Cvar_Command (args.cmd.c_str(), args))
     try {
