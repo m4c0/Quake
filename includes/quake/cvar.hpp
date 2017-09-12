@@ -1,19 +1,25 @@
 #ifndef QUAKE_CVAR_HPP
 #define QUAKE_CVAR_HPP
 
+#include "quake/cmd.hpp"
 #include "quake/legacy.hpp"
 
 #include <string>
 
 namespace quake {
     namespace cvar {
-        class normal {
+        class normal : public quake::cmd::base {
         public:
-            normal(const std::string & name, const std::string svalue) : name(name), string(svalue) {
-                install(this);
+            normal(const std::string & name, const std::string svalue) : base(), name(name), string(svalue) {
+                quake::cmd::install(name, this);
             }
-            ~normal() {
-                uninstall(this);
+
+            void execute(const quake::common::argv & args) override {
+                if (args.size() == 0) {
+                    Con_Printf("'%s' is '%s'\n", name.c_str(), string.c_str());
+                } else {
+                    string = args[0];
+                }
             }
 
             virtual void operator=(const std::string & value) {
@@ -51,14 +57,7 @@ namespace quake {
 
         protected:
             std::string string;
-
-        private:
-            static void install(normal * v);
-            static void uninstall(normal * v);
         };
-
-        normal * by_name(const std::string & name);
-        const char * complete(const std::string &);
     }
 }
 

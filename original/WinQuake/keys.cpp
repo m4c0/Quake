@@ -181,8 +181,6 @@ void Key_Console (int key)
 	if (key == K_TAB)
 	{	// command completion
 		cmd = quake::cmd::complete(key_lines[edit_line]+1);
-		if (!cmd)
-			cmd = quake::cvar::complete(key_lines[edit_line]+1);
 		if (cmd)
 		{
 			Q_strcpy (key_lines[edit_line]+1, cmd);

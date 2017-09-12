@@ -319,17 +319,6 @@ Cmd_AddCommand
 */
 void	Cmd_AddCommand (const char *cmd_name, xcommand_t function)
 {
-	if (host_initialized)	// because hunk allocation would get stomped
-		Sys_Error ("Cmd_AddCommand after host_initialized");
-		
-// fail if the command is a variable name
-    try {
-	    quake::cvar::by_name(cmd_name);
-		Con_Printf ("Cmd_AddCommand: %s already defined as a var\n", cmd_name);
-		return;
-    } catch (...) {
-	}
-
     quake::cmd::install(cmd_name, new quake::cmd::compat(function));
 }
 
@@ -354,23 +343,9 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 // check functions/aliases
     try {
         quake::cmd::by_name(args.cmd)->execute(args);
-        return;
-    } catch (...) {
-    }
-
-// check cvars
-	//if (!Cvar_Command (args.cmd.c_str(), args))
-    try {
-        auto v = quake::cvar::by_name(args.cmd);
-        if (args.size() == 0) {
-            Con_Printf ("\"%s\" is \"%s\"\n", v->name.c_str(), v->to_cstr());
-        } else {
-            *v = args[0];
-        }
     } catch (...) {
 		Con_Printf ("Unknown command \"%s\"\n", args.cmd.c_str());
     }
-	
 }
 
 

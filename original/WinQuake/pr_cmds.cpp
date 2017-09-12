@@ -835,6 +835,12 @@ void PF_localcmd (void)
 	Cbuf_AddText (str);
 }
 
+quake::cvar::normal * _cvar(const std::string & name) {
+    auto cmd = quake::cmd::by_name(name);
+    if (!cmd) return nullptr;
+    return dynamic_cast<quake::cvar::normal *>(cmd);
+}
+
 /*
 =================
 PF_cvar
@@ -844,11 +850,9 @@ float cvar (string)
 */
 void PF_cvar (void)
 {
-	char	*str;
+    auto cvar = _cvar(G_STRING(OFS_PARM0));
 	
-	str = G_STRING(OFS_PARM0);
-	
-	G_FLOAT(OFS_RETURN) = quake::cvar::by_name(str)->to_float();
+	G_FLOAT(OFS_RETURN) = cvar ? cvar->to_float() : 0;
 }
 
 /*
@@ -860,12 +864,10 @@ float cvar (string)
 */
 void PF_cvar_set (void)
 {
-	char	*var, *val;
-	
-	var = G_STRING(OFS_PARM0);
-	val = G_STRING(OFS_PARM1);
-	
-    *quake::cvar::by_name(var) = val;
+    auto cvar = _cvar(G_STRING(OFS_PARM0));
+    if (cvar) {
+        *cvar = G_STRING(OFS_PARM1);
+    }
 }
 
 /*

@@ -17,7 +17,7 @@ namespace quake {
             virtual ~base() {
             }
 
-            virtual void execute(const quake::common::argv & args) const = 0;
+            virtual void execute(const quake::common::argv & args) = 0;
         };
 
         class compat : public base {
@@ -27,7 +27,7 @@ namespace quake {
             compat(callback fn) : base(), fn(fn) {
             }
 
-            void execute(const quake::common::argv & args) const override {
+            void execute(const quake::common::argv & args) override {
                 fn(args);
             }
 
@@ -42,7 +42,7 @@ namespace quake {
                 set_value(argv);
             }
 
-            void execute(const quake::common::argv & args) const override {
+            void execute(const quake::common::argv & args) override {
                 Cbuf_InsertText(value);
             }
 

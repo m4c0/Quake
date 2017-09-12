@@ -8,6 +8,11 @@
 
 namespace quake {
     namespace common {
+        // TODO: review design/purpose of this class
+        // Maybe mixing "process arguments" and "command arguments" is not
+        // a good idea. They looked the same since the former was handled
+        // by com_argc/com_argv and the latter, by cmd_argc/cmd_argv. Now,
+        // it's clear "cmds" require more stuff
         class argv {
         private:
             std::vector<std::string> contents;
