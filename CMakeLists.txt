@@ -9,6 +9,7 @@ include_directories(quake PRIVATE includes)
 add_subdirectory(original)
 
 add_executable(quake
+    source/cmd.cpp
     source/common.cpp
     source/cvar.cpp
     source/screen/screenshot.cpp

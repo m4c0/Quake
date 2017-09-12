@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/cmd.hpp"
 #include "quake/common.hpp"
 
 #include <map>
@@ -286,18 +287,8 @@ void Cmd_Alias_f (const quake::common::argv & argv)
 =============================================================================
 */
 
-typedef struct cmd_function_s
-{
-	struct cmd_function_s	*next;
-	const char					*name;
-	xcommand_t				function;
-} cmd_function_t;
-
-
 cmd_source_t	cmd_source;
 
-
-static	cmd_function_t	*cmd_functions;		// possible commands to execute
 
 /*
 ============
@@ -324,8 +315,6 @@ Cmd_AddCommand
 */
 void	Cmd_AddCommand (const char *cmd_name, xcommand_t function)
 {
-	cmd_function_t	*cmd;
-	
 	if (host_initialized)	// because hunk allocation would get stomped
 		Sys_Error ("Cmd_AddCommand after host_initialized");
 		
@@ -336,65 +325,8 @@ void	Cmd_AddCommand (const char *cmd_name, xcommand_t function)
 		return;
     } catch (...) {
 	}
-	
-// fail if the command already exists
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-	{
-		if (!Q_strcmp (cmd_name, cmd->name))
-		{
-			Con_Printf ("Cmd_AddCommand: %s already defined\n", cmd_name);
-			return;
-		}
-	}
 
-	cmd = (cmd_function_t *)Hunk_Alloc (sizeof(cmd_function_t));
-	cmd->name = cmd_name;
-	cmd->function = function;
-	cmd->next = cmd_functions;
-	cmd_functions = cmd;
-}
-
-/*
-============
-Cmd_Exists
-============
-*/
-qboolean	Cmd_Exists (const char *cmd_name)
-{
-	cmd_function_t	*cmd;
-
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-	{
-		if (!Q_strcmp (cmd_name,cmd->name))
-			return true;
-	}
-
-	return false;
-}
-
-
-
-/*
-============
-Cmd_CompleteCommand
-============
-*/
-const char *Cmd_CompleteCommand (const char *partial)
-{
-	cmd_function_t	*cmd;
-	int				len;
-	
-	len = Q_strlen(partial);
-	
-	if (!len)
-		return NULL;
-		
-// check functions
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-		if (!Q_strncmp (partial,cmd->name, len))
-			return cmd->name;
-
-	return NULL;
+    quake::cmd::install(cmd_name, new quake::cmd::compat(function));
 }
 
 /*
@@ -407,8 +339,6 @@ FIXME: lookupnoadd the token to speed search?
 */
 void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 {	
-	cmd_function_t	*cmd;
-
 	cmd_source = src;
 
     quake::common::argv args { text };
@@ -418,14 +348,11 @@ void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 		return;		// no tokens
 
 // check functions
-	for (cmd=cmd_functions ; cmd ; cmd=cmd->next)
-	{
-		if (!Q_strcasecmp (args.cmd.c_str(), cmd->name))
-		{
-			cmd->function (args);
-			return;
-		}
-	}
+    try {
+        quake::cmd::by_name(args.cmd)->execute(args);
+        return;
+    } catch (...) {
+    }
 
 // check alias
     for (auto & kv : _aliases) {

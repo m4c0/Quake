@@ -19,6 +19,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "quakedef.h"
 
+#include "quake/cmd.hpp"
+
 #include <numeric>
 /*
 
@@ -178,7 +180,7 @@ void Key_Console (int key)
 
 	if (key == K_TAB)
 	{	// command completion
-		cmd = Cmd_CompleteCommand (key_lines[edit_line]+1);
+		cmd = quake::cmd::complete(key_lines[edit_line]+1);
 		if (!cmd)
 			cmd = quake::cvar::complete(key_lines[edit_line]+1);
 		if (cmd)
