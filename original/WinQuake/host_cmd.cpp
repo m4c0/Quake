@@ -673,9 +673,9 @@ void Host_Name_f (const quake::common::argv & argv)
 	}
 
 	if (host_client->name[0] && strcmp(host_client->name, "unconnected") )
-		if (Q_strcmp(host_client->name, newName) != 0)
+		if (strcmp(host_client->name, newName) != 0)
 			Con_Printf ("%s renamed to %s\n", host_client->name, newName);
-	Q_strcpy (host_client->name, newName);
+	strcpy (host_client->name, newName);
 	host_client->edict->v.netname = host_client->name - pr_strings;
 	
 // send notification to all clients
@@ -727,7 +727,7 @@ void Host_Please_f (const quake::common::argv & argv)
 	{
 		if (!cl->active)
 			continue;
-		if (Q_strcasecmp(cl->name, argv[0].c_str()) == 0)
+		if (strcasecmp(cl->name, argv[0].c_str()) == 0)
 		{
 			if (cl->privileged)
 			{
@@ -752,7 +752,7 @@ static void _concat_args(const quake::common::argv & argv, char * text, int maxl
 		p = p.substr(1, p.size() - 2);
 	}
 
-	int j = sizeof(text) - 2 - Q_strlen((char *)text);  // -2 for /n and null terminator
+	int j = sizeof(text) - 2 - strlen((char *)text);  // -2 for /n and null terminator
 	if (p.size() > j) {
 		p = p.substr(0, j);
     }
@@ -840,8 +840,8 @@ void Host_Tell_f(const quake::common::argv & argv)
 	if (argv.size() < 2)
 		return;
 
-	Q_strcpy(text, host_client->name);
-	Q_strcat(text, ": ");
+	strcpy(text, host_client->name);
+	strcat(text, ": ");
 
     _concat_args(argv, text, 64);
 
@@ -850,7 +850,7 @@ void Host_Tell_f(const quake::common::argv & argv)
 	{
 		if (!client->active || !client->spawned)
 			continue;
-		if (Q_strcasecmp(client->name, argv[0].c_str()))
+		if (strcasecmp(client->name, argv[0].c_str()))
 			continue;
 		host_client = client;
 		SV_ClientPrintf("%s", text);
@@ -1184,7 +1184,7 @@ void Host_Kick_f (const quake::common::argv & argv)
 		{
 			if (!host_client->active)
 				continue;
-			if (Q_strcasecmp(host_client->name, argv[0].c_str()) == 0)
+			if (strcasecmp(host_client->name, argv[0].c_str()) == 0)
 				break;
 		}
 	}

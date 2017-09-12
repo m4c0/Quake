@@ -696,8 +696,8 @@ void M_Menu_Setup_f (const quake::common::argv & args)
 	key_dest = key_menu;
 	m_state = m_setup;
 	m_entersound = true;
-	Q_strcpy(setup_myname, cl_name.to_cstr());
-	Q_strcpy(setup_hostname, hostname.to_cstr());
+	strcpy(setup_myname, cl_name.to_cstr());
+	strcpy(setup_hostname, hostname.to_cstr());
 	setup_top = setup_oldtop = cl_color.to_int() >> 4;
 	setup_bottom = setup_oldbottom = cl_color.to_int() & 15;
 }
@@ -2872,9 +2872,9 @@ void M_ServerList_Draw (void)
 				for (j = i+1; j < hostCacheCount; j++)
 					if (strcmp(hostcache[j].name, hostcache[i].name) < 0)
 					{
-						Q_memcpy(&temp, &hostcache[j], sizeof(hostcache_t));
-						Q_memcpy(&hostcache[j], &hostcache[i], sizeof(hostcache_t));
-						Q_memcpy(&hostcache[i], &temp, sizeof(hostcache_t));
+						memcpy(&temp, &hostcache[j], sizeof(hostcache_t));
+						memcpy(&hostcache[j], &hostcache[i], sizeof(hostcache_t));
+						memcpy(&hostcache[i], &temp, sizeof(hostcache_t));
 					}
 		}
 		slist_sorted = true;

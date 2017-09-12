@@ -356,7 +356,7 @@ void Cmd_ForwardToServer (const quake::common::argv & args)
 		return;		// not really connected
 
 	MSG_WriteByte (&cls.message, clc_stringcmd);
-	if (Q_strcasecmp(args.cmd.c_str(), "cmd") != 0)
+	if (strcasecmp(args.cmd.c_str(), "cmd") != 0)
 	{
 		SZ_Print (&cls.message, args.cmd.c_str());
 		SZ_Print (&cls.message, " ");
