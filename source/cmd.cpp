@@ -50,3 +50,14 @@ void quake::cmd::find_by_type(const std::type_info & type, std::function<void(ba
     }
 }
 
+void quake::cmd::execute(const char * text) {
+    quake::common::argv args { text };
+
+    if (args.cmd == "") return;
+
+    try {
+        quake::cmd::by_name(args.cmd)->execute(args);
+    } catch (...) {
+        Con_Printf ("Unknown command \"%s\"\n", args.cmd.c_str());
+    }
+}

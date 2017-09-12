@@ -333,19 +333,7 @@ FIXME: lookupnoadd the token to speed search?
 void	Cmd_ExecuteString (const char *text, cmd_source_t src)
 {	
 	cmd_source = src;
-
-    quake::common::argv args { text };
-			
-// execute the command line
-	if (args.cmd == "")
-		return;		// no tokens
-
-// check functions/aliases
-    try {
-        quake::cmd::by_name(args.cmd)->execute(args);
-    } catch (...) {
-		Con_Printf ("Unknown command \"%s\"\n", args.cmd.c_str());
-    }
+    quake::cmd::execute(text);
 }
 
 

@@ -73,6 +73,8 @@ namespace quake {
         }
 
         void install(const std::string & name, base * v);
+
+        void execute(const char * text);
     }
 }
 
