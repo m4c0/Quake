@@ -408,11 +408,7 @@ void Draw_Init (void)
 	SwapPic (cb);
 
 	// hack the version number directly into the pic
-#if defined(__linux__)
-	sprintf (ver, "(Linux %2.2f, gl %4.2f) %4.2f", (float)LINUX_VERSION, (float)GLQUAKE_VERSION, (float)VERSION);
-#else
-	sprintf (ver, "(gl %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
-#endif
+	sprintf (ver, "(m4c0 %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
 	dest = cb->data + 320*186 + 320 - 11 - 8*strlen(ver);
 	y = strlen(ver);
 	for (x=0 ; x<y ; x++)
