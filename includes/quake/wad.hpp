@@ -19,8 +19,28 @@
 #ifndef QUAKE_WAD_HPP
 #define QUAKE_WAD_HPP
 
+#include <map>
+#include <vector>
+
 namespace quake {
+    struct lump {
+        int width, height;
+        std::vector<uint8_t> data;
+    };
+
     class wad {
+    public:
+        wad(const char * filename);
+
+        template<typename T>
+        T get_lump(const std::string & name) {
+            return (T)at(name).data();
+        }
+
+        std::vector<uint8_t> & at(const std::string & name);
+
+    private:
+        std::map<std::string, std::vector<uint8_t>> lumps;
     };
 }
 

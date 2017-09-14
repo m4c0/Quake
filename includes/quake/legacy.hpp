@@ -30,6 +30,7 @@ extern int glwidth, glheight, glx, gly;
 
 void Cbuf_InsertText (const std::string & text);
 const char *COM_Parse (const char *data);
+uint8_t * COM_LoadHunkFile (const char *path);
 void Con_Printf (const char *fmt, ...);
 void SV_BroadcastPrintf (const char *fmt, ...);
 int	Sys_FileTime (const char *path);

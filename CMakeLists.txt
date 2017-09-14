@@ -12,6 +12,7 @@ add_executable(quake
     source/cmd.cpp
     source/common.cpp
     source/screen/screenshot.cpp
+    source/wad.cpp
     )
 target_include_directories(quake PRIVATE external/stb)
 target_link_libraries(quake PUBLIC WinQuake)
