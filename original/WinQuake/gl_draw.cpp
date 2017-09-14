@@ -75,6 +75,10 @@ int			numgltextures;
 
 void GL_Bind (int texnum)
 {
+    if (cls.state == ca_dedicated) {
+        return;
+    }
+
 	if (gl_nobind.to_bool())
 		texnum = char_texture;
 	if (currenttexture == texnum)
@@ -1197,6 +1201,10 @@ GL_LoadTexture
 */
 int GL_LoadTexture (const char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha)
 {
+    if (cls.state == ca_dedicated) {
+        return 0;
+    }
+
 	qboolean	noalpha;
 	int			i, p, s;
 	gltexture_t	*glt;

@@ -388,7 +388,9 @@ void Sys_Tick() {
     if (sys_linerefresh.to_bool())
         Sys_LineRefresh ();
 
-    glutPostRedisplay();
+    if (cls.state != ca_dedicated) {
+        glutPostRedisplay();
+    }
 }
 
 int main (int c, char **v)
@@ -428,10 +430,15 @@ int main (int c, char **v)
 	}
 
     oldtime = Sys_FloatTime () - 0.1;
-
-    glutIdleFunc(Sys_Tick);
-    glutDisplayFunc(SCR_UpdateScreen);
-    glutMainLoop();
+	if (cls.state == ca_dedicated) {
+        while (true) {
+            Sys_Tick();
+        }
+    } else {
+        glutIdleFunc(Sys_Tick);
+        glutDisplayFunc(SCR_UpdateScreen);
+        glutMainLoop();
+    }
 }
 
 

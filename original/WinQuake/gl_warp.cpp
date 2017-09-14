@@ -337,6 +337,8 @@ A sky texture is 256*128, with the right side being a masked overlay
 */
 void R_InitSky (texture_t *mt)
 {
+    if (cls.state == ca_dedicated) return;
+
 	int			i, j, p;
 	byte		*src;
 	unsigned	trans[128*128];
