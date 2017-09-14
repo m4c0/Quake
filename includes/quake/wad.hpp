@@ -16,13 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef QUAKE_SCREEN_HPP
-#define QUAKE_SCREEN_HPP
+#ifndef QUAKE_WAD_HPP
+#define QUAKE_WAD_HPP
 
 namespace quake {
-    namespace screen {
-        void screenshot(const quake::common::argv & argv);
-    }
+    class wad {
+    };
 }
 
 #endif
