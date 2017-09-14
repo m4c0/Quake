@@ -23,6 +23,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/wad.hpp"
+
+#include <memory>
+
 #define GL_COLOR_INDEX8_EXT     0x80E5
 
 int GL_LoadPicTexture(qpic_t *pic);
@@ -47,8 +51,8 @@ typedef struct
 	float	sl, tl, sh, th;
 } glpic_t;
 
-byte		conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
-qpic_t		*conback = (qpic_t *)&conback_buffer;
+byte           conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
+qpic_t         *conback = (qpic_t *)&conback_buffer;
 
 int		gl_lightmap_format = 4;
 int		gl_solid_format = 3;
@@ -188,12 +192,14 @@ byte		menuplyr_pixels[4096];
 int		pic_texels;
 int		pic_count;
 
+std::unique_ptr<quake::wad> _wad;
+
 qpic_t *Draw_PicFromWad (const char *name)
 {
 	qpic_t	*p;
 	glpic_t	*gl;
 
-	p = (qpic_t *)W_GetLumpName (name);
+	p = (qpic_t *)_wad->get_lump(name);
 	gl = (glpic_t *)p->data;
 
 	// load little ones into the scrap
@@ -258,7 +264,7 @@ qpic_t	*Draw_CachePic (const char *path)
 	dat = (qpic_t *)COM_LoadTempFile (path);	
 	if (!dat)
 		Sys_Error ("Draw_CachePic: failed to load %s", path);
-	SwapPic (dat);
+	//SwapPic (dat);
 
 	// HACK HACK HACK --- we need to keep the bytes for
 	// the translatable player picture just for the menu
@@ -384,6 +390,7 @@ void Draw_Init (void)
 	byte	*ncdata;
 	int		f, fstep;
 
+    _wad.reset(new quake::wad("gfx.wad"));
 
 	// 3dfx can only handle 256 wide textures
 	if (!strncasecmp ((char *)gl_renderer, "3dfx",4) ||
@@ -396,7 +403,7 @@ void Draw_Init (void)
 	// by hand, because we need to write the version
 	// string into the background before turning
 	// it into a texture
-	draw_chars = (byte *)W_GetLumpName ("conchars");
+	draw_chars = (byte *)_wad->get_lump("conchars");
 	for (i=0 ; i<256*64 ; i++)
 		if (draw_chars[i] == 0)
 			draw_chars[i] = 255;	// proper transparent color
@@ -409,7 +416,6 @@ void Draw_Init (void)
 	cb = (qpic_t *)COM_LoadTempFile ("gfx/conback.lmp");	
 	if (!cb)
 		Sys_Error ("Couldn't load gfx/conback.lmp");
-	SwapPic (cb);
 
 	// hack the version number directly into the pic
 	sprintf (ver, "(m4c0 %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);

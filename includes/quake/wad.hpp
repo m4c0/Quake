@@ -23,18 +23,18 @@
 #include <vector>
 
 namespace quake {
-    struct lump {
+    struct lump_pic {
         int width, height;
-        std::vector<uint8_t> data;
+        uint8_t data[4];
+        // TODO: Flip if BE
     };
 
     class wad {
     public:
         wad(const char * filename);
 
-        template<typename T>
-        T get_lump(const std::string & name) {
-            return (T)at(name).data();
+        const void * get_lump(const std::string & name) {
+            return at(name).data();
         }
 
         std::vector<uint8_t> & at(const std::string & name);

@@ -230,7 +230,6 @@ typedef struct
 } entity_state_t;
 
 
-#include "wad.h"
 #include "draw.h"
 #include "screen.h"
 #include "net.h"
