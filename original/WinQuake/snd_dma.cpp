@@ -307,7 +307,7 @@ void S_TouchSound (const char *name)
 		return;
 
 	sfx = S_FindName (name);
-	// Cache_Check (&sfx->cache); TODO: use a real cache or remove "touching"
+	Cache_Check (&sfx->cache);
 }
 
 /*
@@ -918,9 +918,9 @@ void S_SoundList(const quake::common::argv & argv)
 	total = 0;
 	for (sfx=known_sfx, i=0 ; i<num_sfx ; i++, sfx++)
 	{
-		if (sfx->cached.empty()) continue;
-
-		sc = (sfxcache_t *)sfx->cached.data();
+		sc = (sfxcache_t *)Cache_Check (&sfx->cache);
+		if (!sc)
+			continue;
 		size = sc->length*sc->width*(sc->stereo+1);
 		total += size;
 		if (sc->loopstart >= 0)

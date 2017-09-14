@@ -1326,6 +1326,7 @@ Filename are reletive to the quake directory.
 Allways appends a 0 byte.
 ============
 */
+cache_user_t *loadcache;
 byte    *loadbuf;
 int             loadsize;
 byte *COM_LoadFile (const char *path, int usehunk)
