@@ -387,7 +387,6 @@ void Draw_Init (void)
 	char	ver[40];
 	glpic_t	*gl;
 	int		start;
-	byte	*ncdata;
 	int		f, fstep;
 
     _wad.reset(new quake::wad("gfx.wad"));
@@ -426,13 +425,12 @@ void Draw_Init (void)
 
 	conback->width = cb->width;
 	conback->height = cb->height;
-	ncdata = cb->data;
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	gl = (glpic_t *)conback->data;
-	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, ncdata, false, false);
+	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, cb->data, false, false);
 	gl->sl = 0;
 	gl->sh = 1;
 	gl->tl = 0;
