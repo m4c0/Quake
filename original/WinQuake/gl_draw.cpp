@@ -423,14 +423,11 @@ void Draw_Init (void)
 	for (x=0 ; x<y ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
 
-	conback->width = cb->width;
-	conback->height = cb->height;
-
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	gl = (glpic_t *)conback->data;
-	gl->texnum = GL_LoadTexture ("conback", conback->width, conback->height, cb->data, false, false);
+	gl->texnum = GL_LoadTexture ("conback", cb->width, cb->height, cb->data, false, false);
 	gl->sl = 0;
 	gl->sh = 1;
 	gl->tl = 0;
