@@ -8,7 +8,7 @@ add_library(WinQuake STATIC
     snd_osx.cpp sys_glut.cpp gl_vidglut.cpp
     )
 target_compile_definitions(WinQuake PUBLIC GLQUAKE)
-target_compile_options(WinQuake PRIVATE "-Wunused-variable" "-Werror")
+target_compile_options(WinQuake PRIVATE "-Wall" "-Werror")
 target_link_libraries(WinQuake PUBLIC "-framework AudioUnit")
 target_link_libraries(WinQuake PUBLIC "-framework GLUT")
 target_link_libraries(WinQuake PUBLIC "-framework OpenGL")

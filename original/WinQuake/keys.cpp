@@ -519,34 +519,34 @@ void Key_Init (void)
 	consolekeys[K_SHIFT] = true;
 	consolekeys[K_MWHEELUP] = true;
 	consolekeys[K_MWHEELDOWN] = true;
-	consolekeys['`'] = false;
-	consolekeys['~'] = false;
+	consolekeys[(int)'`'] = false;
+	consolekeys[(int)'~'] = false;
 
 	for (i=0 ; i<256 ; i++)
 		keyshift[i] = i;
 	for (i='a' ; i<='z' ; i++)
 		keyshift[i] = i - 'a' + 'A';
-	keyshift['1'] = '!';
-	keyshift['2'] = '@';
-	keyshift['3'] = '#';
-	keyshift['4'] = '$';
-	keyshift['5'] = '%';
-	keyshift['6'] = '^';
-	keyshift['7'] = '&';
-	keyshift['8'] = '*';
-	keyshift['9'] = '(';
-	keyshift['0'] = ')';
-	keyshift['-'] = '_';
-	keyshift['='] = '+';
-	keyshift[','] = '<';
-	keyshift['.'] = '>';
-	keyshift['/'] = '?';
-	keyshift[';'] = ':';
-	keyshift['\''] = '"';
-	keyshift['['] = '{';
-	keyshift[']'] = '}';
-	keyshift['`'] = '~';
-	keyshift['\\'] = '|';
+	keyshift[(int)'1'] = '!';
+	keyshift[(int)'2'] = '@';
+	keyshift[(int)'3'] = '#';
+	keyshift[(int)'4'] = '$';
+	keyshift[(int)'5'] = '%';
+	keyshift[(int)'6'] = '^';
+	keyshift[(int)'7'] = '&';
+	keyshift[(int)'8'] = '*';
+	keyshift[(int)'9'] = '(';
+	keyshift[(int)'0'] = ')';
+	keyshift[(int)'-'] = '_';
+	keyshift[(int)'='] = '+';
+	keyshift[(int)','] = '<';
+	keyshift[(int)'.'] = '>';
+	keyshift[(int)'/'] = '?';
+	keyshift[(int)';'] = ':';
+	keyshift[(int)'\''] = '"';
+	keyshift[(int)'['] = '{';
+	keyshift[(int)']'] = '}';
+	keyshift[(int)'`'] = '~';
+	keyshift[(int)'\\'] = '|';
 
 	menubound[K_ESCAPE] = true;
 	for (i=0 ; i<12 ; i++)
