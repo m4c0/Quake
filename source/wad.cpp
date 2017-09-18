@@ -40,7 +40,7 @@ struct lumpinfo {
     char name[16]; // must be null terminated
 };
 
-quake::wad::wad(const char * filename) {
+quake::wad::file::file(const char * filename) {
     wadinfo * header = (wadinfo *)COM_LoadHunkFile(filename);
     if (!header) {
         throw std::ios_base::failure(std::string("Could not load ") + filename);
@@ -62,7 +62,7 @@ quake::wad::wad(const char * filename) {
     }
 }
 
-std::vector<uint8_t> & quake::wad::at(const std::string & name) {
+std::vector<uint8_t> & quake::wad::file::at(const std::string & name) {
     std::string ucname;
     std::transform(name.begin(), name.end(), std::back_inserter(ucname), ::toupper);
     return this->lumps.at(ucname);

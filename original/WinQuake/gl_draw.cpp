@@ -192,7 +192,7 @@ byte		menuplyr_pixels[4096];
 int		pic_texels;
 int		pic_count;
 
-std::unique_ptr<quake::wad> _wad;
+std::unique_ptr<quake::wad::file> _wad;
 
 qpic_t *Draw_PicFromWad (const char *name)
 {
@@ -389,7 +389,7 @@ void Draw_Init (void)
 	int		start;
 	int		f, fstep;
 
-    _wad.reset(new quake::wad("gfx.wad"));
+    _wad.reset(new quake::wad::file("gfx.wad"));
 
 	// 3dfx can only handle 256 wide textures
 	if (!strncasecmp ((char *)gl_renderer, "3dfx",4) ||

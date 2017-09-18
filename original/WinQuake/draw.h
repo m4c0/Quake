@@ -21,8 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // draw.h -- these are the only functions outside the refresh allowed
 // to touch the vid buffer
 
-namespace quake { struct lump_pic; }
-typedef quake::lump_pic qpic_t;
+namespace quake { namespace wad { struct lump_pic; } }
+typedef quake::wad::lump_pic qpic_t;
 
 extern	qpic_t		*draw_disc;	// also used on sbar
 
