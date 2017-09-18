@@ -67,11 +67,7 @@ void GL_Bind (int texnum)
         return;
     }
 
-#ifdef _WIN32
-	bindTexFunc (GL_TEXTURE_2D, texnum);
-#else
 	glBindTexture(GL_TEXTURE_2D, texnum);
-#endif
 }
 
 /*
