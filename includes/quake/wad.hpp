@@ -26,7 +26,6 @@ namespace quake {
     namespace wad {
         struct lump_pic {
             int width, height;
-            uint8_t data[4];
             // TODO: Flip if BE
         };
 

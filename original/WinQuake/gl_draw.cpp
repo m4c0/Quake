@@ -179,7 +179,7 @@ typedef struct cachepic_s
 {
 	char		name[MAX_QPATH];
 	qpic_t		pic;
-	byte		padding[32];	// for appended glpic
+    glpic_t     glpic;
 } cachepic_t;
 
 #define	MAX_CACHED_PICS		128
@@ -196,7 +196,7 @@ std::unique_ptr<quake::wad::file> _wad;
 qpic_t *Draw_PicFromWad (const char *name)
 {
 	qpic_t * p = (qpic_t *)_wad->get_lump(name);
-	glpic_t *gl = (glpic_t *)p->data;
+	glpic_t *gl = (glpic_t *)(p + 1);
 
 	// load little ones into the scrap
 	if (p->width < 64 && p->height < 64)
@@ -208,9 +208,10 @@ qpic_t *Draw_PicFromWad (const char *name)
 		texnum = Scrap_AllocBlock (p->width, p->height, &x, &y);
 		scrap_dirty = true;
 		k = 0;
+        uint8_t * data = (uint8_t *)(p + 1);
 		for (i=0 ; i<p->height ; i++)
 			for (j=0 ; j<p->width ; j++, k++)
-				scrap_texels[texnum][(y+i)*BLOCK_WIDTH + x + j] = p->data[k];
+				scrap_texels[texnum][(y+i)*BLOCK_WIDTH + x + j] = data[k];
 		texnum += scrap_texnum;
 		gl->texnum = texnum;
 		gl->sl = (x+0.01)/(float)BLOCK_WIDTH;
@@ -243,7 +244,6 @@ qpic_t	*Draw_CachePic (const char *path)
 	cachepic_t	*pic;
 	int			i;
 	qpic_t		*dat;
-	glpic_t		*gl;
 
 	for (pic=menu_cachepics, i=0 ; i<menu_numcachepics ; pic++, i++)
 		if (!strcmp (path, pic->name))
@@ -266,12 +266,12 @@ qpic_t	*Draw_CachePic (const char *path)
 	// the translatable player picture just for the menu
 	// configuration dialog
 	if (!strcmp (path, "gfx/menuplyr.lmp"))
-		memcpy (menuplyr_pixels, dat->data, dat->width*dat->height);
+		memcpy (menuplyr_pixels, dat + 1, dat->width*dat->height);
 
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
 
-	gl = (glpic_t *)pic->pic.data;
+	glpic_t * gl = &pic->glpic;
 	gl->texnum = GL_LoadPicTexture (dat);
 	gl->sl = 0;
 	gl->sh = 1;
@@ -381,7 +381,6 @@ void Draw_Init (void)
 	byte	*dest;
 	int		x, y;
 	char	ver[40];
-	glpic_t	*gl;
 	int		start;
 
     _wad.reset(new quake::wad::file("gfx.wad"));
@@ -413,7 +412,7 @@ void Draw_Init (void)
 
 	// hack the version number directly into the pic
 	sprintf (ver, "(m4c0 %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
-	dest = cb->data + 320*186 + 320 - 11 - 8*strlen(ver);
+	dest = (uint8_t *)(cb + 1) + 320*186 + 320 - 11 - 8*strlen(ver);
 	y = strlen(ver);
 	for (x=0 ; x<y ; x++)
 		Draw_CharToConback (ver[x], dest+(x<<3));
@@ -421,8 +420,8 @@ void Draw_Init (void)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	gl = (glpic_t *)conback->data;
-	gl->texnum = GL_LoadTexture ("conback", cb->width, cb->height, cb->data, false, false);
+	glpic_t *gl = (glpic_t *)(conback + 1);
+	gl->texnum = GL_LoadTexture ("conback", cb->width, cb->height, (uint8_t *)(cb + 1), false, false);
 	gl->sl = 0;
 	gl->sh = 1;
 	gl->tl = 0;
@@ -527,11 +526,11 @@ Draw_AlphaPic
 */
 void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 {
-	glpic_t			*gl;
-
 	if (scrap_dirty)
 		Scrap_Upload ();
-	gl = (glpic_t *)pic->data;
+
+	glpic_t * gl = (glpic_t *)(pic + 1);
+
 	glDisable(GL_ALPHA_TEST);
 	glEnable (GL_BLEND);
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -561,11 +560,10 @@ Draw_Pic
 */
 void Draw_Pic (int x, int y, qpic_t *pic)
 {
-	glpic_t			*gl;
-
 	if (scrap_dirty)
 		Scrap_Upload ();
-	gl = (glpic_t *)pic->data;
+
+	glpic_t * gl = (glpic_t *)(pic + 1);
 	glColor4f (1,1,1,1);
 	GL_Bind (gl->texnum);
 	glBegin (GL_QUADS);
@@ -676,8 +674,10 @@ refresh window.
 */
 void Draw_TileClear (int x, int y, int w, int h)
 {
+	glpic_t * gl = (glpic_t *)(draw_backtile + 1);
+
 	glColor3f (1,1,1);
-	GL_Bind (*(int *)draw_backtile->data);
+	GL_Bind (gl->texnum);
 	glBegin (GL_QUADS);
 	glTexCoord2f (x/64.0, y/64.0);
 	glVertex2f (x, y);
@@ -1228,7 +1228,7 @@ GL_LoadPicTexture
 */
 int GL_LoadPicTexture (qpic_t *pic)
 {
-	return GL_LoadTexture ("", pic->width, pic->height, pic->data, false, true);
+	return GL_LoadTexture ("", pic->width, pic->height, (uint8_t *)(pic + 1), false, true);
 }
 
 /****************************************/
