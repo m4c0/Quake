@@ -19,13 +19,37 @@
 #ifndef QUAKE_TEXTURE_HPP
 #define QUAKE_TEXTURE_HPP
 
+#include "quake/gl.hpp"
+
 namespace quake {
     class texture {
     public:
+        texture() {
+            glGenTextures(1, &texnum);
+        }
+
+        void bind() {
+            glBindTexture(GL_TEXTURE_2D, texnum);
+        }
+
+        virtual void set_filters(GLenum min, GLenum max) {
+        }
+
         unsigned int texnum;
         int width;
         int height;
-        bool mipmap;
+    };
+
+    class mipmap_texture : public texture {
+    public:
+        // Only textures created with "mipmap support" can change filters,
+        // even though the user is able to use "GL_LINEAR" and "GL_NEAREST"
+        // as filters.
+        void set_filters(GLenum min, GLenum max) override {
+            this->bind();
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, max);
+        }
     };
 }
 

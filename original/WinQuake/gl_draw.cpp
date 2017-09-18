@@ -59,7 +59,7 @@ int		gl_filter_max = GL_LINEAR;
 
 int		texels;
 
-static std::map<std::string, quake::texture> _textures;
+static std::map<std::string, std::shared_ptr<quake::texture>> _textures;
 
 void GL_Bind (int texnum)
 {
@@ -340,11 +340,7 @@ void Draw_TextureMode_f (const quake::common::argv & argv)
 
 	// change all the existing mipmap texture objects
     for (auto & kv : _textures) {
-        if (!kv.second.mipmap) continue;
-
-        GL_Bind(kv.second.texnum);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+        kv.second->set_filters(gl_filter_min, gl_filter_max);
 	}
 }
 
@@ -791,7 +787,7 @@ GL_FindTexture
 int GL_FindTexture (char *identifier)
 {
     auto it = _textures.find(identifier);
-    return it == _textures.end() ? -1 : it->second.texnum;
+    return it == _textures.end() ? -1 : it->second->texnum;
 }
 
 /*
@@ -1055,23 +1051,27 @@ int GL_LoadTexture (const char *identifier, int width, int height, byte *data, q
 	if (name != "") {
         auto it = _textures.find(name);
         if (it != _textures.end()) {
-            if (width != it->second.width || height != it->second.height) {
+            if (width != it->second->width || height != it->second->height) {
                 Sys_Error ("GL_LoadTexture: cache mismatch");
             }
-            return it->second.texnum;
+            return it->second->texnum;
 		}
 	} else {
         name = "*" + std::to_string(_textures.size());
 	}
 
     auto & glt = _textures[name];
-    glGenTextures(1, &glt.texnum);
-	glt.width = width;
-	glt.height = height;
-	glt.mipmap = mipmap;
+    if (mipmap) {
+        glt = std::make_shared<quake::mipmap_texture>();
+    } else {
+        glt = std::make_shared<quake::texture>();
+    }
 
-	GL_Bind(glt.texnum);
+	glt->width = width;
+	glt->height = height;
+
+    glt->bind();
 	GL_Upload8(data, width, height, mipmap, alpha);
-    return glt.texnum;
+    return glt->texnum;
 }
 
