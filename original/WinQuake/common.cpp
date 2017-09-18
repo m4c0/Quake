@@ -1521,7 +1521,6 @@ COM_InitFilesystem
 void COM_InitFilesystem (void)
 {
     std::string basedir;
-	int             i, j;
 	searchpath_t    *search;
 
 //

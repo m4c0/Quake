@@ -195,13 +195,10 @@ void	VID_SetPalette (unsigned char *palette)
 	unsigned r,g,b;
 	unsigned v;
 	int     r1,g1,b1;
-	int		j,k,l,m;
+	int		k;
 	unsigned short i;
 	unsigned	*table;
-	FILE *f;
-	char s[255];
 	int dist, bestdist;
-	static qboolean palflag = false;
 
 //
 // 8 8 8 encoding
@@ -342,8 +339,6 @@ void GL_EndRendering (void)
 
 void Init_KBD(void)
 {
-	int i;
-
 	if (argv->contains("-nokbd")) UseKeyboard = 0;
 
 	if (UseKeyboard)
@@ -440,7 +435,6 @@ static void Check_Gamma (unsigned char *pal)
 
 void VID_Init(unsigned char *palette)
 {
-	int i;
 	char	gldir[MAX_OSPATH];
 
 	vid.maxwarpwidth = WARP_WIDTH;
@@ -530,9 +524,6 @@ void mouse_motion(int x, int y) {
 
 void IN_Init(void)
 {
-
-	char *mousedev;
-
 	if (UseMouse)
 	{
 

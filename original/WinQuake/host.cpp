@@ -159,8 +159,6 @@ Host_FindMaxClients
 */
 void	Host_FindMaxClients (void)
 {
-	int		i;
-
 	svs.maxclients = 1;
 		
 	if (argv->contains("-dedicated")) {
@@ -741,8 +739,7 @@ extern int vcrFile;
 
 void Host_InitVCR (quakeparms_t *parms)
 {
-	int		i, len, n;
-	char	*p;
+	int		i, len;
 	
 	if (argv->contains("-playback")) {
 		if (argv->size() != 1) Sys_Error("No other parameters allowed with -playback\n");

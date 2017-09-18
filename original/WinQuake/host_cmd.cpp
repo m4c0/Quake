@@ -258,8 +258,6 @@ command from the console.  Active clients are kicked off.
 */
 void Host_Map_f (const quake::common::argv & argv)
 {
-	int		i;
-
 	if (cmd_source != src_command)
 		return;
 
@@ -828,7 +826,6 @@ void Host_Tell_f(const quake::common::argv & argv)
 	client_t *client;
 	client_t *save;
 	int		j;
-	char	*p;
 	char	text[64];
 
 	if (cmd_source == src_command)
@@ -1240,7 +1237,6 @@ Host_Give_f
 */
 void Host_Give_f (const quake::common::argv & argv)
 {
-	int		w;
 	eval_t	*val;
 
 	if (cmd_source == src_command)

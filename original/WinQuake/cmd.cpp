@@ -259,9 +259,6 @@ Creates a new command that executes a command string (possibly ; seperated)
 
 void Cmd_Alias_f (const quake::common::argv & argv)
 {
-	char		cmd[1024];
-	int			i, c;
-
 	if (argv.size() == 0) {
 		Con_Printf ("Current alias commands:\n");
         quake::cmd::find_by_type<quake::cmd::alias>([](auto a) {

@@ -394,9 +394,6 @@ Key_SetBinding
 */
 void Key_SetBinding (int keynum, const char *binding)
 {
-	char	*newbinding;
-	int		l;
-			
 	if (keynum == -1)
 		return;
 

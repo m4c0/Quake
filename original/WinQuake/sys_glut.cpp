@@ -397,7 +397,6 @@ int main (int c, char **v)
 {
 
 	quakeparms_t parms {};
-	int j;
 
 //	static char cwd[1024];
 
