@@ -36,8 +36,6 @@ namespace quake {
         }
 
         unsigned int texnum;
-        int width;
-        int height;
     };
 
     class mipmap_texture : public texture {

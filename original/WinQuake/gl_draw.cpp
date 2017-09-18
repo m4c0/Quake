@@ -1051,9 +1051,6 @@ int GL_LoadTexture (const char *identifier, int width, int height, byte *data, q
 	if (name != "") {
         auto it = _textures.find(name);
         if (it != _textures.end()) {
-            if (width != it->second->width || height != it->second->height) {
-                Sys_Error ("GL_LoadTexture: cache mismatch");
-            }
             return it->second->texnum;
 		}
 	} else {
@@ -1066,9 +1063,6 @@ int GL_LoadTexture (const char *identifier, int width, int height, byte *data, q
     } else {
         glt = std::make_shared<quake::texture>();
     }
-
-	glt->width = width;
-	glt->height = height;
 
     glt->bind();
 	GL_Upload8(data, width, height, mipmap, alpha);
