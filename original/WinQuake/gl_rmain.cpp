@@ -552,7 +552,7 @@ void R_DrawAliasModel (entity_t *e)
 	{
 		i = currententity - cl_entities;
 		if (i >= 1 && i<=cl.maxclients /* && !strcmp (currententity->model->name, "progs/player.mdl") */)
-		    GL_Bind(playertextures[i - 1]);
+		    glBindTexture(GL_TEXTURE_2D, playertextures[i - 1]);
 	}
 
 	if (gl_smoothmodels.to_bool())

@@ -270,14 +270,14 @@ will have them chained together.
 */
 void EmitBothSkyLayers (msurface_t *fa)
 {
-	GL_Bind (solidskytexture);
+	glBindTexture(GL_TEXTURE_2D, solidskytexture);
 	speedscale = realtime*8;
 	speedscale -= (int)speedscale & ~127 ;
 
 	EmitSkyPolys (fa);
 
 	glEnable (GL_BLEND);
-	GL_Bind (alphaskytexture);
+	glBindTexture(GL_TEXTURE_2D, alphaskytexture);
 	speedscale = realtime*16;
 	speedscale -= (int)speedscale & ~127 ;
 
@@ -297,7 +297,7 @@ void R_DrawSkyChain (msurface_t *s)
 	msurface_t	*fa;
 
 	// used when gl_texsort is on
-	GL_Bind(solidskytexture);
+	glBindTexture(GL_TEXTURE_2D, solidskytexture);
 	speedscale = realtime*8;
 	speedscale -= (int)speedscale & ~127 ;
 
@@ -305,7 +305,7 @@ void R_DrawSkyChain (msurface_t *s)
 		EmitSkyPolys (fa);
 
 	glEnable (GL_BLEND);
-	GL_Bind (alphaskytexture);
+	glBindTexture(GL_TEXTURE_2D, alphaskytexture);
 	speedscale = realtime*16;
 	speedscale -= (int)speedscale & ~127 ;
 
@@ -363,7 +363,7 @@ void R_InitSky (texture_t *mt)
 	if (!solidskytexture) {
         glGenTextures(1, &solidskytexture);
     }
-	GL_Bind (solidskytexture );
+	glBindTexture(GL_TEXTURE_2D, solidskytexture );
 	glTexImage2D (GL_TEXTURE_2D, 0, gl_solid_format, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -382,7 +382,7 @@ void R_InitSky (texture_t *mt)
 	if (!alphaskytexture) {
         glGenTextures(1, &alphaskytexture);
     }
-	GL_Bind(alphaskytexture);
+	glBindTexture(GL_TEXTURE_2D, alphaskytexture);
 	glTexImage2D (GL_TEXTURE_2D, 0, gl_alpha_format, 128, 128, 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

@@ -62,15 +62,6 @@ int		texels;
 
 static std::map<std::string, std::shared_ptr<quake::texture>> _textures;
 
-void GL_Bind (int texnum)
-{
-    if (cls.state == ca_dedicated) {
-        return;
-    }
-
-	glBindTexture(GL_TEXTURE_2D, texnum);
-}
-
 /*
 ================
 GL_LoadPicTexture
@@ -583,7 +574,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	byte			*src;
 	int				p;
 
-	GL_Bind (translate_texture);
+	glBindTexture(GL_TEXTURE_2D, translate_texture);
 
 	c = pic->width * pic->height;
 

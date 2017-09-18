@@ -209,7 +209,6 @@ extern	const GLubyte *gl_version;
 extern	const GLubyte *gl_extensions;
 
 void R_TranslatePlayerSkin (int playernum);
-void GL_Bind (int texnum);
 
 #ifndef _WIN32
 #define APIENTRY /* */
