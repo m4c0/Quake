@@ -21,6 +21,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/texture.hpp"
+
 void R_AnimateLight (void);
 void R_DrawBrushModel (entity_t *e);
 void R_DrawParticles (void);
@@ -232,7 +234,7 @@ void R_DrawSpriteModel (entity_t *e)
 
 	glColor3f (1,1,1);
 
-    GL_Bind(frame->gl_texturenum);
+    frame->gl_texturenum->bind();
 
 	glEnable (GL_ALPHA_TEST);
 	glBegin (GL_QUADS);
@@ -542,7 +544,7 @@ void R_DrawAliasModel (entity_t *e)
 	}
 
 	anim = (int)(cl.time*10) & 3;
-    GL_Bind(paliashdr->gl_texturenum[currententity->skinnum][anim]);
+    paliashdr->gl_texturenum[currententity->skinnum][anim]->bind();
 
 	// we can't dynamically colormap textures, so they are cached
 	// seperately for the players.  Heads are just uncolored.

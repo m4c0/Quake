@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 
 #include "quake/common.hpp"
+#include "quake/texture.hpp"
 
 void EmitBothSkyLayers (msurface_t *fa);
 void EmitSkyPolys (msurface_t *fa);
@@ -463,7 +464,7 @@ void R_RenderBrushPoly (msurface_t *fa)
 	}
 		
 	t = R_TextureAnimation (fa->texinfo->texture);
-	GL_Bind (t->gl_texturenum);
+    t->gl_texturenum->bind();
 
 	if (fa->flags & SURF_DRAWTURB)
 	{	// warp texture, no lightmaps
@@ -679,7 +680,7 @@ void R_DrawWaterSurfaces (void)
 
 			// set modulate mode explicitly
 			
-			GL_Bind (t->gl_texturenum);
+            t->gl_texturenum->bind();
 
 			for ( ; s ; s=s->texturechain)
 				EmitWaterPolys (s);

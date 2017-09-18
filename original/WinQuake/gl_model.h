@@ -24,6 +24,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "modelgen.h"
 #include "spritegn.h"
 
+namespace quake {
+    class texture;
+}
+
 /*
 
 d*_t structures are on-disk representations
@@ -77,7 +81,7 @@ typedef struct texture_s
 {
 	char		name[16];
 	unsigned	width, height;
-	int			gl_texturenum;
+    std::shared_ptr<quake::texture> gl_texturenum;
 	struct msurface_s	*texturechain;	// for gl_texsort drawing
 	int			anim_total;				// total tenths in sequence ( 0 = no)
 	int			anim_min, anim_max;		// time for this frame min <=time< max
@@ -218,7 +222,7 @@ typedef struct mspriteframe_s
 	int		width;
 	int		height;
 	float	up, down, left, right;
-	int		gl_texturenum;
+	std::shared_ptr<quake::texture> gl_texturenum;
 } mspriteframe_t;
 
 typedef struct
@@ -309,7 +313,7 @@ typedef struct {
 	int					poseverts;
 	int					posedata;	// numposes*poseverts trivert_t
 	int					commands;	// gl command list with embedded s/t
-	int					gl_texturenum[MAX_SKINS][4];
+	std::shared_ptr<quake::texture> gl_texturenum[MAX_SKINS][4];
 	int					texels[MAX_SKINS];	// only for player skins
 	maliasframedesc_t	frames[1];	// variable sized
 } aliashdr_t;

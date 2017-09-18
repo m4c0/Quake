@@ -35,7 +35,8 @@ namespace quake {
         virtual void set_filters(GLenum min, GLenum max) {
         }
 
-        unsigned int texnum;
+    private:
+        GLuint texnum;
     };
 
     class mipmap_texture : public texture {

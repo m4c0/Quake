@@ -33,6 +33,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quake/cvar.hpp"
 
+namespace quake {
+    class texture;
+}
+
 void GL_BeginRendering (int *x, int *y, int *width, int *height);
 void GL_EndRendering (void);
 
@@ -43,8 +47,7 @@ extern	float	gldepthmin, gldepthmax;
 
 void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha);
 void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha);
-int GL_LoadTexture (const char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha);
-int GL_FindTexture (const char *identifier);
+std::shared_ptr<quake::texture> GL_LoadTexture (const char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha);
 
 typedef struct
 {

@@ -26,6 +26,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quake/texture.hpp"
 #include "quake/wad.hpp"
 
+#include <array>
 #include <memory>
 
 #define GL_COLOR_INDEX8_EXT     0x80E5
@@ -40,10 +41,10 @@ qpic_t		*draw_disc;
 qpic_t		*draw_backtile;
 
 GLuint translate_texture;
-int			char_texture;
+std::shared_ptr<quake::texture> char_texture;
 
 typedef struct {
-    GLuint texnum;
+    std::shared_ptr<quake::texture> texnum;
 	float	sl, tl, sh, th;
 } glpic_t;
 
@@ -75,7 +76,7 @@ void GL_Bind (int texnum)
 GL_LoadPicTexture
 ================
 */
-static int GL_LoadPicTexture (qpic_t *pic) {
+static auto GL_LoadPicTexture (qpic_t *pic) {
     return GL_LoadTexture ("", pic->width, pic->height, (uint8_t *)(pic + 1), false, true);
 }
 
@@ -97,7 +98,7 @@ static int GL_LoadPicTexture (qpic_t *pic) {
 int			scrap_allocated[MAX_SCRAPS][BLOCK_WIDTH];
 byte		scrap_texels[MAX_SCRAPS][BLOCK_WIDTH*BLOCK_HEIGHT*4];
 qboolean	scrap_dirty;
-GLuint scrap_texnum[MAX_SCRAPS];
+std::array<std::shared_ptr<quake::texture>, MAX_SCRAPS> scrap_texnum;
 
 // returns a texture number and the position inside it
 int Scrap_AllocBlock (int w, int h, int *x, int *y)
@@ -140,16 +141,9 @@ int Scrap_AllocBlock (int w, int h, int *x, int *y)
 	Sys_Error ("Scrap_AllocBlock: full");
 }
 
-int	scrap_uploads;
-
-void Scrap_Upload (void)
-{
-	int		texnum;
-
-	scrap_uploads++;
-
-	for (texnum=0 ; texnum<MAX_SCRAPS ; texnum++) {
-		GL_Bind(scrap_texnum[texnum]);
+void Scrap_Upload (void) {
+	for (int texnum=0 ; texnum<MAX_SCRAPS ; texnum++) {
+		scrap_texnum[texnum]->bind();
 		GL_Upload8 (scrap_texels[texnum], BLOCK_WIDTH, BLOCK_HEIGHT, false, true);
 	}
 	scrap_dirty = false;
@@ -195,6 +189,9 @@ qpic_t *Draw_PicFromWad (const char *name)
 		for (i=0 ; i<p->height ; i++)
 			for (j=0 ; j<p->width ; j++, k++)
 				scrap_texels[texnum][(y+i)*BLOCK_WIDTH + x + j] = data[k];
+
+        // Using "::new" to initialize a C++ object inside an "recycled" memory area - yikes, huh?
+        ::new (&gl->texnum) decltype(gl->texnum)();
 		gl->texnum = scrap_texnum[texnum];
 		gl->sl = (x+0.01)/(float)BLOCK_WIDTH;
 		gl->sh = (x+p->width-0.01)/(float)BLOCK_WIDTH;
@@ -206,6 +203,7 @@ qpic_t *Draw_PicFromWad (const char *name)
 	}
 	else
 	{
+        ::new (&gl->texnum) decltype(gl->texnum)();
 		gl->texnum = GL_LoadPicTexture (p);
 		gl->sl = 0;
 		gl->sh = 1;
@@ -410,8 +408,9 @@ void Draw_Init (void)
 	// save a texture slot for translated picture
 	glGenTextures(1, &translate_texture);
 
-	// save slots for scraps
-    glGenTextures(MAX_SCRAPS, scrap_texnum);
+    for (auto & scrap : scrap_texnum) {
+        scrap = std::make_shared<quake::texture>();
+    }
 
 	//
 	// get the other pics we need
@@ -451,7 +450,7 @@ void Draw_Character (int x, int y, int num)
 	fcol = col*0.0625;
 	size = 0.0625;
 
-	GL_Bind (char_texture);
+	char_texture->bind();
 
 	glBegin (GL_QUADS);
 	glTexCoord2f (fcol, frow);
@@ -510,7 +509,7 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //	glCullFace(GL_FRONT);
 	glColor4f (1,1,1,alpha);
-	GL_Bind (gl->texnum);
+	gl->texnum->bind();
 	glBegin (GL_QUADS);
 	glTexCoord2f (gl->sl, gl->tl);
 	glVertex2f (x, y);
@@ -539,7 +538,7 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 
 	glpic_t * gl = (glpic_t *)(pic + 1);
 	glColor4f (1,1,1,1);
-	GL_Bind (gl->texnum);
+	gl->texnum->bind();
 	glBegin (GL_QUADS);
 	glTexCoord2f (gl->sl, gl->tl);
 	glVertex2f (x, y);
@@ -651,7 +650,7 @@ void Draw_TileClear (int x, int y, int w, int h)
 	glpic_t * gl = (glpic_t *)(draw_backtile + 1);
 
 	glColor3f (1,1,1);
-	GL_Bind (gl->texnum);
+	gl->texnum->bind();
 	glBegin (GL_QUADS);
 	glTexCoord2f (x/64.0, y/64.0);
 	glVertex2f (x, y);
@@ -778,17 +777,6 @@ void GL_Set2D (void)
 }
 
 //====================================================================
-
-/*
-================
-GL_FindTexture
-================
-*/
-int GL_FindTexture (char *identifier)
-{
-    auto it = _textures.find(identifier);
-    return it == _textures.end() ? -1 : it->second->texnum;
-}
 
 /*
 ================
@@ -1039,7 +1027,7 @@ static	unsigned	trans[640*480];		// FIXME, temporary
 GL_LoadTexture
 ================
 */
-int GL_LoadTexture (const char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha)
+std::shared_ptr<quake::texture> GL_LoadTexture (const char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha)
 {
     if (cls.state == ca_dedicated) {
         return 0;
@@ -1051,7 +1039,7 @@ int GL_LoadTexture (const char *identifier, int width, int height, byte *data, q
 	if (name != "") {
         auto it = _textures.find(name);
         if (it != _textures.end()) {
-            return it->second->texnum;
+            return it->second;
 		}
 	} else {
         name = "*" + std::to_string(_textures.size());
@@ -1066,6 +1054,6 @@ int GL_LoadTexture (const char *identifier, int width, int height, byte *data, q
 
     glt->bind();
 	GL_Upload8(data, width, height, mipmap, alpha);
-    return glt->texnum;
+    return glt;
 }
 
