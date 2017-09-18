@@ -149,6 +149,7 @@ quake::sprite Draw_PicFromWad (const char *name)
     // TODO: Flip if Big Endian
     int width = raw_data->w;
     int height = raw_data->h;
+    uint8_t * data = (uint8_t *)(raw_data + 1);
 
     quake::sprite gl = { width, height };
 
@@ -162,7 +163,6 @@ quake::sprite Draw_PicFromWad (const char *name)
 		texnum = Scrap_AllocBlock (width, height, &x, &y);
 		scrap_dirty = true;
 		k = 0;
-        uint8_t * data = (uint8_t *)(raw_data + 1);
 		for (i=0 ; i<height ; i++)
 			for (j=0 ; j<width ; j++, k++)
 				scrap_texels[texnum][(y+i)*BLOCK_WIDTH + x + j] = data[k];
@@ -175,7 +175,9 @@ quake::sprite Draw_PicFromWad (const char *name)
 	}
 	else
 	{
-        gl.texnum = GL_LoadTexture ("", width, height, (uint8_t *)(raw_data + 1), false, true);
+        gl.texnum = std::make_shared<quake::texture>();
+        gl.texnum->bind();
+        GL_Upload8(data, width, height, false, true);
 	}
 	return gl;
 }
@@ -214,8 +216,10 @@ quake::sprite Draw_CachePic (const char *path)
 	if (!strcmp (path, "gfx/menuplyr.lmp"))
 		memcpy (menuplyr_pixels, dat + 1, dat->w * dat->h);
 
-    pic->pic = { dat->w, dat->h};
-	pic->pic.texnum = GL_LoadTexture ("", dat->w, dat->h, (uint8_t *)(dat + 1), false, true);
+    pic->pic = { dat->w, dat->h };
+	pic->pic.texnum = std::make_shared<quake::texture>();
+    pic->pic.texnum->bind();
+    GL_Upload8((uint8_t *)(dat + 1), dat->w, dat->h, false, true);
 	return pic->pic;
 }
 
@@ -945,14 +949,10 @@ std::shared_ptr<quake::texture> GL_LoadTexture (const char *identifier, int widt
     std::string name = identifier;
 
 	// see if the texture is allready present
-	if (name != "") {
-        auto it = _textures.find(name);
-        if (it != _textures.end()) {
-            return it->second;
-		}
-	} else {
-        name = "*" + std::to_string(_textures.size());
-	}
+    auto it = _textures.find(name);
+    if (it != _textures.end()) {
+        return it->second;
+    }
 
     auto & glt = _textures[name];
     if (mipmap) {
