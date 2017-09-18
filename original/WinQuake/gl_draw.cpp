@@ -32,7 +32,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern unsigned char d_15to8table[65536];
 
-quake::cvar::normal gl_nobind = {"gl_nobind", "0"};
 quake::cvar::normal gl_max_size = {"gl_max_size", "1024"};
 quake::cvar::normal gl_picmip = {"gl_picmip", "0"};
 
@@ -68,11 +67,6 @@ void GL_Bind (int texnum)
         return;
     }
 
-	if (gl_nobind.to_bool())
-		texnum = char_texture;
-	if (currenttexture == texnum)
-		return;
-	currenttexture = texnum;
 #ifdef _WIN32
 	bindTexFunc (GL_TEXTURE_2D, texnum);
 #else
@@ -1084,6 +1078,4 @@ int GL_LoadTexture (const char *identifier, int width, int height, byte *data, q
 	GL_Upload8(data, width, height, mipmap, alpha);
     return glt.texnum;
 }
-
-/****************************************/
 
