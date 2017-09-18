@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "quakedef.h"
 
 #include "quake/screen.hpp"
+#include "quake/texture.hpp"
 #include "quake/wad.hpp"
 
 /*
@@ -98,9 +99,9 @@ extern quake::cvar::normal crosshair;
 
 qboolean	scr_initialized;		// ready to draw
 
-qpic_t		*scr_ram;
-qpic_t		*scr_net;
-qpic_t		*scr_turtle;
+quake::sprite scr_ram;
+quake::sprite scr_net;
+quake::sprite scr_turtle;
 
 int			scr_fullupdate;
 
@@ -445,7 +446,7 @@ DrawPause
 */
 void SCR_DrawPause (void)
 {
-	qpic_t	*pic;
+	quake::sprite pic;
 
 	if (!scr_showpause.to_bool())		// turn off for screenshots
 		return;
@@ -454,8 +455,8 @@ void SCR_DrawPause (void)
 		return;
 
 	pic = Draw_CachePic ("gfx/pause.lmp");
-	Draw_Pic ( (vid.width - pic->width)/2, 
-		(vid.height - 48 - pic->height)/2, pic);
+	Draw_Pic ( (vid.width - pic.width)/2, 
+		(vid.height - 48 - pic.height)/2, pic);
 }
 
 
@@ -467,14 +468,14 @@ SCR_DrawLoading
 */
 void SCR_DrawLoading (void)
 {
-	qpic_t	*pic;
+	quake::sprite pic;
 
 	if (!scr_drawloading)
 		return;
 		
 	pic = Draw_CachePic ("gfx/loading.lmp");
-	Draw_Pic ( (vid.width - pic->width)/2, 
-		(vid.height - 48 - pic->height)/2, pic);
+	Draw_Pic ( (vid.width - pic.width)/2, 
+		(vid.height - 48 - pic.height)/2, pic);
 }
 
 

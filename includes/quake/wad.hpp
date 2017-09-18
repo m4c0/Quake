@@ -24,11 +24,6 @@
 
 namespace quake {
     namespace wad {
-        struct lump_pic {
-            int width, height;
-            // TODO: Flip if BE
-        };
-
         class file {
         public:
             file(const char * filename);

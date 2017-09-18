@@ -19,6 +19,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "quakedef.h"
 
+#include "quake/texture.hpp"
 #include "quake/wad.hpp"
 
 extern quake::cvar::normal registered;
@@ -135,12 +136,12 @@ void M_PrintWhite (int cx, int cy, const char *str)
 	}
 }
 
-void M_DrawTransPic (int x, int y, qpic_t *pic)
+void M_DrawTransPic (int x, int y, quake::sprite pic)
 {
 	Draw_TransPic (x + ((vid.width - 320)>>1), y, pic);
 }
 
-void M_DrawPic (int x, int y, qpic_t *pic)
+void M_DrawPic (int x, int y, quake::sprite pic)
 {
 	Draw_Pic (x + ((vid.width - 320)>>1), y, pic);
 }
@@ -173,7 +174,7 @@ void M_BuildTranslationTable(int top, int bottom)
 }
 
 
-void M_DrawTransPicTranslate (int x, int y, qpic_t *pic)
+void M_DrawTransPicTranslate (int x, int y, quake::sprite & pic)
 {
 	Draw_TransPicTranslate (x + ((vid.width - 320)>>1), y, pic, translationTable);
 }
@@ -181,7 +182,7 @@ void M_DrawTransPicTranslate (int x, int y, qpic_t *pic)
 
 void M_DrawTextBox (int x, int y, int width, int lines)
 {
-	qpic_t	*p;
+	quake::sprite p;
 	int		cx, cy;
 	int		n;
 
@@ -292,11 +293,11 @@ void M_Menu_Main_f (const quake::common::argv & argv)
 void M_Main_Draw (void)
 {
 	int		f;
-	qpic_t	*p;
+	quake::sprite p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/ttl_main.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mainmenu.lmp") );
 
 	f = (int)(host_time * 10)%6;
@@ -375,11 +376,11 @@ void M_Menu_SinglePlayer_f (const quake::common::argv & args)
 void M_SinglePlayer_Draw (void)
 {
 	int		f;
-	qpic_t	*p;
+	quake::sprite p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/ttl_sgl.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/sp_menu.lmp") );
 
 	f = (int)(host_time * 10)%6;
@@ -499,10 +500,10 @@ void M_Menu_Save_f (const quake::common::argv & args)
 void M_Load_Draw (void)
 {
 	int		i;
-	qpic_t	*p;
+	quake::sprite p;
 
 	p = Draw_CachePic ("gfx/p_load.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 
 	for (i=0 ; i< MAX_SAVEGAMES; i++)
 		M_Print (16, 32 + 8*i, m_filenames[i]);
@@ -515,10 +516,10 @@ void M_Load_Draw (void)
 void M_Save_Draw (void)
 {
 	int		i;
-	qpic_t	*p;
+	quake::sprite p;
 
 	p = Draw_CachePic ("gfx/p_save.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 
 	for (i=0 ; i<MAX_SAVEGAMES ; i++)
 		M_Print (16, 32 + 8*i, m_filenames[i]);
@@ -620,11 +621,11 @@ void M_Menu_MultiPlayer_f (const quake::common::argv & args)
 void M_MultiPlayer_Draw (void)
 {
 	int		f;
-	qpic_t	*p;
+	quake::sprite p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mp_menu.lmp") );
 
 	f = (int)(host_time * 10)%6;
@@ -707,11 +708,11 @@ void M_Menu_Setup_f (const quake::common::argv & args)
 
 void M_Setup_Draw (void)
 {
-	qpic_t	*p;
+	quake::sprite p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 
 	M_Print (64, 40, "Hostname");
 	M_DrawTextBox (160, 32, 16, 1);
@@ -900,47 +901,32 @@ void M_Menu_Net_f (const quake::common::argv & args)
 void M_Net_Draw (void)
 {
 	int		f;
-	qpic_t	*p;
+	quake::sprite p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 
 	f = 32;
 
-	if (serialAvailable)
-	{
+	if (serialAvailable) {
 		p = Draw_CachePic ("gfx/netmen1.lmp");
-	}
-	else
-	{
-#ifdef _WIN32
-		p = NULL;
-#else
+	} else {
 		p = Draw_CachePic ("gfx/dim_modm.lmp");
-#endif
 	}
 
-	if (p)
-		M_DrawTransPic (72, f, p);
+    M_DrawTransPic (72, f, p);
 
 	f += 19;
 
 	if (serialAvailable)
 	{
 		p = Draw_CachePic ("gfx/netmen2.lmp");
-	}
-	else
-	{
-#ifdef _WIN32
-		p = NULL;
-#else
+	} else {
 		p = Draw_CachePic ("gfx/dim_drct.lmp");
-#endif
 	}
 
-	if (p)
-		M_DrawTransPic (72, f, p);
+    M_DrawTransPic (72, f, p);
 
 	f += 19;
 	if (ipxAvailable)
@@ -1141,11 +1127,11 @@ void M_DrawCheckbox (int x, int y, int on)
 void M_Options_Draw (void)
 {
 	float		r;
-	qpic_t	*p;
+	quake::sprite p;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_option.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 
 	M_Print (16, 32, "    Customize controls");
 	M_Print (16, 40, "         Go to console");
@@ -1359,10 +1345,10 @@ void M_Keys_Draw (void)
 	int		keys[2];
 	const char	*name;
 	int		x, y;
-	qpic_t	*p;
+	quake::sprite p;
 
 	p = Draw_CachePic ("gfx/ttl_cstm.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 
 	if (bind_grab)
 		M_Print (12, 32, "Press a key or button for this action");
@@ -1734,14 +1720,14 @@ void M_Menu_SerialConfig_f (const quake::common::argv & args)
 
 void M_SerialConfig_Draw (void)
 {
-	qpic_t	*p;
+	quake::sprite p;
 	int		basex;
 	const char	*startJoin;
 	const char	*directModem;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
-	basex = (320-p->width)/2;
+	basex = (320-p.width)/2;
 	M_DrawPic (basex, 4, p);
 
 	if (StartingGame)
@@ -1990,12 +1976,12 @@ void M_Menu_ModemConfig_f (const quake::common::argv & args)
 
 void M_ModemConfig_Draw (void)
 {
-	qpic_t	*p;
+	quake::sprite p;
 	int		basex;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
-	basex = (320-p->width)/2;
+	basex = (320-p.width)/2;
 	M_DrawPic (basex, 4, p);
 	basex += 8;
 
@@ -2174,14 +2160,14 @@ void M_Menu_LanConfig_f (const quake::common::argv & args)
 
 void M_LanConfig_Draw (void)
 {
-	qpic_t	*p;
+	quake::sprite p;
 	int		basex;
 	const char	*startJoin;
 	const char	*protocol;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
-	basex = (320-p->width)/2;
+	basex = (320-p.width)/2;
 	M_DrawPic (basex, 4, p);
 
 	if (StartingGame)
@@ -2514,12 +2500,12 @@ int		gameoptions_cursor;
 
 void M_GameOptions_Draw (void)
 {
-	qpic_t	*p;
+	quake::sprite p;
 	int		x;
 
 	M_DrawTransPic (16, 4, Draw_CachePic ("gfx/qplaque.lmp") );
 	p = Draw_CachePic ("gfx/p_multi.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 
 	M_DrawTextBox (152, 32, 10, 1);
 	M_Print (160, 40, "begin game");
@@ -2801,11 +2787,11 @@ void M_Menu_Search_f (const quake::common::argv & args)
 
 void M_Search_Draw (void)
 {
-	qpic_t	*p;
+	quake::sprite p;
 	int x;
 
 	p = Draw_CachePic ("gfx/p_multi.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 	x = (320/2) - ((12*8)/2) + 4;
 	M_DrawTextBox (x-8, 32, 12, 1);
 	M_Print (x, 40, "Searching...");
@@ -2862,7 +2848,7 @@ void M_ServerList_Draw (void)
 {
 	int		n;
 	char	string [64];
-	qpic_t	*p;
+	quake::sprite p;
 
 	if (!slist_sorted)
 	{
@@ -2883,7 +2869,7 @@ void M_ServerList_Draw (void)
 	}
 
 	p = Draw_CachePic ("gfx/p_multi.lmp");
-	M_DrawPic ( (320-p->width)/2, 4, p);
+	M_DrawPic ( (320-p.width)/2, 4, p);
 	for (n = 0; n < hostCacheCount; n++)
 	{
 		if (hostcache[n].maxusers)

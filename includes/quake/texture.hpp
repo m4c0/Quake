@@ -50,6 +50,48 @@ namespace quake {
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, max);
         }
     };
+
+    class sprite {
+    public:
+        sprite() : texnum(nullptr), sl(0), tl(0), sh(0), th(0), width(0), height(0) {
+        }
+        // TODO: receive the texture as param
+        sprite(int w, int h) : texnum(nullptr), sl(0), tl(0), sh(1), th(1), width(w), height(h) {
+        }
+
+        void draw(int x, int y) {
+            this->texnum->bind();
+            glColor4f(1, 1, 1, 1);
+
+            glBegin(GL_QUADS);
+            glTexCoord2f(this->sl, this->tl); glVertex2f(x, y);
+            glTexCoord2f(this->sh, this->tl); glVertex2f(x + this->width, y);
+            glTexCoord2f(this->sh, this->th); glVertex2f(x + this->width, y + this->height);
+            glTexCoord2f(this->sl, this->th); glVertex2f(x, y + this->height);
+            glEnd();
+        }
+        void draw(int x, int y, float alpha) {
+            this->texnum->bind();
+            glDisable(GL_ALPHA_TEST);
+            glEnable(GL_BLEND);
+            glColor4f(1, 1, 1, alpha);
+
+            glBegin(GL_QUADS);
+            glTexCoord2f(this->sl, this->tl); glVertex2f(x, y);
+            glTexCoord2f(this->sh, this->tl); glVertex2f(x + this->width, y);
+            glTexCoord2f(this->sh, this->th); glVertex2f(x + this->width, y + this->height);
+            glTexCoord2f(this->sl, this->th); glVertex2f(x, y + this->height);
+            glEnd();
+
+            glColor4f(1, 1, 1, 1);
+            glEnable(GL_ALPHA_TEST);
+            glDisable(GL_BLEND);
+        }
+
+        std::shared_ptr<texture> texnum;
+        float sl, tl, sh, th;
+        int width, height;
+    };
 }
 
 #endif

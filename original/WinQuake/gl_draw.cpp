@@ -31,22 +31,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define GL_COLOR_INDEX8_EXT     0x80E5
 
+struct qpic {
+    int w, h;
+};
+
 extern unsigned char d_15to8table[65536];
 
 byte		*draw_chars;				// 8*8 graphic characters
-qpic_t		*draw_disc;
-qpic_t		*draw_backtile;
+quake::sprite draw_disc;
+quake::sprite draw_backtile;
 
 GLuint translate_texture;
 std::shared_ptr<quake::texture> char_texture;
 
-typedef struct {
-    std::shared_ptr<quake::texture> texnum;
-	float	sl, tl, sh, th;
-} glpic_t;
-
-byte           conback_buffer[sizeof(qpic_t) + sizeof(glpic_t)];
-qpic_t         *conback = (qpic_t *)&conback_buffer;
+quake::sprite conback;
 
 int		gl_lightmap_format = 4;
 int		gl_solid_format = 3;
@@ -58,15 +56,6 @@ int		gl_filter_max = GL_LINEAR;
 int		texels;
 
 static std::map<std::string, std::shared_ptr<quake::texture>> _textures;
-
-/*
-================
-GL_LoadPicTexture
-================
-*/
-static auto GL_LoadPicTexture (qpic_t *pic) {
-    return GL_LoadTexture ("", pic->width, pic->height, (uint8_t *)(pic + 1), false, true);
-}
 
 /*
 =============================================================================
@@ -143,8 +132,7 @@ void Scrap_Upload (void) {
 typedef struct cachepic_s
 {
 	char		name[MAX_QPATH];
-	qpic_t		pic;
-    glpic_t     glpic;
+    quake::sprite pic;
 } cachepic_t;
 
 #define	MAX_CACHED_PICS		128
@@ -155,44 +143,41 @@ byte		menuplyr_pixels[4096];
 
 std::unique_ptr<quake::wad::file> _wad;
 
-qpic_t *Draw_PicFromWad (const char *name)
+quake::sprite Draw_PicFromWad (const char *name)
 {
-	qpic_t * p = (qpic_t *)_wad->get_lump(name);
-	glpic_t *gl = (glpic_t *)(p + 1);
+    qpic * raw_data = (qpic *)_wad->get_lump(name);
+    // TODO: Flip if Big Endian
+    int width = raw_data->w;
+    int height = raw_data->h;
+
+    quake::sprite gl = { width, height };
 
 	// load little ones into the scrap
-	if (p->width < 64 && p->height < 64)
+	if (width < 64 && height < 64)
 	{
 		int		x, y;
 		int		i, j, k;
 		int		texnum;
 
-		texnum = Scrap_AllocBlock (p->width, p->height, &x, &y);
+		texnum = Scrap_AllocBlock (width, height, &x, &y);
 		scrap_dirty = true;
 		k = 0;
-        uint8_t * data = (uint8_t *)(p + 1);
-		for (i=0 ; i<p->height ; i++)
-			for (j=0 ; j<p->width ; j++, k++)
+        uint8_t * data = (uint8_t *)(raw_data + 1);
+		for (i=0 ; i<height ; i++)
+			for (j=0 ; j<width ; j++, k++)
 				scrap_texels[texnum][(y+i)*BLOCK_WIDTH + x + j] = data[k];
 
-        // Using "::new" to initialize a C++ object inside an "recycled" memory area - yikes, huh?
-        ::new (&gl->texnum) decltype(gl->texnum)();
-		gl->texnum = scrap_texnum[texnum];
-		gl->sl = (x+0.01)/(float)BLOCK_WIDTH;
-		gl->sh = (x+p->width-0.01)/(float)BLOCK_WIDTH;
-		gl->tl = (y+0.01)/(float)BLOCK_WIDTH;
-		gl->th = (y+p->height-0.01)/(float)BLOCK_WIDTH;
+		gl.texnum = scrap_texnum[texnum];
+		gl.sl = (x+0.01)/(float)BLOCK_WIDTH;
+		gl.sh = (x+width-0.01)/(float)BLOCK_WIDTH;
+		gl.tl = (y+0.01)/(float)BLOCK_WIDTH;
+		gl.th = (y+height-0.01)/(float)BLOCK_WIDTH;
 	}
 	else
 	{
-        ::new (&gl->texnum) decltype(gl->texnum)();
-		gl->texnum = GL_LoadPicTexture (p);
-		gl->sl = 0;
-		gl->sh = 1;
-		gl->tl = 0;
-		gl->th = 1;
+        gl.texnum = GL_LoadTexture ("", width, height, (uint8_t *)(raw_data + 1), false, true);
 	}
-	return p;
+	return gl;
 }
 
 
@@ -201,15 +186,14 @@ qpic_t *Draw_PicFromWad (const char *name)
 Draw_CachePic
 ================
 */
-qpic_t	*Draw_CachePic (const char *path)
+quake::sprite Draw_CachePic (const char *path)
 {
 	cachepic_t	*pic;
 	int			i;
-	qpic_t		*dat;
 
 	for (pic=menu_cachepics, i=0 ; i<menu_numcachepics ; pic++, i++)
 		if (!strcmp (path, pic->name))
-			return &pic->pic;
+			return pic->pic;
 
 	if (menu_numcachepics == MAX_CACHED_PICS)
 		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
@@ -219,7 +203,7 @@ qpic_t	*Draw_CachePic (const char *path)
 //
 // load the pic from disk
 //
-	dat = (qpic_t *)COM_LoadTempFile (path);	
+    qpic * dat = (qpic *)COM_LoadTempFile (path);	
 	if (!dat)
 		Sys_Error ("Draw_CachePic: failed to load %s", path);
 	// TODO: SwapPic (dat);
@@ -228,19 +212,11 @@ qpic_t	*Draw_CachePic (const char *path)
 	// the translatable player picture just for the menu
 	// configuration dialog
 	if (!strcmp (path, "gfx/menuplyr.lmp"))
-		memcpy (menuplyr_pixels, dat + 1, dat->width*dat->height);
+		memcpy (menuplyr_pixels, dat + 1, dat->w * dat->h);
 
-	pic->pic.width = dat->width;
-	pic->pic.height = dat->height;
-
-	glpic_t * gl = &pic->glpic;
-	gl->texnum = GL_LoadPicTexture (dat);
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
-
-	return &pic->pic;
+    pic->pic = { dat->w, dat->h};
+	pic->pic.texnum = GL_LoadTexture ("", dat->w, dat->h, (uint8_t *)(dat + 1), false, true);
+	return pic->pic;
 }
 
 
@@ -332,7 +308,6 @@ Draw_Init
 void Draw_Init (void)
 {
 	int		i;
-	qpic_t	*cb;
 	byte	*dest;
 	int		x, y;
 	char	ver[40];
@@ -356,9 +331,10 @@ void Draw_Init (void)
 
 	start = Hunk_LowMark();
 
-	cb = (qpic_t *)COM_LoadTempFile ("gfx/conback.lmp");	
+	qpic * cb = (qpic *)COM_LoadTempFile ("gfx/conback.lmp");	
 	if (!cb)
 		Sys_Error ("Couldn't load gfx/conback.lmp");
+    // TODO: flip if big endian
 
 	// hack the version number directly into the pic
 	sprintf (ver, "(m4c0 %4.2f) %4.2f", (float)GLQUAKE_VERSION, (float)VERSION);
@@ -370,14 +346,10 @@ void Draw_Init (void)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	glpic_t *gl = (glpic_t *)(conback + 1);
-	gl->texnum = GL_LoadTexture ("conback", cb->width, cb->height, (uint8_t *)(cb + 1), false, false);
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
-	conback->width = vid.width;
-	conback->height = vid.height;
+    conback = { cb->w, cb->h };
+	conback.texnum = GL_LoadTexture ("conback", cb->w, cb->h, (uint8_t *)(cb + 1), false, false);
+	conback.width = vid.width;
+	conback.height = vid.height;
 
 	// free loaded console
 	Hunk_FreeToLowMark(start);
@@ -474,32 +446,12 @@ void Draw_DebugChar (char num)
 Draw_AlphaPic
 =============
 */
-void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
+void Draw_AlphaPic (int x, int y, quake::sprite & gl, float alpha)
 {
 	if (scrap_dirty)
 		Scrap_Upload ();
 
-	glpic_t * gl = (glpic_t *)(pic + 1);
-
-	glDisable(GL_ALPHA_TEST);
-	glEnable (GL_BLEND);
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//	glCullFace(GL_FRONT);
-	glColor4f (1,1,1,alpha);
-	gl->texnum->bind();
-	glBegin (GL_QUADS);
-	glTexCoord2f (gl->sl, gl->tl);
-	glVertex2f (x, y);
-	glTexCoord2f (gl->sh, gl->tl);
-	glVertex2f (x+pic->width, y);
-	glTexCoord2f (gl->sh, gl->th);
-	glVertex2f (x+pic->width, y+pic->height);
-	glTexCoord2f (gl->sl, gl->th);
-	glVertex2f (x, y+pic->height);
-	glEnd ();
-	glColor4f (1,1,1,1);
-	glEnable(GL_ALPHA_TEST);
-	glDisable (GL_BLEND);
+    gl.draw(x, y, alpha);
 }
 
 
@@ -508,24 +460,11 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 Draw_Pic
 =============
 */
-void Draw_Pic (int x, int y, qpic_t *pic)
-{
+void Draw_Pic (int x, int y, quake::sprite & gl) {
 	if (scrap_dirty)
 		Scrap_Upload ();
 
-	glpic_t * gl = (glpic_t *)(pic + 1);
-	glColor4f (1,1,1,1);
-	gl->texnum->bind();
-	glBegin (GL_QUADS);
-	glTexCoord2f (gl->sl, gl->tl);
-	glVertex2f (x, y);
-	glTexCoord2f (gl->sh, gl->tl);
-	glVertex2f (x+pic->width, y);
-	glTexCoord2f (gl->sh, gl->th);
-	glVertex2f (x+pic->width, y+pic->height);
-	glTexCoord2f (gl->sl, gl->th);
-	glVertex2f (x, y+pic->height);
-	glEnd ();
+    gl.draw(x, y);
 }
 
 
@@ -534,10 +473,10 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 Draw_TransPic
 =============
 */
-void Draw_TransPic (int x, int y, qpic_t *pic)
+void Draw_TransPic (int x, int y, quake::sprite & pic)
 {
-	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
-		 (unsigned)(y + pic->height) > vid.height)
+	if (x < 0 || (unsigned)(x + pic.width) > vid.width || y < 0 ||
+		 (unsigned)(y + pic.height) > vid.height)
 	{
 		Sys_Error ("Draw_TransPic: bad coordinates");
 	}
@@ -553,7 +492,7 @@ Draw_TransPicTranslate
 Only used for the player color selection menu
 =============
 */
-void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
+void Draw_TransPicTranslate (int x, int y, quake::sprite & pic, byte *translation)
 {
 	int				v, u, c;
 	unsigned		trans[64*64], *dest;
@@ -562,15 +501,15 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 
 	glBindTexture(GL_TEXTURE_2D, translate_texture);
 
-	c = pic->width * pic->height;
+	c = pic.width * pic.height;
 
 	dest = trans;
 	for (v=0 ; v<64 ; v++, dest += 64)
 	{
-		src = &menuplyr_pixels[ ((v*pic->height)>>6) *pic->width];
+		src = &menuplyr_pixels[ ((v*pic.height)>>6) *pic.width];
 		for (u=0 ; u<64 ; u++)
 		{
-			p = src[(u*pic->width)>>6];
+			p = src[(u*pic.width)>>6];
 			if (p == 255)
 				dest[u] = p;
 			else
@@ -588,11 +527,11 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	glTexCoord2f (0, 0);
 	glVertex2f (x, y);
 	glTexCoord2f (1, 0);
-	glVertex2f (x+pic->width, y);
+	glVertex2f (x+pic.width, y);
 	glTexCoord2f (1, 1);
-	glVertex2f (x+pic->width, y+pic->height);
+	glVertex2f (x+pic.width, y+pic.height);
 	glTexCoord2f (0, 1);
-	glVertex2f (x, y+pic->height);
+	glVertex2f (x, y+pic.height);
 	glEnd ();
 }
 
@@ -624,10 +563,8 @@ refresh window.
 */
 void Draw_TileClear (int x, int y, int w, int h)
 {
-	glpic_t * gl = (glpic_t *)(draw_backtile + 1);
-
 	glColor3f (1,1,1);
-	gl->texnum->bind();
+	draw_backtile.texnum->bind();
 	glBegin (GL_QUADS);
 	glTexCoord2f (x/64.0, y/64.0);
 	glVertex2f (x, y);
@@ -706,7 +643,7 @@ Call before beginning any disc IO.
 */
 void Draw_BeginDisc (void)
 {
-	if (!draw_disc)
+	if (!draw_disc.texnum)
 		return;
 	glDrawBuffer  (GL_FRONT);
 	Draw_Pic (vid.width - 24, 0, draw_disc);
