@@ -195,11 +195,8 @@ std::unique_ptr<quake::wad::file> _wad;
 
 qpic_t *Draw_PicFromWad (const char *name)
 {
-	qpic_t	*p;
-	glpic_t	*gl;
-
-	p = (qpic_t *)_wad->get_lump(name);
-	gl = (glpic_t *)p->data;
+	qpic_t * p = (qpic_t *)_wad->get_lump(name);
+	glpic_t *gl = (glpic_t *)p->data;
 
 	// load little ones into the scrap
 	if (p->width < 64 && p->height < 64)
@@ -263,7 +260,7 @@ qpic_t	*Draw_CachePic (const char *path)
 	dat = (qpic_t *)COM_LoadTempFile (path);	
 	if (!dat)
 		Sys_Error ("Draw_CachePic: failed to load %s", path);
-	//SwapPic (dat);
+	// TODO: SwapPic (dat);
 
 	// HACK HACK HACK --- we need to keep the bytes for
 	// the translatable player picture just for the menu
