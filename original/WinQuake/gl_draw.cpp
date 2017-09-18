@@ -33,9 +33,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 extern unsigned char d_15to8table[65536];
 
-quake::cvar::normal gl_max_size = {"gl_max_size", "1024"};
-quake::cvar::normal gl_picmip = {"gl_picmip", "0"};
-
 byte		*draw_chars;				// 8*8 graphic characters
 qpic_t		*draw_disc;
 qpic_t		*draw_backtile;
@@ -348,11 +345,6 @@ void Draw_Init (void)
 	int		start;
 
     _wad.reset(new quake::wad::file("gfx.wad"));
-
-	// 3dfx can only handle 256 wide textures
-	if (!strncasecmp ((char *)gl_renderer, "3dfx",4) ||
-		strstr((char *)gl_renderer, "Glide"))
-		gl_max_size = "256";
 
 	Cmd_AddCommand ("gl_texturemode", &Draw_TextureMode_f);
 
@@ -907,13 +899,8 @@ static	unsigned	scaled[1024*512];	// [512*256];
 	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
 		;
 
-	scaled_width  >>= gl_picmip.to_int();
-	scaled_height >>= gl_picmip.to_int();
-
-	if (scaled_width  > gl_max_size.to_int())
-		scaled_width  = gl_max_size.to_int();
-	if (scaled_height > gl_max_size.to_int())
-		scaled_height = gl_max_size.to_int();
+	if (scaled_width  > 1024) scaled_width  = 1024;
+	if (scaled_height > 1024) scaled_height = 1024;
 
 	if (scaled_width * scaled_height > sizeof(scaled)/4)
 		Sys_Error ("GL_LoadTexture: too big");

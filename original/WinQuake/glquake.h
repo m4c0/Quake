@@ -194,9 +194,6 @@ extern	int		gl_lightmap_format;
 extern	int		gl_solid_format;
 extern	int		gl_alpha_format;
 
-extern quake::cvar::normal gl_max_size;
-extern quake::cvar::normal gl_playermip;
-
 extern	int			mirrortexturenum;	// quake texturenum, not gltexturenum
 extern	qboolean	mirror;
 extern	mplane_t	*mirror_plane;

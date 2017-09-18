@@ -106,7 +106,6 @@ quake::cvar::normal gl_smoothmodels = {"gl_smoothmodels","1"};
 quake::cvar::normal gl_affinemodels = {"gl_affinemodels","0"};
 quake::cvar::normal gl_polyblend = {"gl_polyblend","1"};
 quake::cvar::normal gl_flashblend = {"gl_flashblend","1"};
-quake::cvar::normal gl_playermip = {"gl_playermip","0"};
 quake::cvar::normal gl_nocolors = {"gl_nocolors","0"};
 quake::cvar::normal gl_keeptjunctions = {"gl_keeptjunctions","0"};
 quake::cvar::normal gl_reporttjunctions = {"gl_reporttjunctions","0"};
