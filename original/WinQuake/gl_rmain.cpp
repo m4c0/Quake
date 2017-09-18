@@ -100,7 +100,6 @@ quake::cvar::normal r_novis = {"r_novis","0"};
 quake::cvar::normal gl_finish = {"gl_finish","0"};
 quake::cvar::normal gl_clear = {"gl_clear","0"};
 quake::cvar::normal gl_cull = {"gl_cull","1"};
-quake::cvar::normal gl_texsort = {"gl_texsort","1"};
 quake::cvar::normal gl_smoothmodels = {"gl_smoothmodels","1"};
 quake::cvar::normal gl_affinemodels = {"gl_affinemodels","0"};
 quake::cvar::normal gl_polyblend = {"gl_polyblend","1"};
@@ -232,8 +231,6 @@ void R_DrawSpriteModel (entity_t *e)
 	}
 
 	glColor3f (1,1,1);
-
-	GL_DisableMultitexture();
 
     GL_Bind(frame->gl_texturenum);
 
@@ -532,8 +529,6 @@ void R_DrawAliasModel (entity_t *e)
 	// draw all the triangles
 	//
 
-	GL_DisableMultitexture();
-
     glPushMatrix ();
 	R_RotateForEntity (e);
 
@@ -723,8 +718,6 @@ void R_PolyBlend (void)
 		return;
 	if (!v_blend[3])
 		return;
-
-	GL_DisableMultitexture();
 
 	glDisable (GL_ALPHA_TEST);
 	glEnable (GL_BLEND);
@@ -957,8 +950,6 @@ void R_RenderScene (void)
 	S_ExtraUpdate ();	// don't let sound get messed up if going slow
 
 	R_DrawEntitiesOnList ();
-
-	GL_DisableMultitexture();
 
 	R_RenderDlights ();
 

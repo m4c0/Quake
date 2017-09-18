@@ -1087,16 +1087,3 @@ int GL_LoadTexture (const char *identifier, int width, int height, byte *data, q
 
 /****************************************/
 
-static GLenum oldtarget = TEXTURE0_SGIS;
-
-void GL_SelectTexture (GLenum target) 
-{
-	if (!gl_mtexable)
-		return;
-	qglSelectTextureSGIS(target);
-	if (target == oldtarget) 
-		return;
-	cnttextures[oldtarget-TEXTURE0_SGIS] = currenttexture;
-	currenttexture = cnttextures[target-TEXTURE0_SGIS];
-	oldtarget = target;
-}

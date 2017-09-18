@@ -178,9 +178,6 @@ void R_Init (void)
 	Cmd_AddCommand ("envmap", R_Envmap_f);	
 	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);	
 
- 	if (gl_mtexable)
-		gl_texsort = "0";
-
 	R_InitParticles ();
 	R_InitParticleTexture ();
 
@@ -213,8 +210,6 @@ void R_TranslatePlayerSkin (int playernum)
 	byte		*inrow;
 	unsigned	frac, fracstep;
 	extern	byte		**player_8bit_texels_tbl;
-
-	GL_DisableMultitexture();
 
 	top = cl.scores[playernum].colors & 0xf0;
 	bottom = (cl.scores[playernum].colors &15)<<4;

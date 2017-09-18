@@ -203,7 +203,6 @@ extern quake::cvar::normal r_novis;
 extern quake::cvar::normal gl_clear;
 extern quake::cvar::normal gl_cull;
 extern quake::cvar::normal gl_poly;
-extern quake::cvar::normal gl_texsort;
 extern quake::cvar::normal gl_smoothmodels;
 extern quake::cvar::normal gl_affinemodels;
 extern quake::cvar::normal gl_polyblend;
@@ -234,20 +233,7 @@ extern	const GLubyte *gl_extensions;
 void R_TranslatePlayerSkin (int playernum);
 void GL_Bind (int texnum);
 
-// Multitexture
-#define    TEXTURE0_SGIS				0x835E
-#define    TEXTURE1_SGIS				0x835F
-
 #ifndef _WIN32
 #define APIENTRY /* */
 #endif
 
-typedef void (APIENTRY *lpMTexFUNC) (GLenum, GLfloat, GLfloat);
-typedef void (APIENTRY *lpSelTexFUNC) (GLenum);
-extern lpMTexFUNC qglMTexCoord2fSGIS;
-extern lpSelTexFUNC qglSelectTextureSGIS;
-
-extern qboolean gl_mtexable;
-
-void GL_DisableMultitexture(void);
-void GL_EnableMultitexture(void);

@@ -242,31 +242,6 @@ void	VID_SetPalette (unsigned char *palette)
 	}
 }
 
-void CheckMultiTextureExtensions(void) 
-{
-	void *prjobj;
-
-	if (strstr((char *)gl_extensions, "GL_SGIS_multitexture ") && !argv->contains("-nomtex")) {
-		Con_Printf("Found GL_SGIS_multitexture...\n");
-
-		if ((prjobj = dlopen(NULL, RTLD_LAZY)) == NULL) {
-			Con_Printf("Unable to open symbol list for main program.\n");
-			return;
-		}
-
-		qglMTexCoord2fSGIS = (decltype(qglMTexCoord2fSGIS)) dlsym(prjobj, "glMTexCoord2fSGIS");
-		qglSelectTextureSGIS = (decltype(qglSelectTextureSGIS)) dlsym(prjobj, "glSelectTextureSGIS");
-
-		if (qglMTexCoord2fSGIS && qglSelectTextureSGIS) {
-			Con_Printf("Multitexture extensions found.\n");
-			gl_mtexable = true;
-		} else
-			Con_Printf("Symbol not found, disabled.\n");
-
-		dlclose(prjobj);
-	}
-}
-
 /*
 ===============
 GL_Init
@@ -285,8 +260,6 @@ void GL_Init (void)
 	Con_Printf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 //	Con_Printf ("%s %s\n", gl_renderer, gl_version);
-
-	CheckMultiTextureExtensions ();
 
 	glClearColor (1,0,0,0);
 	glCullFace(GL_FRONT);
