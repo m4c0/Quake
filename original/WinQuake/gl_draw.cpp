@@ -23,6 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "quakedef.h"
 
+#include "quake/texture.hpp"
 #include "quake/wad.hpp"
 
 #include <memory>
@@ -57,17 +58,9 @@ int		gl_alpha_format = 4;
 int		gl_filter_min = GL_LINEAR_MIPMAP_NEAREST;
 int		gl_filter_max = GL_LINEAR;
 
-
 int		texels;
 
-typedef struct
-{
-	GLuint texnum;
-	int		width, height;
-	qboolean	mipmap;
-} gltexture_t;
-
-static std::map<std::string, gltexture_t> _textures;
+static std::map<std::string, quake::texture> _textures;
 
 void GL_Bind (int texnum)
 {
