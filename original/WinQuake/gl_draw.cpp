@@ -69,10 +69,7 @@ typedef struct
 	qboolean	mipmap;
 } gltexture_t;
 
-#define	MAX_GLTEXTURES	1024
-gltexture_t	gltextures[MAX_GLTEXTURES];
-int			numgltextures;
-
+static std::map<std::string, gltexture_t> _textures;
 
 void GL_Bind (int texnum)
 {
@@ -334,7 +331,6 @@ Draw_TextureMode_f
 void Draw_TextureMode_f (const quake::common::argv & argv)
 {
 	int		i;
-	gltexture_t	*glt;
 
 	if (argv.size() == 0) {
 		for (int i = 0; i < 6; i++) {
@@ -363,14 +359,12 @@ void Draw_TextureMode_f (const quake::common::argv & argv)
 	gl_filter_max = modes[i].maximize;
 
 	// change all the existing mipmap texture objects
-	for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
-	{
-		if (glt->mipmap)
-		{
-			GL_Bind (glt->texnum);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-		}
+    for (auto & kv : _textures) {
+        if (!kv.second.mipmap) continue;
+
+        GL_Bind(kv.second.texnum);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
 }
 
@@ -817,16 +811,8 @@ GL_FindTexture
 */
 int GL_FindTexture (char *identifier)
 {
-	int		i;
-	gltexture_t	*glt;
-
-	for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
-	{
-		if (!strcmp (identifier, glt->identifier))
-			return gltextures[i].texnum;
-	}
-
-	return -1;
+    auto it = _textures.find(identifier);
+    return it == _textures.end() ? -1 : it->second.texnum;
 }
 
 /*
@@ -1097,40 +1083,31 @@ int GL_LoadTexture (const char *identifier, int width, int height, byte *data, q
         return 0;
     }
 
-	int			i;
-	gltexture_t	*glt;
+    std::string name = identifier;
 
 	// see if the texture is allready present
-	if (identifier[0])
-	{
-		for (i=0, glt=gltextures ; i<numgltextures ; i++, glt++)
-		{
-			if (!strcmp (identifier, glt->identifier))
-			{
-				if (width != glt->width || height != glt->height)
-					Sys_Error ("GL_LoadTexture: cache mismatch");
-				return gltextures[i].texnum;
-			}
+	if (name != "") {
+        auto it = _textures.find(name);
+        if (it != _textures.end()) {
+            if (width != it->second.width || height != it->second.height) {
+                Sys_Error ("GL_LoadTexture: cache mismatch");
+            }
+            return it->second.texnum;
 		}
-	}
-	else {
-		glt = &gltextures[numgltextures];
-		numgltextures++;
+	} else {
+        name = "*" + std::to_string(_textures.size());
 	}
 
-	strcpy (glt->identifier, identifier);
-	glt->texnum = texture_extension_number;
-	glt->width = width;
-	glt->height = height;
-	glt->mipmap = mipmap;
+    auto & glt = _textures[name];
+	strcpy (glt.identifier, identifier);
+	glt.texnum = texture_extension_number;
+	glt.width = width;
+	glt.height = height;
+	glt.mipmap = mipmap;
 
-	GL_Bind(texture_extension_number );
-
-	GL_Upload8 (data, width, height, mipmap, alpha);
-
-	texture_extension_number++;
-
-	return texture_extension_number-1;
+	GL_Bind(texture_extension_number);
+	GL_Upload8(data, width, height, mipmap, alpha);
+    return texture_extension_number++;
 }
 
 /****************************************/
