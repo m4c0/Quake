@@ -153,9 +153,6 @@ int			menu_numcachepics;
 
 byte		menuplyr_pixels[4096];
 
-int		pic_texels;
-int		pic_count;
-
 std::unique_ptr<quake::wad::file> _wad;
 
 qpic_t *Draw_PicFromWad (const char *name)
@@ -185,9 +182,6 @@ qpic_t *Draw_PicFromWad (const char *name)
 		gl->sh = (x+p->width-0.01)/(float)BLOCK_WIDTH;
 		gl->tl = (y+0.01)/(float)BLOCK_WIDTH;
 		gl->th = (y+p->height-0.01)/(float)BLOCK_WIDTH;
-
-		pic_count++;
-		pic_texels += p->width*p->height;
 	}
 	else
 	{
