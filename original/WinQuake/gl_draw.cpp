@@ -63,7 +63,6 @@ int		texels;
 typedef struct
 {
 	GLuint texnum;
-	char	identifier[64];
 	int		width, height;
 	qboolean	mipmap;
 } gltexture_t;
@@ -1096,7 +1095,6 @@ int GL_LoadTexture (const char *identifier, int width, int height, byte *data, q
 	}
 
     auto & glt = _textures[name];
-	strcpy (glt.identifier, identifier);
     glGenTextures(1, &glt.texnum);
 	glt.width = width;
 	glt.height = height;
