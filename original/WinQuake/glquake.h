@@ -54,7 +54,6 @@ extern	DELTEXFUNCPTR delTexFunc;
 extern	TEXSUBIMAGEPTR TexSubImage2DFunc;
 #endif
 
-extern	int texture_extension_number;
 extern	int		texture_mode;
 
 extern	float	gldepthmin, gldepthmax;
@@ -182,8 +181,8 @@ extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 extern	qboolean	envmap;
 extern	int	currenttexture;
 extern	int	cnttextures[2];
-extern	int	particletexture;
-extern	int	playertextures;
+extern	GLuint particletexture;
+extern	GLuint playertextures[16];
 
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 
